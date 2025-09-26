@@ -14,6 +14,56 @@ const logger = require("../utils/logger");
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /user/create-user:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 minLength: 2
+ *                 maxLength: 50
+ *                 description: User's full name
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email address
+ *               password:
+ *                 type: string
+ *                 minLength: 6
+ *                 description: User's password
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: User's avatar image
+ *     responses:
+ *       201:
+ *         description: User registered successfully, activation email sent
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Success'
+ *       400:
+ *         description: Validation error or user already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Server error
+ */
 router.post("/create-user", validate(schemas.user.register), upload.single("file"), async (req, res, next) => {
   try {
     const { name, email, password } = req.body;

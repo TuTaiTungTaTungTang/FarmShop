@@ -77,8 +77,20 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
   });
 }
 
+// Swagger Documentation
+const { specs, swaggerUi } = require('./config/swagger');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
+  explorer: true,
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: "Multi-Vendor E-Commerce API",
+}));
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
+});
+
+app.get("/api-docs.json", (req, res) => {
+  res.json(specs);
 });
 
 // routes
