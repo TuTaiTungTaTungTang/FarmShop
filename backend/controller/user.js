@@ -9,10 +9,12 @@ const sendMail = require("../utils/sendMail");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const sendToken = require("../utils/jwtToken");
 const { isAuthenticated, isAdmin } = require("../middleware/auth");
+const { validate, schemas } = require("../middleware/validation");
+const logger = require("../utils/logger");
 
 const router = express.Router();
 
-router.post("/create-user", upload.single("file"), async (req, res, next) => {
+router.post("/create-user", validate(schemas.user.register), upload.single("file"), async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
     const userEmail = await User.findOne({ email });
