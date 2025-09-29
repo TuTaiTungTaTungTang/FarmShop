@@ -16,6 +16,7 @@ import { addToWishlist, removeFromWishlist } from '../../../redux/actions/wishli
 import { addTocart } from '../../../redux/actions/cart';
 import { toast } from 'react-toastify';
 import Ratings from "../../Products/Ratings";
+import getProductImage from "../../../utils/getProductImage";
 
 const ProductCard = ({ data, isEvent }) => {
     const { wishlist } = useSelector((state) => state.wishlist);
@@ -72,9 +73,10 @@ const ProductCard = ({ data, isEvent }) => {
 
                 <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
                     <img
-                        src={`${backend_url}${data.images && data.images[0]}`}
+                        src={getProductImage(data.images && data.images[0])}
                         alt="prd"
                         className='w-full h-[170px] object-contain'
+                        onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/300x200?text=No+Image"; }}
                     />
                 </Link>
                 <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>

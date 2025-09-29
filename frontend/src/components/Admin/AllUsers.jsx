@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { getAllUsers } from "../../redux/actions/user";
 import { DataGrid } from "@mui/x-data-grid";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -18,7 +17,7 @@ const AllUsers = () => {
   const [userId, setUserId] = useState("");
 
   useEffect(() => {
-    dispatch(getAllUsers());
+  dispatch(getAllUsers());
   }, [dispatch]);
 
   const handleDelete = async (id) => {

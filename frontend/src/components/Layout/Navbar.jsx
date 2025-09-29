@@ -4,7 +4,8 @@ import { navItems } from '../../static/data'
 import styles from '../../styles/styles'
 
 
-const Navbar = ({ active }) => {
+const Navbar = ({ active }) => 
+    {
     return (
         <div className={`block 800px:${styles.noramlFlex}`}>
             {

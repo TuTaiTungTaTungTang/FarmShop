@@ -6,9 +6,8 @@ import { IoBagHandleOutline } from "react-icons/io5";
 import { HiOutlineMinus, HiPlus } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { backend_url } from "../../server";
 import { addTocart, removeFromCart } from "../../redux/actions/cart";
-
+import getProductImage from "../../utils/getProductImage";
 const Cart = ({ setOpenCart }) => {
   const { cart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
@@ -141,9 +140,10 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
             </div>
           </div>
           <img
-            src={`${backend_url}${data?.images[0]}`}
+            src={getProductImage(data?.images && data?.images[0])}
             className="w-[130px] h-min ml-2 mr-2 rounded-[5px]"
             alt="side card"
+            onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/300x200?text=No+Image"; }}
           />
 
           <div className="pl-[15px]">

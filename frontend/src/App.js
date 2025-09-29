@@ -22,6 +22,7 @@ import {
   OrderDetailsPage,
   TrackOrderPage,
   UserInbox,
+  ProductTraceabilityPage,
 } from "./routes/Routes";
 import {
   ShopDashboardPage,
@@ -114,6 +115,8 @@ const App = () => {
         <Route path="/best-selling" element={<BestSellingPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/faq" element={<FAQPage />} />
+        {/* 🌱 QR Traceability route (giống FaceFarm) */}
+        <Route path="/production/detail" element={<ProductTraceabilityPage />} />
         <Route
           path="/checkout"
           element={

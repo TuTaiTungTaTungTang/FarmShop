@@ -18,7 +18,7 @@ const AllSellers = () => {
   const [userId, setUserId] = useState("");
 
   useEffect(() => {
-    dispatch(getAllSellers());
+  dispatch(getAllSellers());
   }, [dispatch]);
 
   const handleDelete = async (id) => {

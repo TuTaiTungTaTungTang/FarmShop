@@ -7,14 +7,12 @@ import {
 } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
 import { Link } from "react-router-dom";
-import { backend_url } from "../../../server";
 import styles from "../../../styles/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify"
 import { addTocart } from "../../../redux/actions/cart"
 import { addToWishlist, removeFromWishlist } from '../../../redux/actions/wishlist';
-
-
+import getProductImage from "../../../utils/getProductImage";
 const ProductDetailsCard = ({ setOpen, data }) => {
     const { cart } = useSelector((state) => state.cart);
     const { wishlist } = useSelector((state) => state.wishlist);
@@ -90,24 +88,30 @@ const ProductDetailsCard = ({ setOpen, data }) => {
 
                                 <div className="block w-full 800px:flex">
                                     <div className='w-full 800px:w-[50%]'>
-                                        <img src={`${backend_url}${data.images && data.images[0]}`} alt="img" />
+                                        <img
+                                            src={getProductImage(data.images && data.images[0])}
+                                            alt="img"
+                                            onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/300x200?text=No+Image"; }}
+                                        />
                                         <div className='flex' >
-                                            <Link to={`/shop/preview/${data.shop._id}`} className="flex">
-
-                                                <img
-                                                    src={`${backend_url}${data?.shop?.avatar}`}
-                                                    alt=""
-                                                    className='w-[50px] h-[50px] rounded-full mr-2'
-                                                />
-                                                <div>
-                                                    <h3 className={`${styles.shop_name}`}>
-                                                        {data.shop.name}
-                                                    </h3>
-                                                    <h5 className="pb-3 text-[15px]">
-                                                        (4.5) Ratings
-                                                    </h5>
-                                                </div>
-                                            </Link>
+                                            {data.shop && (
+                                                <Link to={`/shop/preview/${data.shop._id}`} className="flex">
+                                                    <img
+                                                        src={getProductImage(data.shop.avatar)}
+                                                        alt=""
+                                                        className='w-[50px] h-[50px] rounded-full mr-2'
+                                                        onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/100x100?text=No+Logo"; }}
+                                                    />
+                                                    <div>
+                                                        <h3 className={`${styles.shop_name}`}>
+                                                            {data.shop.name}
+                                                        </h3>
+                                                        <h5 className="pb-3 text-[15px]">
+                                                            (4.5) Ratings
+                                                        </h5>
+                                                    </div>
+                                                </Link>
+                                            )}
                                         </div>
                                         <div
                                             className={`${styles.button} bg-[#000] mt-4 rounded-[4px] h-11`}

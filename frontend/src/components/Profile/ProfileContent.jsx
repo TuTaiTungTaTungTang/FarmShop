@@ -17,8 +17,8 @@ import { MdTrackChanges } from "react-icons/md";
 import { toast } from "react-toastify";
 import axios from 'axios';
 import { Country, State } from "country-state-city";
-import { getAllOrdersOfUser } from '../../redux/actions/order';
-
+import { getAllOrdersOfUser, getAllOrdersOfAdmin } from '../../redux/actions/order';
+import getProductImage from "../../utils/getProductImage";
 
 const ProfileContent = ({ active }) => {
     const { user, error, successMessage } = useSelector((state) => state.user);
@@ -82,10 +82,12 @@ const ProfileContent = ({ active }) => {
                     <>
                         <div className="flex justify-center w-full">
                             <div className='relative'>
-                                <img src={`${backend_url}${user?.avatar}`}
-                                    className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]"
-                                    alt="profile img" />
-
+<img
+  src={getProductImage(user && user.avatar) + `?t=${Date.now()}`}
+  alt="Profile img"
+  className="w-[120px] h-[120px] rounded-full object-cover border-2 border-green-400"
+  onError={e => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/120x120?text=No+Avatar'; }}
+/>
                                 <div className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer absolute bottom-[5px] right-[5px]">
                                     <input type="file"
                                         id="image"
@@ -208,13 +210,19 @@ const ProfileContent = ({ active }) => {
 // All orders
 const AllOrders = () => {
     const { user } = useSelector((state) => state.user);
-
-    const { orders } = useSelector((state) => state.order);
+    const { orders, adminOrders } = useSelector((state) => state.order);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getAllOrdersOfUser(user._id));
-    }, []);
+        if (user && user.role === "Admin") {
+            dispatch(getAllOrdersOfAdmin());
+        } else {
+            dispatch(getAllOrdersOfUser(user._id));
+        }
+    }, [user, dispatch]);
+
+    // Nếu là admin thì lấy adminOrders, còn lại lấy orders
+    const displayOrders = user && user.role === "Admin" ? adminOrders : orders;
 
 
 
@@ -228,7 +236,7 @@ const AllOrders = () => {
             minWidth: 130,
             flex: 0.7,
             cellClassName: (params) => {
-                return params.getValue(params.id, "status") === "Delivered"
+                return params.row.status === "Delivered"
                     ? "greenColor"
                     : "redColor";
             },
@@ -272,8 +280,8 @@ const AllOrders = () => {
 
     const row = [];
 
-    orders &&
-        orders.forEach((item) => {
+    displayOrders &&
+        displayOrders.forEach((item) => {
             row.push({
                 id: item._id,
                 itemsQty: item.cart.length,
@@ -498,7 +506,7 @@ const ChangePassword = () => {
                 { withCredentials: true }
             )
             .then((res) => {
-                toast.success("Pawword is updated");
+                toast.success("Paword is updated");
                 setOldPassword("");
                 setNewPassword("");
                 setConfirmPassword("");

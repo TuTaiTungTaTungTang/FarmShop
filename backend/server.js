@@ -1,9 +1,9 @@
 const express = require("express");
 const ErrorHandler = require("./middleware/error");
 const connectDatabase = require("./db/Database");
-const logger = require("./utils/logger");
-const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
+// const logger = require("./utils/logger"); // Tạm comment để test QR system
+// const helmet = require("helmet"); // Tạm comment
+// const rateLimit = require("express-rate-limit"); // Tạm comment
 const app = express();
 
 const cookieParser = require("cookie-parser");
@@ -20,36 +20,36 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
 // connect db
 connectDatabase();
 
-// Security middleware
-app.use(helmet({
-  contentSecurityPolicy: false, // Disable CSP for development
-  crossOriginEmbedderPolicy: false
-}));
+// Security middleware - Tạm comment để test QR system
+// app.use(helmet({
+//   contentSecurityPolicy: false, // Disable CSP for development
+//   crossOriginEmbedderPolicy: false
+// }));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: {
-    error: "Too many requests from this IP, please try again later."
-  }
-});
-app.use('/api/', limiter);
+// Rate limiting - Tạm comment
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100, // limit each IP to 100 requests per windowMs
+//   message: {
+//     error: "Too many requests from this IP, please try again later."
+//   }
+// });
+// app.use('/api/', limiter);
 
 // create server
 const server = app.listen(process.env.PORT, () => {
-  logger.info(`Server is running on http://localhost:${process.env.PORT}`);
+  console.log(`✅ Server is running on http://localhost:${process.env.PORT}`);
 });
 
 // middlewares
 app.use(express.json());
 app.use(cookieParser());
 
-// Logging middleware (after body parser)
-if (process.env.NODE_ENV !== 'production') {
-  const morgan = require('morgan');
-  app.use(morgan('combined', { stream: logger.stream }));
-}
+// Logging middleware (after body parser) - Tạm comment
+// if (process.env.NODE_ENV !== 'production') {
+//   const morgan = require('morgan');
+//   app.use(morgan('combined', { stream: logger.stream }));
+// }
 
 // Enable CORS for all routes
 app.use(

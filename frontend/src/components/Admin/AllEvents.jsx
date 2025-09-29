@@ -12,7 +12,11 @@ const AllEvents = () => {
     axios
       .get(`${server}/event/admin-all-events`, { withCredentials: true })
       .then((res) => {
-        setEvents(res.data.events);
+        setEvents(res.data?.events || []);
+      })
+      .catch((error) => {
+        setEvents([]);
+        console.error(error?.response?.data?.message || error.message);
       });
   }, []);
 

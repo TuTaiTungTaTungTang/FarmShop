@@ -1,12 +1,15 @@
 import React, { useEffect } from "react";
 import { backend_url } from "../../server";
+
 import styles from "../../styles/styles";
 import CountDown from "./CountDown";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addTocart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
+import getProductImage from "../../utils/getProductImage";
 
+// Hàm xử lý link ảnh: nếu là link online thì dùng trực tiếp, nếu là file nội bộ thì nối backend_url
 const EventCard = ({ active, data }) => {
   const { cart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
@@ -36,8 +39,13 @@ const EventCard = ({ active, data }) => {
         active ? "unset" : "mb-12"
       } lg:flex p-2`}
     >
-      <div className="w-full lg:w-[50%] m-auto">
-        <img src={`${backend_url}${data.images[0]}`} alt="" />
+  <div className="w-full lg:w-[50%] m-auto lg:mr-8">
+        <img
+          src={getProductImage(data.images && data.images[0])}
+          alt="event"
+          className="w-full h-64 object-cover rounded-md mb-8"
+          onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/300x200?text=No+Image"; }}
+        />
       </div>
 
       <div className="w-full lg:[w-50%] flex flex-col justify-center">

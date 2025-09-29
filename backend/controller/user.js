@@ -283,19 +283,30 @@ router.put(
     try {
       const existsUser = await User.findById(req.user.id);
 
-      const existAvatarPath = `uploads/${existsUser.avatar}`;
+      // Kiểm tra có file avatar cũ không và xóa nếu tồn tại
+      if (existsUser.avatar) {
+        const existAvatarPath = path.join("uploads", existsUser.avatar);
+        if (fs.existsSync(existAvatarPath)) {
+          try {
+            fs.unlinkSync(existAvatarPath);
+          } catch (err) {
+            // Ghi log nhưng không throw error
+            console.error("Không thể xóa avatar cũ:", err.message);
+          }
+        }
+      }
 
-      fs.unlinkSync(existAvatarPath); // Delete Priviuse Image
-
+      // Kiểm tra file upload mới
+      if (!req.file) {
+        return next(new ErrorHandler("Không nhận được file ảnh mới", 400));
+      }
       const fileUrl = path.join(req.file.filename); // new image
 
-      /* The code `const user = await User.findByIdAndUpdate(req.user.id, { avatar: fileUrl });` is
-        updating the avatar field of the user with the specified `req.user.id`. It uses the
-        `User.findByIdAndUpdate()` method to find the user by their id and update the avatar field
-        with the new `fileUrl` value. The updated user object is then stored in the `user` variable. */
-      const user = await User.findByIdAndUpdate(req.user.id, {
-        avatar: fileUrl,
-      });
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        { avatar: fileUrl },
+        { new: true }
+      );
 
       res.status(200).json({
         success: true,

@@ -17,6 +17,7 @@ import { backend_url } from "../../server";
 import Cart from "../cart/Cart";
 import Wishlist from "../Wishlist/Wishlist";
 import { RxCross1 } from "react-icons/rx";
+import getProductImage from "../../utils/getProductImage";  
 
 const Header = ({ activeHeading }) => {
   const { isSeller } = useSelector((state) => state.seller);
@@ -32,6 +33,7 @@ const Header = ({ activeHeading }) => {
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false); // mobile menu
 
+  
   // Handle search change
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -84,22 +86,19 @@ const Header = ({ activeHeading }) => {
               searchData && searchData.length !== 0 ? (
                 <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
                   {searchData &&
-                    searchData.map((i, index) => {
-                      const d = i.name;
-
-                      return (
-                        <Link to={`/product/${i._id}`}>
-                          <div className="w-full flex items-start-py-3">
-                            <img
-                              src={`${backend_url}${i.images[0]}`}
-                              alt="img"
-                              className="w-[40px] h-[40px] mr-[10px]"
-                            />
-                            <h1>{i.name}</h1>
-                          </div>
-                        </Link>
-                      );
-                    })}
+                    searchData.map((i, index) => (
+                      <Link to={`/product/${i._id}`} key={i._id}>
+                        <div className="w-full flex items-start py-3">
+                          <img
+                            src={getProductImage(i.images && i.images[0])}
+                            alt="img"
+                            className="w-[40px] h-[40px] mr-[10px] object-cover rounded"
+                            onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/100x100?text=No+Image"; }}
+                          />
+                          <h1>{i.name}</h1>
+                        </div>
+                      </Link>
+                    ))}
                 </div>
               ) : null
             }
@@ -190,9 +189,10 @@ const Header = ({ activeHeading }) => {
                 {isAuthenticated ? (
                   <Link to="/profile">
                     <img
-                      src={`${backend_url}${user.avatar}`}
-                      className="w-[35px] h-[35px] rounded-full"
+                      src={getProductImage(user && user.avatar)}
+                      className="w-[35px] h-[35px] rounded-full object-cover"
                       alt=""
+                      onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/100x100?text=No+Avatar"; }}
                     />
                   </Link>
                 ) : (
@@ -247,7 +247,7 @@ const Header = ({ activeHeading }) => {
               onClick={() => setOpenCart(true)}
             >
               <AiOutlineShoppingCart size={30} />
-              <span class="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px]  leading-tight text-center">
+              <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px]  leading-tight text-center">
                 {cart && cart.length}
               </span>
             </div>
@@ -271,7 +271,7 @@ const Header = ({ activeHeading }) => {
                   onClick={() => setOpenWishlist(true) || setOpen(false)}
                 >
                   <AiOutlineHeart size={30} className="mt-5 ml-3" />
-                  <span class="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px]  leading-tight text-center">
+                  <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px]  leading-tight text-center">
                     {wishlist && wishlist.length}
                   </span>
                 </div>
@@ -296,23 +296,19 @@ const Header = ({ activeHeading }) => {
 
               {searchData && (
                 <div className="absolute bg-[#fff] z-10 shadow w-full left-0 p-3">
-                  {searchData.map((i) => {
-                    const d = i.name;
-
-                    const Product_name = d.replace(/\s+/g, "-");
-                    return (
-                      <Link to={`/product/${Product_name}`}>
-                        <div className="flex items-center">
-                          <img
-                            src={i.image_Url[0].url}
-                            alt=""
-                            className="w-[50px] mr-2"
-                          />
-                          <h5>{i.name}</h5>
-                        </div>
-                      </Link>
-                    );
-                  })}
+                  {searchData.map((i) => (
+                    <Link to={`/product/${i._id}`} key={i._id}>
+                      <div className="flex items-center py-2">
+                        <img
+                          src={getProductImage(i.images && i.images[0])}
+                          alt=""
+                          className="w-[50px] h-[50px] mr-2 object-cover rounded"
+                          onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/100x100?text=No+Image"; }}
+                        />
+                        <h5>{i.name}</h5>
+                      </div>
+                    </Link>
+                  ))}
                 </div>
               )}
             </div>
@@ -332,15 +328,14 @@ const Header = ({ activeHeading }) => {
             {/* Mob Login */}
             <div className="flex w-full justify-center">
               {isAuthenticated ? (
-                <div>
-                  <Link to="/profile">
-                    <img
-                      src={`${backend_url}${user.avatar}`}
-                      alt="Profile img"
-                      className="w-[60px] h-[60px] rounded-full border-[3px] border-[#0eae88]"
-                    />
-                  </Link>
-                </div>
+                <Link to="/profile">
+                  <img
+                    src={getProductImage(user && user.avatar)}
+                    alt="Profile img"
+                    className="w-[60px] h-[60px] rounded-full border-[3px] border-[#0eae88] object-cover"
+                    onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/100x100?text=No+Avatar"; }}
+                  />
+                </Link>
               ) : (
                 <>
                   <Link

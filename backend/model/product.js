@@ -68,6 +68,21 @@ const productSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  // QR Code traceability fields (giống FaceFarm)
+  qrCode: {
+    type: String, // Đường dẫn đến file QR code
+    default: null
+  },
+  qrCodeUrl: {
+    type: String, // URL để truy xuất thông tin (scan QR sẽ redirect đến đây)
+    default: null
+  },
+  traceabilityId: {
+    type: String, // ID truy xuất nguồn gốc unique (base64 encoded)
+    unique: true,
+    sparse: true, // Cho phép null values, chỉ unique khi có giá trị
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now(),

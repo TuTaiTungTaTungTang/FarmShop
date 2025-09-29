@@ -8,6 +8,7 @@ const Shop = require("../model/shop");
 const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
 const fs = require("fs");
+const { generateProductQR, deleteQRFile } = require("../utils/qrGenerator");
 
 // create product
 router.post(
@@ -29,10 +30,41 @@ router.post(
 
         const product = await Product.create(productData);
 
-        res.status(201).json({
-          success: true,
-          product,
-        });
+        // 🚀 Tự động tạo QR code cho sản phẩm mới (như FaceFarm)
+        console.log(`🔄 Generating QR code for product: ${product.name}`);
+        const qrResult = await generateProductQR(product._id, productData);
+        
+        if (qrResult.success) {
+          // Cập nhật sản phẩm với thông tin QR
+          await Product.findByIdAndUpdate(product._id, {
+            qrCode: qrResult.qrCodePath,
+            qrCodeUrl: qrResult.qrCodeUrl,
+            traceabilityId: qrResult.traceabilityId
+          });
+
+          console.log(`✅ QR code generated successfully for: ${product.name}`);
+          
+          // Lấy sản phẩm đã cập nhật để trả về
+          const updatedProduct = await Product.findById(product._id);
+          
+          res.status(201).json({
+            success: true,
+            product: updatedProduct,
+            qrGenerated: true,
+            message: "Sản phẩm và QR code đã được tạo thành công!"
+          });
+        } else {
+          console.log(`⚠️ QR generation failed for: ${product.name} - ${qrResult.message}`);
+          
+          // Sản phẩm vẫn được tạo thành công dù QR thất bại
+          res.status(201).json({
+            success: true,
+            product,
+            qrGenerated: false,
+            qrError: qrResult.message,
+            message: "Sản phẩm đã được tạo nhưng QR code chưa thể tạo"
+          });
+        }
       }
     } catch (error) {
       return next(new ErrorHandler(error, 400));
@@ -182,6 +214,114 @@ router.get(
         success: true,
         products,
       });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// 🔍 Get product traceability info by traceability ID (QR scan endpoint - giống FaceFarm)
+router.get(
+  "/traceability/:traceId", 
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { traceId } = req.params;
+      
+      const product = await Product.findOne({ traceabilityId: traceId }).populate("shop");
+      
+      if (!product) {
+        return next(new ErrorHandler("Không tìm thấy sản phẩm với mã traceability này!", 404));
+      }
+
+      // Trả về thông tin traceability chi tiết (như FaceFarm)
+      const traceabilityInfo = {
+        product: {
+          _id: product._id,
+          name: product.name,
+          description: product.description,
+          category: product.category,
+          tags: product.tags,
+          originalPrice: product.originalPrice,
+          discountPrice: product.discountPrice,
+          stock: product.stock,
+          images: product.images,
+          ratings: product.ratings,
+          reviews: product.reviews,
+          sold_out: product.sold_out,
+          createdAt: product.createdAt,
+          qrCode: product.qrCode,
+          qrCodeUrl: product.qrCodeUrl
+        },
+        shop: {
+          _id: product.shop._id,
+          name: product.shop.name,
+          email: product.shop.email,
+          phoneNumber: product.shop.phoneNumber,
+          address: product.shop.address,
+          description: product.shop.description,
+          avatar: product.shop.avatar,
+          createdAt: product.shop.createdAt
+        },
+        traceability: {
+          traceabilityId: product.traceabilityId,
+          scanTime: new Date(),
+          productAge: Math.floor((new Date() - new Date(product.createdAt)) / (1000 * 60 * 60 * 24)), // Số ngày từ khi tạo
+          qrCodePath: product.qrCode
+        }
+      };
+
+      res.status(200).json({
+        success: true,
+        data: traceabilityInfo,
+        message: "Thông tin truy xuất nguồn gốc sản phẩm"
+      });
+
+    } catch (error) {
+      console.error("Traceability lookup error:", error);
+      return next(new ErrorHandler("Lỗi khi truy xuất thông tin sản phẩm!", 500));
+    }
+  })
+);
+
+// 🔄 Regenerate QR code for existing product (cho seller)
+router.put(
+  "/regenerate-qr/:id",
+  isAuthenticated,
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const product = await Product.findById(req.params.id).populate("shop");
+      
+      if (!product) {
+        return next(new ErrorHandler("Không tìm thấy sản phẩm!", 404));
+      }
+
+      // Xóa QR code cũ nếu có
+      if (product.qrCode) {
+        deleteQRFile(product.qrCode);
+      }
+
+      // Tạo QR code mới
+      const qrResult = await generateProductQR(product._id, product);
+      
+      if (qrResult.success) {
+        // Cập nhật với QR code mới
+        product.qrCode = qrResult.qrCodePath;
+        product.qrCodeUrl = qrResult.qrCodeUrl;
+        product.traceabilityId = qrResult.traceabilityId;
+        await product.save();
+
+        res.status(200).json({
+          success: true,
+          message: "QR code đã được tạo lại thành công!",
+          qrCode: qrResult.qrCodePath,
+          qrCodeUrl: qrResult.qrCodeUrl,
+          traceabilityId: qrResult.traceabilityId
+        });
+      } else {
+        return next(new ErrorHandler("Không thể tạo QR code: " + qrResult.message, 500));
+      }
+
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
