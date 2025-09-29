@@ -54,8 +54,13 @@ app.use(cookieParser());
 // Enable CORS for all routes
 app.use(
   cors({
-    origin: "http://localhost:3000",
+   origin: [
+      "https://farm-shop-eight.vercel.app", // domain frontend Vercel
+      "http://localhost:3000"               // cho dev local
+    ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 
