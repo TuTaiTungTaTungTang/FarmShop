@@ -174,7 +174,7 @@ The MERN Marketplace application will allow users to become sellers, who can man
 
 ## Project description 📝
 
-🌟 Introducing MERN Marketplace: A Revolutionary Multi-Vendor Website 🌟
+🌟 Introducing MERN Marketplace: A Revolutionary farm shop 🌟
 
 🚀 Dear LinkedIn Network, I am thrilled to announce the completion of my latest project, the MERN Marketplace! 🌟 This dynamic platform brings together buyers and sellers, offering a seamless online shopping experience with a plethora of innovative features.
 
@@ -288,7 +288,7 @@ Withdrawal Management: Provide admins with the ability to verify seller withdraw
 
 Image Management: Enable admins to delete images, ensuring data integrity and storage optimization. <Br/>
 
-🚀 With the power of these cutting-edge technologies, the MERN Marketplace delivers a robust and feature-rich multi-vendor website. It ensures a seamless user experience, efficient data management, real-time communication, and secure transactions. Join me in revolutionizing the e-commerce experience by connecting buyers and sellers in a dynamic and user-friendly environment.
+🚀 With the power of these cutting-edge technologies, the MERN Marketplace delivers a robust and feature-rich farm shop. It ensures a seamless user experience, efficient data management, real-time communication, and secure transactions. Join me in revolutionizing the e-commerce experience by connecting buyers and sellers in a dynamic and user-friendly environment.
 
 Feel free to reach out to me for more information or to explore collaboration opportunities.
 
@@ -351,7 +351,7 @@ This project does not have a mongoDB connection setup. Set up the connection bas
 💻 How to run the app locally! 🏃
 
 ### STAP-1
-`git clone https://github.com/pattjoshi/Multi_vondor_E_shop.git`
+`https://github.com/TuTaiTungTaTungTang/FarmShop`
 
 ### STAP-2
 - `cd frontend`
@@ -397,7 +397,7 @@ PORT = 4000
 
 <p align="center"><a href="https://github.com/nastyox/Rando.js#nastyox"><img src="http://randojs.com/images/barsSmallTransparentBackground.gif" alt="Animated footer bars" width="100%"/></a></p>
 <br/>
-<p align="center"><a href="https://github.com/pattjoshi/Multi_vondor_E_shop#"><img src="http://randojs.com/images/backToTopButtonTransparentBackground.png" alt="Back to top" height="29"/></a></p>
+<p align="center"><a href="https://github.com/TuTaiTungTaTungTang/FarmShop#"><img src="http://randojs.com/images/backToTopButtonTransparentBackground.png" alt="Back to top" height="29"/></a></p>
 
 
-@copyright by Om Pattjoshi 2023
+@copyright by Huynh Tu Tai

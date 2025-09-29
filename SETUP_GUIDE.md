@@ -1,4 +1,4 @@
-# Multi-Vendor E-Commerce Setup Guide
+# Farm shop Setup Guide
 
 ## 📋 Prerequisites
 
@@ -11,7 +11,7 @@
 ### 1. Clone the project
 ```bash
 git clone <your-repo-url>
-cd Multi_vondor_E_shop-part-5
+cd farm shop
 ```
 
 ### 2. Backend Setup
@@ -171,7 +171,7 @@ npm run build
 ## 📱 Features Available
 
 - ✅ User registration/login
-- ✅ Multi-vendor shop management
+- ✅farm shop management
 - ✅ Product catalog with categories
 - ✅ Shopping cart & checkout
 - ✅ Order management
