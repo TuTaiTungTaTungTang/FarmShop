@@ -5,7 +5,7 @@ import Footer from '../components/Layout/Footer';
 import axios from 'axios';
 import { server, backend_url } from '../server';
 import styles from '../styles/styles';
-import getProductImage from "../../utils/getProductImage";
+import getProductImage from "../utils/getProductImage";
 
 const ProductTraceabilityPage = () => {
   const [searchParams] = useSearchParams();
