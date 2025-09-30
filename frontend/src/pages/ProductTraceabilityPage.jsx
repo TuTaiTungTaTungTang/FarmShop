@@ -5,6 +5,7 @@ import Footer from '../components/Layout/Footer';
 import axios from 'axios';
 import { server, backend_url } from '../server';
 import styles from '../styles/styles';
+import getProductImage from "../../utils/getProductImage";
 
 const ProductTraceabilityPage = () => {
   const [searchParams] = useSearchParams();
@@ -126,8 +127,7 @@ const ProductTraceabilityPage = () => {
                 <h2 className="text-2xl font-bold mb-4 text-green-700">📦 Thông Tin Sản Phẩm</h2>
                 
                 <div className="mb-4">
-                  <img 
-                    src={`${backend_url}${product.images[0]}`}
+                  <img src={getProductImage(product.images[0])}
                     alt={product.name}
                     className="w-full h-64 object-cover rounded-lg shadow-md"
                   />
