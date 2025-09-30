@@ -9,7 +9,7 @@
 # yarn-debug.log*
 # yarn-error.log*
 backend/config/.env
-backend/uploads/*
+!backend/uploads/*
 !backend/uploads/qr-codes/
 !backend/uploads/qr-codes/**
 frontend/node_modules
