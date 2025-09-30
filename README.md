@@ -37,148 +37,148 @@ The MERN Marketplace application will allow users to become sellers, who can man
 - **Sand maill to User,seller,Admin:** [nodemailer](https://www.npmjs.com/package/nodemailer)   <br/>
 - **Store Img in Local Dev:**  [multer](https://www.npmjs.com/package/multer)
 
-## 🚀 Features
+## Features
 
-- User Authentication Pages 🚪
-  - User Signup 📝
+- User Authentication Pages 
+  - User Signup 
     - email verification
     - upload a Profile image 
-  - User Login 🔐
-- Home Page 🏠
-  - View all product uploads by seller 📃
-  - filter with the category 📊
-  - Best-selling product (Sort by Sold_out data) 💎
-  - All Product 📦
-  - All Event's 🎊
-  - FAQ 🙋
-- Filters for Sorting Posts 🗂️
+  - User Login 
+- Home Page 
+  - View all product uploads by seller 
+  - filter with the category 
+  - Best-selling product (Sort by Sold_out data) 
+  - All Product 
+  - All Event's 
+  - FAQ 
+- Filters for Sorting Posts 
   - Sort posts by Clothes, Shows, gifts, etc...
-- User Search Bar 🔍
-  - Search for product 🔎
-  - Click on a user to go to the Product details page 👤
-- wish list ❤️
-  - store in cart 👀
-- Add to cart 🛒
-  - Check out for payment 💳
+- User Search Bar 
+  - Search for product 
+  - Click on a user to go to the Product details page 
+- wish list 
+  - store in cart 
+- Add to cart 
+  - Check out for payment 
     - we have 3 payment systems **Pay-pal**,**Strip**,**Cash of Delivery (COD)**
-- Apply Coupon Code for Discount 👉💥
-- Product Explore Page 🔍
-  - View Product from another seller 🌍
-  - View reviews from other users ⭐
-  - The eye button shows Product Details 👁
-  - Original Price and discount price 💵
-  - HowMeney Buy this product  🤝
-  - Inc and Dec product  📉 +
-  - Show Description of product 📃
-  - View Seller Profile 👥
-  - Chating with Seller 💬
-  - Show Seller Information 📋
-  - Show Related Products 🔗
-  - Add to wish list ❤️
-  - Add to Cart  🛒
-- User Profile Page 👤
-  - Edit your profile details - profile photo, name, email, phone number ✏️
-  - change Password 🔐
-  - View All Order 👨🏾‍💻.
-  - After Delivery of the product user can Refund the product. 🔙
-  - User inbox Chat with the seller. ✉️
-  - Use can Track Orders. 🛤️
-  - Store 3 Address Details. Like Default, Home, office. 📫
-  - **Only Admin show Admin Dashboard** 👑
-  - Logout 🔚
-  - Create a Review After Delivery Product 🚛
+- Apply Coupon Code for Discount 
+- Product Explore Page 
+  - View Product from another seller 
+  - View reviews from other users 
+  - The eye button shows Product Details
+  - Original Price and discount price 
+  - HowMeney Buy this product  
+  - Inc and Dec product  
+  - Show Description of product 
+  - View Seller Profile 
+  - Chating with Seller 
+  - Show Seller Information 
+  - Show Related Products 
+  - Add to wish list 
+  - Add to Cart  
+- User Profile Page 
+  - Edit your profile details - profile photo, name, email, phone number 
+  - change Password 
+  - View All Order 
+  - After Delivery of the product user can Refund the product. 
+  - User inbox Chat with the seller. 
+  - Use can Track Orders. 
+  - Store 3 Address Details. Like Default, Home, office. 
+  - **Only Admin show Admin Dashboard** 
+  - Logout 
+  - Create a Review After Delivery Product 
   - After the Buy product is Sold out is increased. and Stock decrease in DB.
 
-- Message ✉️
-  - Sand Image 🖼️
-  - Show active or not 🟢
-  - Time of sand Message ⏰
-- Popular Events 💥
+- Message 
+  - Sand Image 
+  - Show active or not 
+  - Time of sand Message 
+- Popular Events 
   - Show Recent Events
-- Responsive 📱
+- Responsive 
   - All screens are responsive
-- Alerts 🚨
+- Alerts 
   - Alerts in the app to notify users about success/failure operations
-- Seller Authentication Pages 🚪
-  - Seller Signup 📝
-    - shop name, Phone Number, Email address, Address,Zip Code, Password ✍
-    - upload a Profile image 📷
-    - email verification ✅
-  -  Seller Login 🔐
-- Seller Dashboard 👨🏻‍🔧
-  - Overview of a Product and Latest Orders 🖇️
-  - Account Balance (with 10% service charge) 💰
-- All Orders ⚖
-   - Seller Update Product Delivery status 📆
-  - Create Products  ✔️
+- Seller Authentication Pages 
+  - Seller Signup 
+    - shop name, Phone Number, Email address, Address,Zip Code, Password 
+    - upload a Profile image 
+    - email verification 
+  -  Seller Login 
+- Seller Dashboard 
+  - Overview of a Product and Latest Orders 
+  - Account Balance (with 10% service charge) 
+- All Orders 
+   - Seller Update Product Delivery status 
+  - Create Products  
      - name*
      - Description *
      - Category *  like:- Computer and Laptops, Cosmetics and body care, Accessories, clothes,Shoes, Gifts, Pet Care, Mobile and Tablets, Music and Gaming, Other 🧩
-  - All product 💻
-     - Seller can delete Product ❌
-    - View all Products 📦
- - Create an Event  💥🎉
-    - name* 📇
+  - All product
+     - Seller can delete Product 
+    - View all Products 
+ - Create an Event  
+    - name* 
    - Description *
    - Category *  like:- Computer and Laptops, Cosmetics and body care,Accessories, Clothes, Shoes,Gifts, Pet Care, Mobile and Tablets, Music and Gaming, Other
    - Tags
    - Original Price
    - Price (With Discount) *
    - Product Stock *
-   - Event Start Date * ✅
-   - Event End Date * (Default 3 days) ⛔
-   - Upload multiple Images * 📷
-- All Event 🎉
-  - Show Event 💥
-  - Delete Event  ⛔
-- Withdraw Money 📥
-  - Add Bank Details 🏛️
-  - Not withdraw the highest amount of Balance 💱
-  - Sand mail to sell with amount 📩
-  - Delete Bank Details 🪧
-- Shop Inbox 📞
-    - All Messages 📬
-    - Sand Image to user 🖼️
-    - Show Activ function 🟢
-- Discount Codes 🎟️
-  - Create coupon code 🖱
-  - Delete coupon code 🛑
-  - apply all Products of the shop  🤩
-  - Can apply the specific product 1️⃣☝️
-- Refunds 🔙
-  - Seller can update the Status of the Product 🔄
-- Settings ⚛
+   - Event Start Date * 
+   - Event End Date * (Default 3 days) 
+   - Upload multiple Images * 
+- All Event 
+  - Show Event
+  - Delete Event  
+- Withdraw Money 
+  - Add Bank Details 
+  - Not withdraw the highest amount of Balance 
+  - Sand mail to sell with amount 
+  - Delete Bank Details 
+- Shop Inbox 
+    - All Messages 
+    - Sand Image to user 
+    - Show Activ function 
+- Discount Codes 
+  - Create coupon code 
+  - Delete coupon code 
+  - apply all Products of the shop  
+  - Can apply the specific product 
+- Refunds 
+  - Seller can update the Status of the Product 
+- Settings 
   - update Images, Shop Address, Shop Phone Number, Shop Zip Code ⛓
-  - Add Shop description 📖
-- Shop Desboard 🎰
-   - Shop Products 🌃
-   - Running Events 🎪
-   - Shop Reviews ⭐
-   - Log out  ↪️
-- Admin Authentication Pages (normal user in DB roll in Admin) 🚪
-   - Admin Signup 📝
-   - Admin Login 🔐
-  - Overview 👔
-        - Total Earning 🤑
-        - All Sellers 👨‍🔧
-        - All Orders 🛍️
-        - Latest Orders 🔢
-  - Show All Orders of Seller's 🛍️
-  - Show All sellers and Delete ⛔
-  - Show All users and Delete 👨‍👩‍👦‍👦 ⛔
-  - All Products in DB. 👨🏻‍💻
-  - All Events of Seller 📢
-  - verify  Seller Withdraw request and Sand mail to update's 📧
+  - Add Shop description 
+- Shop Desboard 
+   - Shop Products 
+   - Running Events 
+   - Shop Reviews 
+   - Log out  
+- Admin Authentication Pages (normal user in DB roll in Admin) 
+   - Admin Signup 
+   - Admin Login 
+  - Overview 
+        - Total Earning 
+        - All Sellers 
+        - All Orders 
+        - Latest Orders 
+  - Show All Orders of Seller's
+  - Show All sellers and Delete 
+  - Show All users and Delete 
+  - All Products in DB
+  - All Events of Seller 
+  - verify  Seller Withdraw request and Sand mail to update's 
   - if Delete images it also deletes from the local devise
 
 
-## Project description 📝
+## Project description 
 
-🌟 Introducing MERN Marketplace: A Revolutionary farm shop 🌟
+Introducing MERN Marketplace: A Revolutionary farm shop 
 
-🚀 Dear LinkedIn Network, I am thrilled to announce the completion of my latest project, the MERN Marketplace! 🌟 This dynamic platform brings together buyers and sellers, offering a seamless online shopping experience with a plethora of innovative features.
+Dear LinkedIn Network, I am thrilled to announce the completion of my latest project, the MERN Marketplace! This dynamic platform brings together buyers and sellers, offering a seamless online shopping experience with a plethora of innovative features.
 
-💡 Key Technologies:
+Key Technologies:
 Front-End:
 
 React 18:- user interface <Br/>
@@ -209,14 +209,14 @@ Image Upload with Multer: Integrating Multer middleware to handle image uploads,
 
 Email Communication with Nodemailer: Implementing Nodemailer to facilitate email communication, including email verification and notifications. <Br/>
 
-💡 Key Features:
-1️⃣ User Authentication Pages 🚪
+- Key Features:
+1/ User Authentication Pages 
 
 User Signup: Enable users to create accounts, complete with email verification and the option to upload a profile image. <Br/>
 
 User Login: Secure login functionality to protect user accounts.
 
-2️⃣ Home Page 🏠
+2/ Home Page 
 
 View Seller Products: Showcase all product uploads by sellers, allowing users to browse and explore various offerings. <Br/>
 
@@ -228,15 +228,15 @@ Events Section: Display all upcoming events, fostering engagement and excitement
 
 Frequently Asked Questions (FAQ): Provide a dedicated section to address common user queries. <Br/>
 
-3️⃣ Filters for Sorting Posts 🗂️
+3/ Filters for Sorting Posts 
 
 Sort by Category: Enable users to filter posts by different categories, such as clothes, shoes, gifts, and more.
 
-4️⃣ User Search Bar 🔍
+4/ User Search Bar 
 
 Search Functionality: Implement a robust search feature, allowing users to search for specific products or click on user profiles to view their offerings.
 
-5️⃣ Wishlist and Cart Management ❤️🛒
+5/ Wishlist and Cart Management 
 
 Wishlist: Enable users to add products to their wishlist, saving them for future reference. <Br/>
 
@@ -246,7 +246,7 @@ Checkout and Payment: Implement a secure payment system, supporting PayPal, Stri
 
 Apply Coupon Code: Allow users to apply coupon codes for discounts during the checkout process. <Br/>
 
-6️⃣ Product Explore Page 🔍
+6/ Product Explore Page 
 
 Detailed Product Information: Display product details, including original and discounted prices, descriptions, seller information, and related products. <Br/>
 
@@ -254,7 +254,7 @@ Seller Interaction: Facilitate direct communication between users and sellers th
 
 Reviews and Ratings: Showcase reviews and ratings from other users to help inform purchasing decisions. <Br/>
 
-7️⃣ User Profile Page 👤
+7/ User Profile Page 
 
 Profile Editing: Allow users to edit their profile details, including profile photos, names, email addresses, and phone numbers. <Br/>
 
@@ -264,7 +264,7 @@ Inbox and Chat: Enable users to communicate with sellers, fostering a seamless e
 
 Address Management: Allow users to store multiple addresses for efficient checkout, including default, home, and office options. <Br/>
 
-8️⃣ Seller Dashboard 👨🏻‍🔧
+8/ Seller Dashboard 
 
 Product and Order Management: Provide sellers with an overview of their products and the latest orders, along with the ability to update delivery statuses. <Br/>
 
@@ -274,7 +274,7 @@ Shop Settings: This enables sellers to update their shop information, including 
 
 Inbox and Communication: Facilitate communication between sellers and users, ensuring a smooth exchange of information. <Br/>
 
-9️⃣ Admin Dashboard 👑
+9/ Admin Dashboard 
 
 Admin Authentication: Implement secure login functionality for admins. <Br/>
 
@@ -288,7 +288,7 @@ Withdrawal Management: Provide admins with the ability to verify seller withdraw
 
 Image Management: Enable admins to delete images, ensuring data integrity and storage optimization. <Br/>
 
-🚀 With the power of these cutting-edge technologies, the MERN Marketplace delivers a robust and feature-rich farm shop. It ensures a seamless user experience, efficient data management, real-time communication, and secure transactions. Join me in revolutionizing the e-commerce experience by connecting buyers and sellers in a dynamic and user-friendly environment.
+With the power of these cutting-edge technologies, the MERN Marketplace delivers a robust and feature-rich farm shop. It ensures a seamless user experience, efficient data management, real-time communication, and secure transactions. Join me in revolutionizing the e-commerce experience by connecting buyers and sellers in a dynamic and user-friendly environment.
 
 Feel free to reach out to me for more information or to explore collaboration opportunities.
 
@@ -348,7 +348,7 @@ This project does not have a mongoDB connection setup. Set up the connection bas
 
 ---
 
-💻 How to run the app locally! 🏃
+How to run the app locally! 
 
 ### STAP-1
 `https://github.com/TuTaiTungTaTungTang/FarmShop`
@@ -393,7 +393,7 @@ PORT = 4000
 
 ## YouTub :- [I Learn from this ](https://www.youtube.com/watch?v=XxnUSZOgMLY&list=PLyah27R0n8V4Kcao94Qlt-xJ0bHxZfBjk "click to open")
 
-🙏 If you find this repo helpful then don't forget to give a star ❇️ to this repository. :)
+If you find this repo helpful then don't forget to give a star to this repository. :)
 
 <p align="center"><a href="https://github.com/nastyox/Rando.js#nastyox"><img src="http://randojs.com/images/barsSmallTransparentBackground.gif" alt="Animated footer bars" width="100%"/></a></p>
 <br/>
