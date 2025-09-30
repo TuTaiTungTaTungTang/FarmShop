@@ -178,7 +178,9 @@ router.get(
     try {
       res.cookie("seller_token", null, {
         expires: new Date(Date.now()),
+        sameSite: "none", // Thêm dòng này
         httpOnly: true,
+         secure: true ,
       });
       res.status(201).json({
         success: true,

@@ -10,7 +10,11 @@ require("dotenv").config({
   path: "./.env",
 });
 
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL, // domain Vercel
+  credentials: true
+}));
 app.use(express.json());
 
 app.get("/", (req, res) => {
