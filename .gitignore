@@ -1,6 +1,17 @@
-# dependencies
+# # dependencies
+# backend/config/.env
+# backend/uploads
+# frontend/node_modules
+# backend/node_modules
+# socket/node_modules
+
+# npm-debug.log*
+# yarn-debug.log*
+# yarn-error.log*
 backend/config/.env
-backend/uploads
+backend/uploads/*
+!backend/uploads/qr-codes/
+!backend/uploads/qr-codes/**
 frontend/node_modules
 backend/node_modules
 socket/node_modules
