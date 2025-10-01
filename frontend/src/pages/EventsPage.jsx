@@ -5,7 +5,8 @@ import Header from "../components/Layout/Header";
 import Loader from "../components/Layout/Loader";
 
 const EventsPage = () => {
-  const { allEvents, isLoading } = useSelector((state) => state.events);
+  // Sử dụng đúng key reducer: state.event
+  const { allEvents = [], isLoading } = useSelector((state) => state.event || {});
   return (
     <>
       {isLoading ? (

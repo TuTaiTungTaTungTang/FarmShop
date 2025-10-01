@@ -7,7 +7,12 @@ import ProductCard from "../components/Route/ProductCard/ProductCard";
 
 const BestSellingPage = () => {
   const [data, setData] = useState([]);
-  const { allProducts, isLoading } = useSelector((state) => state.products);
+  // Sử dụng đúng key reducer: state.product
+  // Nếu cần lấy event hoặc products, dùng đúng key và destructure an toàn
+  // Ví dụ cho event:
+  // const { allEvents = [], isLoading: eventLoading } = useSelector((state) => state.event || {});
+  // Nếu bạn có reducer tên products hoặc events, hãy sửa lại key trong store.js cho đồng bộ
+  const { allProducts = [], isLoading } = useSelector((state) => state.product || {});
 
   useEffect(() => {
     if (Array.isArray(allProducts)) {

@@ -10,7 +10,8 @@ import styles from "../styles/styles";
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
   const categoryData = searchParams.get("category");
-  const { allProducts, isLoading } = useSelector((state) => state.products);
+  // Sử dụng đúng key reducer: state.product
+  const { allProducts = [], isLoading } = useSelector((state) => state.product || {});
   const [data, setData] = useState([]);
 
   useEffect(() => {
