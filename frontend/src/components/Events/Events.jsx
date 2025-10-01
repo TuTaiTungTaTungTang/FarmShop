@@ -14,12 +14,14 @@ const Events = () => {
           <div className={`${styles.heading}`}>
             <h1>Popular Events</h1>
           </div>
-
           <div className="w-full grid">
-            {allEvents.length !== 0 && (
-              <EventCard data={allEvents && allEvents[0]} />
+            {allEvents.length > 0 ? (
+              allEvents.map((event, idx) => (
+                <EventCard key={event._id || idx} data={event} />
+              ))
+            ) : (
+              <h4 className="text-blue-600 font-semibold">No Events have!</h4>
             )}
-            <h4>{allEvents?.length === 0 && "No Events have!"}</h4>
           </div>
         </div>
       )}
