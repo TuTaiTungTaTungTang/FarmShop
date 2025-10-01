@@ -93,7 +93,7 @@ const Header = ({ activeHeading }) => {
                             src={getProductImage(i.images && i.images[0])}
                             alt="img"
                             className="w-[40px] h-[40px] mr-[10px] object-cover rounded"
-                            onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/100x100?text=No+Image"; }}
+                            onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/100x100?text=No+Image"; }}
                           />
                           <h1>{i.name}</h1>
                         </div>
@@ -192,7 +192,7 @@ const Header = ({ activeHeading }) => {
                       src={getProductImage(user && user.avatar)}
                       className="w-[35px] h-[35px] rounded-full object-cover"
                       alt=""
-                      onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/100x100?text=No+Avatar"; }}
+                      onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/100x100?text=No+Avatar"; }}
                     />
                   </Link>
                 ) : (
@@ -303,7 +303,7 @@ const Header = ({ activeHeading }) => {
                           src={getProductImage(i.images && i.images[0])}
                           alt=""
                           className="w-[50px] h-[50px] mr-2 object-cover rounded"
-                          onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/100x100?text=No+Image"; }}
+                          onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/100x100?text=No+Image"; }}
                         />
                         <h5>{i.name}</h5>
                       </div>
@@ -333,7 +333,7 @@ const Header = ({ activeHeading }) => {
                     src={getProductImage(user && user.avatar)}
                     alt="Profile img"
                     className="w-[60px] h-[60px] rounded-full border-[3px] border-[#0eae88] object-cover"
-                    onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/100x100?text=No+Avatar"; }}
+                    onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/100x100?text=No+Avatar"; }}
                   />
                 </Link>
               ) : (

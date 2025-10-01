@@ -64,7 +64,7 @@ const ShopInfo = ({ isOwner }) => {
                                         src={getProductImage(data.avatar)}
                                         alt=""
                                         className="w-[150px] h-[150px] object-cover rounded-full"
-                                        onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/150x150?text=No+Logo"; }}
+                                        onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/150x150?text=No+Logo"; }}
                                     />
                                 </div>
                                 <h3 className="text-center py-2 text-[20px]">{data.name}</h3>

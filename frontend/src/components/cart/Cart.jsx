@@ -143,7 +143,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
             src={getProductImage(data?.images && data?.images[0])}
             className="w-[130px] h-min ml-2 mr-2 rounded-[5px]"
             alt="side card"
-            onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/300x200?text=No+Image"; }}
+            onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/300x200?text=No+Image"; }}
           />
 
           <div className="pl-[15px]">

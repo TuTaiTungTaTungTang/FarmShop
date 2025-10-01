@@ -76,7 +76,7 @@ const ProductCard = ({ data, isEvent }) => {
                         src={getProductImage(data.images && data.images[0])}
                         alt="prd"
                         className='w-full h-[170px] object-contain'
-                        onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/300x200?text=No+Image"; }}
+                        onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/300x200?text=No+Image"; }}
                     />
                 </Link>
                 <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>

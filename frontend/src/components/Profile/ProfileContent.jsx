@@ -86,7 +86,7 @@ const ProfileContent = ({ active }) => {
   src={getProductImage(user && user.avatar) + `?t=${Date.now()}`}
   alt="Profile img"
   className="w-[120px] h-[120px] rounded-full object-cover border-2 border-green-400"
-  onError={e => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/120x120?text=No+Avatar'; }}
+    onError={e => { e.target.onerror = null; e.target.src = 'https://placehold.co/120x120?text=No+Avatar'; }}
 />
                                 <div className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer absolute bottom-[5px] right-[5px]">
                                     <input type="file"

@@ -91,7 +91,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                                         <img
                                             src={getProductImage(data.images && data.images[0])}
                                             alt="img"
-                                            onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/300x200?text=No+Image"; }}
+                                            onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/300x200?text=No+Image"; }}
                                         />
                                         <div className='flex' >
                                             {data.shop && (
@@ -100,7 +100,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                                                         src={getProductImage(data.shop.avatar)}
                                                         alt=""
                                                         className='w-[50px] h-[50px] rounded-full mr-2'
-                                                        onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/100x100?text=No+Logo"; }}
+                                                        onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/100x100?text=No+Logo"; }}
                                                     />
                                                     <div>
                                                         <h3 className={`${styles.shop_name}`}>

@@ -116,7 +116,7 @@ const ShopProfileData = ({ isOwner }) => {
                                         src={getProductImage(item.user.avatar)}
                                         className="w-[50px] h-[50px] rounded-full"
                                         alt=""
-                                        onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/50x50?text=No+Avatar"; }}
+                                        onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/50x50?text=No+Avatar"; }}
                                     />
                                 )}
                                 <div className="pl-2">
