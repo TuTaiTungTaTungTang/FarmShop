@@ -17,8 +17,10 @@ const AllEvents = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllEventsShop(seller._id));
-  }, [dispatch]);
+    if (seller && seller._id) {
+      dispatch(getAllEventsShop(seller._id));
+    }
+  }, [dispatch, seller && seller._id]);
 
   const handleDelete = (id) => {
     dispatch(deleteEvent(id));
