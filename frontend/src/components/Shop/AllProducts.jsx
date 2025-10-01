@@ -11,8 +11,9 @@ import Loader from "../Layout/Loader";
 const AllProducts = () => {
   const productsState = useSelector((state) => state.products) || {};
   const { products = [], isLoading = false } = productsState;
-  const { seller } = useSelector((state) => state.seller);
-
+  // const { seller } = useSelector((state) => state.seller);
+const sellerState = useSelector((state) => state.seller) || {};
+  const { seller } = sellerState;
   const dispatch = useDispatch();
 
   // useEffect(() => {
