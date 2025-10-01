@@ -657,7 +657,8 @@ import axios from "axios";
 import getProductImage from "../../utils/getProductImage";
 
 const ProductDetails = ({ data }) => {
-  const { products } = useSelector((state) => state.products);
+  const productsState = useSelector((state) => state.products) || {};
+  const { products = [] } = productsState;
   const { user, isAuthenticated } = useSelector((state) => state.user);
   const { wishlist } = useSelector((state) => state.wishlist);
   const { cart } = useSelector((state) => state.cart);

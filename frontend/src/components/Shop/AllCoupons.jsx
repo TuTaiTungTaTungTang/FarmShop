@@ -20,7 +20,8 @@ const AllCoupons = () => {
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [value, setValue] = useState(null);
     const { seller } = useSelector((state) => state.seller);
-    const { products } = useSelector((state) => state.products);
+    const productsState = useSelector((state) => state.products) || {};
+    const { products = [] } = productsState;
 
     const dispatch = useDispatch();
 

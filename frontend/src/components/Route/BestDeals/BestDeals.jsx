@@ -5,8 +5,8 @@ import ProductCard from "../ProductCard/ProductCard";
 
 const BestDeals = () => {
   const [data, setData] = useState([]);
-  const productsState = useSelector((state) => state.product);
-  const allProducts = productsState?.allProducts || [];
+  const productsState = useSelector((state) => state.product) || {};
+  const { allProducts = [] } = productsState;
   useEffect(() => {
     const allProductsData = allProducts ? [...allProducts] : [];
     const sortedData = allProductsData?.sort((a, b) => b.sold_out - a.sold_out);

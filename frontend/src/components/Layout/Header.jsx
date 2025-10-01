@@ -24,8 +24,8 @@ const Header = ({ activeHeading }) => {
   const { cart } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
   const { isAuthenticated, user } = useSelector((state) => state.user);
-  const productsState = useSelector((state) => state.products);
-  const allProducts = productsState?.allProducts || [];
+  const productsState = useSelector((state) => state.products) || {};
+  const { allProducts = [] } = productsState;
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState(null);
   const [active, setActive] = useState(false);

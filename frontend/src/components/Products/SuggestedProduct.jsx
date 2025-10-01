@@ -7,7 +7,8 @@ import getProductImage from "../../utils/getProductImage";
 
 const SuggestedProduct = ({ data }) => {
     const [products, setProducts] = useState([])
-    const { allProducts } = useSelector((state) => state.products);
+    const productsState = useSelector((state) => state.products) || {};
+    const { allProducts = [] } = productsState;
     const [productData, setProductData] = useState();
 
     // Proudect is filter when the cataegory is same as the current product when page is loaded
