@@ -31,10 +31,12 @@ const ShopInfo = ({ isOwner }) => {
 
 
     const logoutHandler = async () => {
-        axios.get(`${server}/shop/logout`, {
-            withCredentials: true,
-        });
-        window.location.reload();
+        try {
+            await axios.get(`${server}/shop/logout`, { withCredentials: true });
+            window.location.href = "/shop-login";
+        } catch (error) {
+            alert("Logout failed!");
+        }
     };
 
 
