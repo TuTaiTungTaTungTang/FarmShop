@@ -2,6 +2,7 @@ import { createReducer } from "@reduxjs/toolkit";
 
 const initialState = {
   isLoading: true,
+  adminEvents: [],
 };
 
 export const eventReducer = createReducer(initialState, {
@@ -54,6 +55,18 @@ export const eventReducer = createReducer(initialState, {
     state.allEvents = action.payload;
   },
   getAlleventsFailed: (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload;
+  },
+  // get all events for admin
+  getAllEventsAdminRequest: (state) => {
+    state.isLoading = true;
+  },
+  getAllEventsAdminSuccess: (state, action) => {
+    state.isLoading = false;
+    state.adminEvents = action.payload || [];
+  },
+  getAllEventsAdminFailed: (state, action) => {
     state.isLoading = false;
     state.error = action.payload;
   },
