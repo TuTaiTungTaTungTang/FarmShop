@@ -75,7 +75,7 @@ const ProductCard = ({ data, isEvent }) => {
                     <img
                         src={getProductImage(data.images && data.images[0])}
                         alt="prd"
-                        className='w-full h-[170px] object-contain mb-4' // thêm mb-4 để tạo khoảng cách
+                        className='w-full h-[170px] object-contain mb-4 pr-8' // thêm pr-8 để tạo khoảng cách với icon bên phải
                         onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/300x200?text=No+Image"; }}
                     />
                 </Link>
@@ -109,7 +109,7 @@ const ProductCard = ({ data, isEvent }) => {
                 </Link>
 
                 {/* side option */}
-                <div>
+                <div className="pr-2">
                     {
                         click ? (
                             <AiFillHeart

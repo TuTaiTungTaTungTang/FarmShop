@@ -14,9 +14,10 @@ const AdminHeader = () => {
       <div>
         <Link to="/">
           <img
-            src="/logo.png"
-            alt=""
-          />
+  src={user?.avatar?.startsWith("http") ? user.avatar : user?.avatar ? `${backend_url}${user.avatar}` : "/no-image.png"}
+   alt=""
+  className="w-[50px] h-[50px] rounded-full object-cover"
+/>
         </Link>
       </div>
       <div className="flex items-center">

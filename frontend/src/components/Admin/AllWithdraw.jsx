@@ -1,31 +1,22 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { server } from "../../server";
 import { DataGrid } from "@mui/x-data-grid";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllWithdrawRequests } from "../../redux/actions/withdraw";
 import { BsPencil } from "react-icons/bs";
 import { RxCross1 } from "react-icons/rx";
 import { toast } from "react-toastify";
 import styles from "../../styles/styles";
 
 const AllWithdraw = () => {
-  const [data, setData] = useState([]);
+  const dispatch = useDispatch();
+  const { withdraws = [] } = useSelector((state) => state.withdraw);
   const [open, setOpen] = useState(false);
   const [withdrawData, setWithdrawData] = useState();
   const [withdrawStatus, setWithdrawStatus] = useState("Processing");
 
   useEffect(() => {
-    axios
-      .get(`${server}/withdraw/get-all-withdraw-request`, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setData(res.data?.withdraws || []);
-      })
-      .catch((error) => {
-        setData([]);
-        console.error(error?.response?.data?.message || error.message);
-      });
-  }, []);
+    dispatch(getAllWithdrawRequests());
+  }, [dispatch]);
 
   const columns = [
     { field: "id", headerName: "Withdraw Id", minWidth: 150, flex: 0.7 },
@@ -82,32 +73,39 @@ const AllWithdraw = () => {
   ];
 
   const handleSubmit = async () => {
-    await axios
-      .put(
-        `${server}/withdraw/update-withdraw-request/${withdrawData.id}`,
+    try {
+      const res = await fetch(`/api/v2/withdraw/update-withdraw-request/${withdrawData.id}`,
         {
-          sellerId: withdrawData.shopId,
-        },
-        { withCredentials: true }
-      )
-      .then((res) => {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ sellerId: withdrawData.shopId }),
+        }
+      );
+      if (res.ok) {
         toast.success("Withdraw request updated successfully!");
-        setData(res.data.withdraws);
+        dispatch(getAllWithdrawRequests()); // reload danh sách
         setOpen(false);
-      });
+      } else {
+        toast.error("Update failed!");
+      }
+    } catch (error) {
+      toast.error("Update failed!");
+    }
   };
 
   const row = [];
-
-  data &&
-    data.forEach((item) => {
+  withdraws &&
+    withdraws.forEach((item) => {
       row.push({
         id: item._id,
-        shopId: item.seller._id,
-        name: item.seller.name,
-        amount: "US$ " + item.amount,
+        name: item.shop?.name,
+        shopId: item.shopId,
+        amount: item.amount,
         status: item.status,
-        createdAt: item.createdAt.slice(0, 10),
+        createdAt: item.createdAt,
       });
     });
   return (

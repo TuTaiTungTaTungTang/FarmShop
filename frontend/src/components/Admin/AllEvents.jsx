@@ -1,24 +1,20 @@
-import { Button } from "@mui/material";
+import React, { useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllEventsAdmin } from "../../redux/actions/event";
+import { Button } from "@mui/material";
 import { AiOutlineEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import { server } from "../../server";
 
 const AllEvents = () => {
-  const [events, setEvents] = useState([]);
+  const dispatch = useDispatch();
+  const { adminEvents = [], adminEventsLoading } = useSelector(
+    (state) => state.event
+  );
+
   useEffect(() => {
-    axios
-      .get(`${server}/event/admin-all-events`, { withCredentials: true })
-      .then((res) => {
-        setEvents(res.data?.events || []);
-      })
-      .catch((error) => {
-        setEvents([]);
-        console.error(error?.response?.data?.message || error.message);
-      });
-  }, []);
+    dispatch(getAllEventsAdmin());
+  }, [dispatch]);
 
   const columns = [
     { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
@@ -71,15 +67,14 @@ const AllEvents = () => {
   ];
 
   const row = [];
-
-  events &&
-    events.forEach((item) => {
+  adminEvents &&
+    adminEvents.forEach((item) => {
       row.push({
         id: item._id,
         name: item.name,
         price: "US$ " + item.discountPrice,
         Stock: item.stock,
-        sold: item.sold_out,
+        sold: item?.sold_out,
       });
     });
 

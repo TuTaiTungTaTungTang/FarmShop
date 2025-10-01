@@ -1,24 +1,20 @@
-import { Button } from "@mui/material";
+import React, { useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProductsAdmin } from "../../redux/actions/product";
+import { Button } from "@mui/material";
 import { AiOutlineEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { server } from "../../server";
 
 const AllProducts = () => {
-  const [data, setData] = useState([]);
+  const dispatch = useDispatch();
+  const { adminProducts = [], adminProductsLoading } = useSelector(
+    (state) => state.product
+  );
 
   useEffect(() => {
-    axios
-      .get(`${server}/product/admin-all-products`, { withCredentials: true })
-      .then((res) => {
-      })
-      .catch((error) => {
-        setData([]);
-        console.error(error?.response?.data?.message || error.message);
-      });
-  }, []);
+    dispatch(getAllProductsAdmin());
+  }, [dispatch]);
 
   const columns = [
     { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
@@ -71,9 +67,8 @@ const AllProducts = () => {
   ];
 
   const row = [];
-
-  data &&
-    data.forEach((item) => {
+  adminProducts &&
+    adminProducts.forEach((item) => {
       row.push({
         id: item._id,
         name: item.name,
@@ -84,17 +79,15 @@ const AllProducts = () => {
     });
 
   return (
-    <>
-      <div className="w-full mx-8 pt-1 mt-10 bg-white">
-        <DataGrid
-          rows={row}
-          columns={columns}
-          pageSize={10}
-          disableSelectionOnClick
-          autoHeight
-        />
-      </div>
-    </>
+    <div className="w-full mx-8 pt-1 mt-10 bg-white">
+      <DataGrid
+        rows={row}
+        columns={columns}
+        pageSize={10}
+        disableSelectionOnClick
+        autoHeight
+      />
+    </div>
   );
 };
 

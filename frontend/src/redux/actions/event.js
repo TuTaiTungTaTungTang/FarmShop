@@ -92,3 +92,20 @@ export const getAllEvents = () => async (dispatch) => {
     });
   }
 };
+
+// get all events for admin
+export const getAllEventsAdmin = () => async (dispatch) => {
+  try {
+    dispatch({ type: "getAllEventsAdminRequest" });
+    const { data } = await axios.get(
+      `${server}/event/admin-all-events`,
+      { withCredentials: true }
+    );
+    dispatch({ type: "getAllEventsAdminSuccess", payload: data.events });
+  } catch (error) {
+    dispatch({
+      type: "getAllEventsAdminFailed",
+      payload: error.response.data.message,
+    });
+  }
+};
