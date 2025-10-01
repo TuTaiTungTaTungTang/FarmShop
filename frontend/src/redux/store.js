@@ -12,8 +12,9 @@ const Store = configureStore({
     // Reducers
     user: userReducer,
     seller: sellerReducer,
-    products: productReducer,
-    events: eventReducer,
+    product: productReducer,
+    event: eventReducer,
+    withdraw: require('./reducers/withdraw').withdrawReducer,
     cart: cartReducer,
     wishlist: wishlistReducer,
     order: orderReducer,
