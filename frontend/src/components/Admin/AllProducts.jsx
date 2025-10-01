@@ -80,13 +80,19 @@ const AllProducts = () => {
 
   return (
     <div className="w-full mx-8 pt-1 mt-10 bg-white">
-      <DataGrid
-        rows={row}
-        columns={columns}
-        pageSize={10}
-        disableSelectionOnClick
-        autoHeight
-      />
+      {adminProductsLoading ? (
+        <div>Loading...</div>
+      ) : adminProducts.length === 0 ? (
+        <div className="text-center text-gray-500 py-4">No products found.</div>
+      ) : (
+        <DataGrid
+          rows={row}
+          columns={columns}
+          pageSize={10}
+          disableSelectionOnClick
+          autoHeight
+        />
+      )}
     </div>
   );
 };
