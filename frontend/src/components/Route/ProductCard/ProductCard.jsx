@@ -75,7 +75,7 @@ const ProductCard = ({ data, isEvent }) => {
                     <img
                         src={getProductImage(data.images && data.images[0])}
                         alt="prd"
-                        className='w-full h-[170px] object-contain'
+                        className='w-full h-[170px] object-contain mb-4' // thêm mb-4 để tạo khoảng cách
                         onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/300x200?text=No+Image"; }}
                     />
                 </Link>
