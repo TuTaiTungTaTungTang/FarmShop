@@ -4,7 +4,8 @@ import styles from "../../../styles/styles";
 import ProductCard from "../ProductCard/ProductCard";
 
 const FeaturedProduct = () => {
-  const { allProducts } = useSelector((state) => state.products);
+  const productsState = useSelector((state) => state.products);
+  const allProducts = productsState?.allProducts || [];
 
   return (
     <div>
