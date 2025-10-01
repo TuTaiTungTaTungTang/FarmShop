@@ -15,9 +15,8 @@ router.post(
       const messageData = req.body;
 
       if (req.file) {
-        const filename = req.file.filename;
-        const fileUrl = path.join(filename);
-        messageData.images = fileUrl;
+        // Lưu link Cloudinary
+        messageData.images = req.file.path;
       }
 
       messageData.conversationId = req.body.conversationId;
