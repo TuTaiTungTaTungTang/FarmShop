@@ -817,46 +817,6 @@ const ProductDetails = ({ data }) => {
                 <h1 className={`${styles.productTitle}`}>{data.name}</h1>
                 <p>{data.description}</p>
 
-                {/* 🌱 QR Code Traceability Section */}
-                {data.qrCode && (
-                  <div className="mt-4 mb-4 border border-green-200 rounded-lg bg-gradient-to-r from-green-50 to-blue-50 p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center mb-2">
-                          <HiQrCode className="text-green-600 text-xl mr-2" />
-                          <h3 className="text-green-700 font-semibold text-lg">
-                            Truy xuất nguồn gốc
-                          </h3>
-                        </div>
-                        <p className="text-gray-600 text-sm mb-2">
-                          Quét mã QR để xem thông tin chi tiết về nguồn gốc và quy trình sản xuất
-                        </p>
-                        <div className="flex items-center space-x-4 text-xs text-gray-500">
-                          <span>Mã: {data.traceabilityId?.slice(-8)}</span>
-                          <span>Shop: {data.shop?.name}</span>
-                        </div>
-                      </div>
-                      {/* QR Code Display */}
-                      <div className="ml-4">
-                        <div className="bg-white p-2 rounded-lg border border-green-300 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                             onClick={() => handleQRClick(data.traceabilityId)}>
-                          <img
-                            src={getProductImage(data.qrCode)}
-                            alt="QR Code truy xuất"
-                            className="w-20 h-20"
-                            onError={(e) => {
-                              e.target.style.display = 'none';
-                            }}
-                          />
-                        </div>
-                        <p className="text-xs text-center mt-1 text-gray-500">
-                          Quét để truy xuất
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
                     {data.discountPrice}$
@@ -1027,6 +987,21 @@ const ProductDetailsInfo = ({
             <div className={`${styles.active_indicator}`} />
           ) : null}
         </div>
+
+        {/* Tab QR Code */}
+        <div className="relative">
+          <h5
+            className={
+              "text-[#000] text-[18px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
+            }
+            onClick={() => setActive(4)}
+          >
+            QR Code
+          </h5>
+          {active === 4 ? (
+            <div className={`${styles.active_indicator}`} />
+          ) : null}
+        </div>
       </div>
 
       {active === 1 ? (
@@ -1036,6 +1011,21 @@ const ProductDetailsInfo = ({
           </p>
         </>
       ) : null}
+      {/* QR Code Tab Content */}
+      {active === 4 && data.qrCode && (
+        <div className="flex flex-col items-center py-8">
+          <HiQrCode className="text-green-600 text-3xl mb-2" />
+          <img
+            src={getProductImage(data.qrCode)}
+            alt="QR Code truy xuất"
+            className="w-32 h-32"
+            onError={e => (e.target.style.display = 'none')}
+          />
+          <p className="text-xs text-center mt-2 text-gray-500">
+            Quét để truy xuất nguồn gốc sản phẩm
+          </p>
+        </div>
+      )}
 
       {/* Product Rev */}
       {active === 2 ? (
