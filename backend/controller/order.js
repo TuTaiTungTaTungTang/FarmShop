@@ -14,9 +14,19 @@ router.post(
     try {
       const { cart, shippingAddress, user, totalPrice, paymentInfo } = req.body;
 
+      // Validate input
+      if (!cart || !Array.isArray(cart) || cart.length === 0) {
+        return next(new ErrorHandler("Cart is required and must not be empty", 400));
+      }
+      if (!user || !user._id) {
+        return next(new ErrorHandler("User info is required", 400));
+      }
+      if (!shippingAddress) {
+        return next(new ErrorHandler("Shipping address is required", 400));
+      }
+
       //   group cart items by shopId
       const shopItemsMap = new Map();
-
       for (const item of cart) {
         const shopId = item.shopId;
         if (!shopItemsMap.has(shopId)) {
@@ -27,7 +37,6 @@ router.post(
 
       // create an order for each shop
       const orders = [];
-
       for (const [shopId, items] of shopItemsMap) {
         const order = await Order.create({
           cart: items,
@@ -39,7 +48,7 @@ router.post(
         orders.push(order);
       }
 
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         orders,
       });
@@ -100,10 +109,11 @@ router.put(
       if (!order) {
         return next(new ErrorHandler("Order not found with this id", 400));
       }
+
       if (req.body.status === "Transferred to delivery partner") {
-        order.cart.forEach(async (o) => {
+        for (const o of order.cart) {
           await updateOrder(o._id, o.qty);
-        });
+        }
       }
 
       order.status = req.body.status;
@@ -124,18 +134,20 @@ router.put(
 
       async function updateOrder(id, qty) {
         const product = await Product.findById(id);
-
+        if (!product) {
+          throw new Error("Product not found for update");
+        }
         product.stock -= qty;
         product.sold_out += qty;
-
         await product.save({ validateBeforeSave: false });
       }
 
       async function updateSellerInfo(amount) {
         const seller = await Shop.findById(req.seller.id);
-
-        seller.availableBalance = amount;
-
+        if (!seller) {
+          throw new Error("Seller not found for update");
+        }
+        seller.availableBalance += amount;
         await seller.save();
       }
     } catch (error) {
@@ -192,17 +204,18 @@ router.put(
       });
 
       if (req.body.status === "Refund Success") {
-        order.cart.forEach(async (o) => {
+        for (const o of order.cart) {
           await updateOrder(o._id, o.qty);
-        });
+        }
       }
 
       async function updateOrder(id, qty) {
         const product = await Product.findById(id);
-
+        if (!product) {
+          throw new Error("Product not found for refund update");
+        }
         product.stock += qty;
         product.sold_out -= qty;
-
         await product.save({ validateBeforeSave: false });
       }
     } catch (error) {
@@ -222,7 +235,7 @@ router.get(
         deliveredAt: -1,
         createdAt: -1,
       });
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         orders,
       });
