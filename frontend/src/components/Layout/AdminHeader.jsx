@@ -10,39 +10,36 @@ const AdminHeader = () => {
   const { user } = useSelector((state) => state.user);
 
   return (
-    <div className="w-full h-[80px] bg-white shadow sticky top-0 left-0 z-30 flex items-center justify-between px-4">
-
+    <div className="w-full h-[80px] bg-white shadow sticky top-0 left-0 z-30 flex items-center px-4 justify-end">
       <div className="flex items-center">
-        <div className="flex items-center mr-4">
-          <Link to="/admin-withdraw-request" className="800px:block hidden">
-            <CiMoneyBill
-              color="#555"
-              size={30}
-              className="mx-5 cursor-pointer"
-            />
-          </Link>
-          <Link to="/admin-events" className="800px:block hidden">
-            <MdOutlineLocalOffer
-              color="#555"
-              size={30}
-              className="mx-5 cursor-pointer"
-            />
-          </Link>
-          <Link to="/admin-sellers" className="800px:block hidden">
-            <GrWorkshop
-              color="#555"
-              size={30}
-              className="mx-5 cursor-pointer"
-            />
-          </Link>
-          <Link to="/">
-          <img
-  src={user?.avatar?.startsWith("http") ? user.avatar : user?.avatar ? `${backend_url}${user.avatar}` : "/no-image.png"}
-   alt=""
-  className="w-[50px] h-[50px] rounded-full object-cover"
-/>
+        <Link to="/admin-withdraw-request" className="800px:block hidden">
+          <CiMoneyBill
+            color="#555"
+            size={30}
+            className="mx-5 cursor-pointer"
+          />
         </Link>
-        </div>
+        <Link to="/admin-events" className="800px:block hidden">
+          <MdOutlineLocalOffer
+            color="#555"
+            size={30}
+            className="mx-5 cursor-pointer"
+          />
+        </Link>
+        <Link to="/admin-sellers" className="800px:block hidden">
+          <GrWorkshop
+            color="#555"
+            size={30}
+            className="mx-5 cursor-pointer"
+          />
+        </Link>
+        <Link to="/">
+          <img
+            src={user?.avatar?.startsWith("http") ? user.avatar : user?.avatar ? `${backend_url}${user.avatar}` : "/no-image.png"}
+            alt=""
+            className="w-[50px] h-[50px] rounded-full object-cover ml-5"
+          />
+        </Link>
       </div>
     </div>
   );
