@@ -2,6 +2,7 @@ import { createReducer } from "@reduxjs/toolkit";
 
 const initialState = {
   isLoading: true,
+  adminProducts: [],
 };
 
 export const productReducer = createReducer(initialState, {
@@ -58,6 +59,18 @@ export const productReducer = createReducer(initialState, {
     state.error = action.payload;
   },
 
+  // get all products for admin
+  getAllProductsAdminRequest: (state) => {
+    state.isLoading = true;
+  },
+  getAllProductsAdminSuccess: (state, action) => {
+    state.isLoading = false;
+    state.adminProducts = action.payload || [];
+  },
+  getAllProductsAdminFailed: (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload;
+  },
   clearErrors: (state) => {
     state.error = null;
   },
