@@ -143,12 +143,12 @@ const ShopLogin = () => {
                             <Link to="/shop-create" className="text-blue-600 pl-2">
                                 Sign Up
                             </Link>
-                            <div className={`${styles.noramlFlex} w-full mt-2`}>
+                        </div>
+                        <div className="w-full flex justify-end mt-2">
                             <Link to="/" className="text-blue-600 underline">
-                                BACK
+                                ← Quay về trang chủ
                             </Link>
                         </div>
-                        </div> 
                     </form>
                 </div>
             </div>
