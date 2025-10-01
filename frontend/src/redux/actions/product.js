@@ -35,7 +35,7 @@ export const getAllProductsShop = (id) => async (dispatch) => {
     });
 
     const { data } = await axios.get(
-      `${server}/product/get-all-products-shop/${id}`
+      `${server}/product/get-all-products-shop/${id}`, { withCredentials: true }
     );
     dispatch({
       type: "getAllProductsShopSuccess",
