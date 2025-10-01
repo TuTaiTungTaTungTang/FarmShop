@@ -11,9 +11,12 @@ import { DataGrid } from "@mui/x-data-grid";
 
 const DashboardHero = () => {
     const dispatch = useDispatch();
-    const { orders } = useSelector((state) => state.order);
-    const { seller } = useSelector((state) => state.seller);
-    const { products } = useSelector((state) => state.products);
+    const orderState = useSelector((state) => state.order) || {};
+    const { orders = [] } = orderState;
+    const sellerState = useSelector((state) => state.seller) || {};
+    const { seller = {} } = sellerState;
+    const productsState = useSelector((state) => state.products) || {};
+    const { products = [] } = productsState;
 
     useEffect(() => {
         dispatch(getAllOrdersOfShop(seller._id));
