@@ -1,6 +1,11 @@
+
 const QRCode = require('qrcode');
 const path = require('path');
 const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
+
+// Đảm bảo cloudinary đã được cấu hình ở backend/multer.js hoặc .env
 
 /**
  * Tạo QR code cho sản phẩm (giống FaceFarm)
@@ -14,45 +19,50 @@ const generateProductQR = async (productId, productData) => {
     const timestamp = Date.now();
     const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
     const traceabilityId = Buffer.from(`PROD_${productId}_${timestamp}_${randomStr}`).toString('base64');
-    
+
     // Tạo URL truy xuất nguồn gốc (giống cấu trúc FaceFarm)
-    // const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     const frontendUrl = process.env.FRONTEND_URL || 'https://farm-shop-eight.vercel.app';
     const encodedProductId = Buffer.from(productId.toString()).toString('base64');
     const traceabilityUrl = `${frontendUrl}/production/detail?pId=${encodedProductId}&tId=${traceabilityId}`;
-    
-    // Tạo thư mục uploads/qr-codes nếu chưa có
-    const qrDir = path.join(__dirname, '../uploads/qr-codes');
-    if (!fs.existsSync(qrDir)) {
-      fs.mkdirSync(qrDir, { recursive: true });
-    }
-    
-    // Tên file QR unique
-    const qrFileName = `qr-${productId}-${timestamp}.png`;
-    const qrFilePath = path.join(qrDir, qrFileName);
-    
-    // Tạo QR code với styling giống FaceFarm (màu xanh lá farm)
-    await QRCode.toFile(qrFilePath, traceabilityUrl, {
+
+    // Tạo QR code buffer
+    const qrBuffer = await QRCode.toBuffer(traceabilityUrl, {
       width: 300,
       margin: 2,
       color: {
-        dark: '#2D5016', // Màu xanh lá đậm farm-style
+        dark: '#2D5016',
         light: '#FFFFFF'
       },
-      errorCorrectionLevel: 'M' // Medium error correction
+      errorCorrectionLevel: 'M'
     });
-    
-    console.log(`✅ QR Code generated: ${qrFileName}`);
-    
+
+    // Upload buffer lên Cloudinary
+    const uploadStream = () =>
+      new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: "farmshop/qr-codes",
+            resource_type: "image",
+            format: "png"
+          },
+          (error, result) => {
+            if (result) resolve(result);
+            else reject(error);
+          }
+        );
+        streamifier.createReadStream(qrBuffer).pipe(stream);
+      });
+
+    const uploadResult = await uploadStream();
+
     return {
       success: true,
-      qrCodePath: `/qr-codes/${qrFileName}`,
+      qrCodePath: uploadResult.secure_url, // URL Cloudinary
       qrCodeUrl: traceabilityUrl,
       traceabilityId: traceabilityId,
-      fileName: qrFileName,
+      fileName: uploadResult.public_id,
       message: `QR code tạo thành công cho sản phẩm: ${productData.name || 'Unknown'}`
     };
-    
   } catch (error) {
     console.error('❌ QR generation error:', error);
     return {
