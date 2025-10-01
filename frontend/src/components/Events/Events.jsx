@@ -4,7 +4,7 @@ import styles from "../../styles/styles";
 import EventCard from "./EventCard";
 
 const Events = () => {
-  const eventsState = useSelector((state) => state.events) || {};
+  const eventsState = useSelector((state) => state.event) || {};
   const { allEvents = [], isLoading } = eventsState;
 
   return (
