@@ -4,7 +4,9 @@ import styles from "../../styles/styles";
 import EventCard from "./EventCard";
 
 const Events = () => {
-  const { allEvents, isLoading } = useSelector((state) => state.events);
+  const eventsState = useSelector((state) => state.events);
+  const allEvents = eventsState?.allEvents || [];
+  const isLoading = eventsState?.isLoading;
 
   return (
     <div>

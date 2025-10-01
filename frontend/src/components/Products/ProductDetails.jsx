@@ -1012,7 +1012,7 @@ const ProductDetailsInfo = ({
         </>
       ) : null}
       {/* QR Code Tab Content */}
-      {active === 4 && data.qrCode && (
+      {/* {active === 4 && data.qrCode && (
         <div className="flex flex-col items-center py-8">
           <HiQrCode className="text-green-600 text-3xl mb-2" />
           <img
@@ -1025,7 +1025,25 @@ const ProductDetailsInfo = ({
             Quét để truy xuất nguồn gốc sản phẩm
           </p>
         </div>
-      )}
+      )} */}
+      active === 4 && data.qrCode && (
+  <div className="flex flex-col items-center py-8">
+    <HiQrCode className="text-green-600 text-3xl mb-2" />
+    <img
+      src={getProductImage(data.qrCode)}
+      alt="QR Code truy xuất"
+      className="w-32 h-32 cursor-pointer"
+      onClick={() => {
+        // Chuyển hướng sang trang truy xuất nguồn gốc
+        const encodedProductId = btoa(data._id);
+        window.location.href = `/production/detail?pId=${encodedProductId}&tId=${data.traceabilityId}`;
+      }}
+    />
+    <p className="text-xs text-center mt-2 text-gray-500">
+      Quét hoặc nhấp vào để truy xuất nguồn gốc sản phẩm
+    </p>
+  </div>
+)
 
       {/* Product Rev */}
       {active === 2 ? (
