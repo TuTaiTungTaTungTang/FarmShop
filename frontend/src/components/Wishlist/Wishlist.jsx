@@ -7,12 +7,12 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromWishlist } from "../../redux/actions/wishlist";
 import { addTocart } from "../../redux/actions/cart";
-import { backend_url } from "../../server";
+import getProductImage from "../../utils/getProductImage";
 
 const Wishlist = ({ setOpenWishlist }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
   const dispatch = useDispatch();
-
+  
   const removeFromWishlistHandler = (data) => {
     dispatch(removeFromWishlist(data));
   };
@@ -90,7 +90,7 @@ const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
             onClick={() => removeFromWishlistHandler(data)}
           />
           <img
-            src={`${backend_url}${data?.images[0]}`}
+            src={getProductImage(data?.images[0])}
             alt=""
             className="w-[130px] h-min ml-2 mr-2 rounded-[5px]"
           />

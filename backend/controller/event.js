@@ -21,7 +21,8 @@ router.post(
         return next(new ErrorHandler("Shop Id is invalid!", 400));
       } else {
         const files = req.files;
-        const imageUrls = files.map((file) => `${file.filename}`);
+        // Lấy URL ảnh từ Cloudinary
+        const imageUrls = files.map((file) => file.path);
 
         const eventData = req.body;
         eventData.images = imageUrls;

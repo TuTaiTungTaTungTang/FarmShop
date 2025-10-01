@@ -18,26 +18,19 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
     const { email } = req.body;
     const sellerEmail = await Shop.findOne({ email });
 
+
     if (sellerEmail) {
-      const filename = req.file.filename;
-      const filePath = `uploads/${filename}`;
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.log(err);
-          res.status(500).json({ message: "Error deleting file" });
-        }
-      });
       return next(new ErrorHandler("User already exists", 400));
     }
 
-    const filename = req.file.filename;
-    const fileUrl = path.join(filename);
+    // Lấy URL ảnh từ Cloudinary
+    const avatarUrl = req.file && req.file.path ? req.file.path : "";
 
     const seller = {
       name: req.body.name,
       email: email,
       password: req.body.password,
-      avatar: fileUrl,
+      avatar: avatarUrl,
       address: req.body.address,
       phoneNumber: req.body.phoneNumber,
       zipCode: req.body.zipCode,
@@ -215,17 +208,13 @@ router.put(
   upload.single("image"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const existsUser = await Shop.findById(req.seller._id);
+      const seller = await Shop.findById(req.seller._id);
 
-      const existAvatarPath = `uploads/${existsUser.avatar}`;
+      // Lấy URL mới từ Cloudinary
+      const avatarUrl = req.file && req.file.path ? req.file.path : "";
 
-      fs.unlinkSync(existAvatarPath);
-
-      const fileUrl = path.join(req.file.filename);
-
-      const seller = await Shop.findByIdAndUpdate(req.seller._id, {
-        avatar: fileUrl,
-      });
+      seller.avatar = avatarUrl;
+      await seller.save();
 
       res.status(200).json({
         success: true,

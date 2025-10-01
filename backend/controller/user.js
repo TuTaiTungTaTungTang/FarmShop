@@ -70,27 +70,17 @@ router.post("/create-user", validate(schemas.user.register), upload.single("file
     const userEmail = await User.findOne({ email });
 
     if (userEmail) {
-      // if user already exits account is not create and file is deleted
-      const filename = req.file.filename;
-      const filePath = `uploads/${filename}`;
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.log(err);
-          res.status(500).json({ message: "Error deleting file" });
-        }
-      });
-
       return next(new ErrorHandler("User already exits", 400));
     }
 
-    const filename = req.file.filename;
-    const fileUrl = path.join(filename);
+    // Lấy URL ảnh từ Cloudinary
+    const avatarUrl = req.file && req.file.path ? req.file.path : "";
 
     const user = {
       name: name,
       email: email,
       password: password,
-      avatar: fileUrl,
+      avatar: avatarUrl,
     };
 
     const activationToken = createActivationToken(user);
@@ -283,26 +273,11 @@ router.put(
   upload.single("image"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const existsUser = await User.findById(req.user.id);
-
-      // Kiểm tra có file avatar cũ không và xóa nếu tồn tại
-      if (existsUser.avatar) {
-        const existAvatarPath = path.join("uploads", existsUser.avatar);
-        if (fs.existsSync(existAvatarPath)) {
-          try {
-            fs.unlinkSync(existAvatarPath);
-          } catch (err) {
-            // Ghi log nhưng không throw error
-            console.error("Không thể xóa avatar cũ:", err.message);
-          }
-        }
-      }
-
       // Kiểm tra file upload mới
       if (!req.file) {
         return next(new ErrorHandler("Không nhận được file ảnh mới", 400));
       }
-      const fileUrl = path.join(req.file.filename); // new image
+      const fileUrl = req.file.path; // Cloudinary trả về URL
 
       const user = await User.findByIdAndUpdate(
         req.user.id,

@@ -21,15 +21,17 @@ router.post(
       if (!shop) {
         return next(new ErrorHandler("Shop Id is invalid!", 400));
       } else {
-        const files = req.files;
-        const imageUrls = files.map((file) => `${file.filename}`);
 
-        const productData = req.body;
-        productData.images = imageUrls;
-        productData.shop = shop;
 
-        const product = await Product.create(productData);
+  const files = req.files;
+  // Lấy URL ảnh từ Cloudinary
+  const imageUrls = files.map((file) => file.path);
 
+  const productData = req.body;
+  productData.images = imageUrls;
+  productData.shop = shop;
+
+  const product = await Product.create(productData);
         // 🚀 Tự động tạo QR code cho sản phẩm mới (như FaceFarm)
         console.log(`🔄 Generating QR code for product: ${product.name}`);
         const qrResult = await generateProductQR(product._id, productData);
