@@ -8,7 +8,8 @@ import { createevent } from "../../redux/actions/event";
 
 const CreateEvent = () => {
     const { seller } = useSelector((state) => state.seller);
-    const { success, error } = useSelector((state) => state.events);
+    const eventsState = useSelector((state) => state.events) || {};
+    const { success = false, error = null } = eventsState;
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
