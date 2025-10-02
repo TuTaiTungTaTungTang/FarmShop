@@ -21,7 +21,7 @@ const generateProductQR = async (productId, productData) => {
     const traceabilityId = Buffer.from(`PROD_${productId}_${timestamp}_${randomStr}`).toString('base64');
 
     // Tạo URL truy xuất nguồn gốc (giống cấu trúc FaceFarm)
-    const frontendUrl = process.env.FRONTEND_URL || 'https://farm-shop-eight.vercel.app';
+    const frontendUrl = process.env.FRONTEND_URL || 'https://agritechsolution.vercel.app';
     const encodedProductId = Buffer.from(productId.toString()).toString('base64');
     const traceabilityUrl = `${frontendUrl}/production/detail?pId=${encodedProductId}&tId=${traceabilityId}`;
 
