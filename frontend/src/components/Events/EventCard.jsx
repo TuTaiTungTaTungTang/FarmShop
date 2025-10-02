@@ -43,7 +43,7 @@ const EventCard = ({ active, data }) => {
         <img
           src={getProductImage(data.images && data.images[0])}
           alt="event"
-          className="w-full h-64 object-cover rounded-md mb-8"
+          className="w-full h-48 object-cover rounded-lg"
           onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/300x200?text=No+Image"; }}
         />
       </div>
