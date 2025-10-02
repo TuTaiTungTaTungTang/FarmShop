@@ -55,7 +55,8 @@ app.use(cookieParser());
 app.use(
   cors({
    origin: [
-      "https://farm-shop-eight.vercel.app", // domain frontend Vercel
+      // "https://farm-shop-eight.vercel.app", // domain frontend Vercel
+      "https://agritechsolution.vercel.app",
       "http://localhost:3000"               // cho dev local
     ],
     credentials: true,
