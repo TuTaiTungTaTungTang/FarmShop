@@ -155,7 +155,11 @@ const ProductTraceabilityPage = () => {
                           <div className="flex flex-col items-center mt-6 md:mt-0">
                             {traceability.qrCodePath && (
                               <img
-                                src={`${backend_url}${traceability.qrCodePath}`}
+                                src={
+                                  traceability.qrCodePath.startsWith('http')
+                                    ? traceability.qrCodePath
+                                    : `${backend_url}${traceability.qrCodePath}`
+                                }
                                 alt="QR Code"
                                 className="w-32 h-32 bg-white rounded-lg shadow-md border-4 border-green-200"
                               />
@@ -326,7 +330,11 @@ const ProductTraceabilityPage = () => {
                             <h3 className="text-xl font-bold mb-4 text-gray-700">📲 Mã QR Truy Xuất</h3>
                             <div className="inline-block bg-white p-4 rounded-lg shadow-md">
                               <img 
-                                src={`${backend_url}${traceability.qrCodePath}`}
+                                src={
+                                  traceability.qrCodePath.startsWith('http')
+                                    ? traceability.qrCodePath
+                                    : `${backend_url}${traceability.qrCodePath}`
+                                }
                                 alt="QR Code"
                                 className="w-32 h-32 mx-auto"
                               />
