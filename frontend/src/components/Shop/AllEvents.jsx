@@ -10,7 +10,7 @@ import { deleteProduct } from "../../redux/actions/product";
 import Loader from "../Layout/Loader";
 
 const AllEvents = () => {
-  const eventsState = useSelector((state) => state.events) || {};
+  const eventsState = useSelector((state) => state.event) || {};
   const { events = [], isLoading = false } = eventsState;
   const { seller } = useSelector((state) => state.seller);
 
