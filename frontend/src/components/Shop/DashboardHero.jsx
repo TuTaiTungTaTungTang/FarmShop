@@ -15,7 +15,7 @@ const DashboardHero = () => {
     const { orders = [] } = orderState;
     const sellerState = useSelector((state) => state.seller) || {};
     const { seller = {} } = sellerState;
-    const productsState = useSelector((state) => state.products) || {};
+    const productsState = useSelector((state) => state.product) || {};
     const { products = [] } = productsState;
 
     useEffect(() => {

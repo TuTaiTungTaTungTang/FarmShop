@@ -10,7 +10,7 @@ import getProductImage from "../../utils/getProductImage";
 
 const ShopInfo = ({ isOwner }) => {
     const [data, setData] = useState({});
-    const productsState = useSelector((state) => state.products) || {};
+    const productsState = useSelector((state) => state.product) || {};
     const { products = [] } = productsState;
     const [isLoading, setIsLoading] = useState(false);
 

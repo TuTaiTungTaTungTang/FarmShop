@@ -26,7 +26,7 @@
 //     if (!img) return "https://via.placeholder.com/300x200?text=No+Image";
 //     return img.startsWith("http") ? img : `${backend_url}${img}`;
 //   }
-//   const { products } = useSelector((state) => state.products);
+//   const { products } = useSelector((state) => state.product);
 //   const { user, isAuthenticated } = useSelector((state) => state.user);
 //   const { wishlist } = useSelector((state) => state.wishlist);
 //   const { cart } = useSelector((state) => state.cart);
@@ -657,7 +657,7 @@ import axios from "axios";
 import getProductImage from "../../utils/getProductImage";
 
 const ProductDetails = ({ data }) => {
-  const productsState = useSelector((state) => state.products) || {};
+  const productsState = useSelector((state) => state.product) || {};
   const { products = [] } = productsState;
   const { user, isAuthenticated } = useSelector((state) => state.user);
   const { wishlist } = useSelector((state) => state.wishlist);

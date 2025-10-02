@@ -7,7 +7,7 @@ import getProductImage from "../../utils/getProductImage";
 
 const SuggestedProduct = ({ data }) => {
     const [products, setProducts] = useState([])
-    const productsState = useSelector((state) => state.products) || {};
+    const productsState = useSelector((state) => state.product) || {};
     const { allProducts = [] } = productsState;
     const [productData, setProductData] = useState();
 

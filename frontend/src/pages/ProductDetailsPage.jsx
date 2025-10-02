@@ -9,9 +9,9 @@ import { useSelector } from 'react-redux';
 
 
 const ProductDetailsPage = () => {
-    const productsState = useSelector((state) => state.products) || {};
+    const productsState = useSelector((state) => state.product) || {};
     const { allProducts = [] } = productsState;
-    const eventsState = useSelector((state) => state.events) || {};
+    const eventsState = useSelector((state) => state.event) || {};
     const { allEvents = [] } = eventsState;
     const { id } = useParams();
     const [data, setData] = useState(null)

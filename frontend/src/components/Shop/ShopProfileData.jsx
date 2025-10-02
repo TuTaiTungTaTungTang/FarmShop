@@ -9,9 +9,9 @@ import { getAllEventsShop } from "../../redux/actions/event";
 import getProductImage from "../../utils/getProductImage";
 
 const ShopProfileData = ({ isOwner }) => {
-    const productsState = useSelector((state) => state.products) || {};
+    const productsState = useSelector((state) => state.product) || {};
     const { products = [] } = productsState;
-    const eventsState = useSelector((state) => state.events) || {};
+    const eventsState = useSelector((state) => state.event) || {};
     const { events = [] } = eventsState;
     const { seller } = useSelector((state) => state.seller);
     const { id } = useParams();
