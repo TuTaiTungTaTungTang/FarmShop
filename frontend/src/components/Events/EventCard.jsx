@@ -43,14 +43,14 @@ const EventCard = ({ active, data }) => {
         <img
           src={getProductImage(data.images && data.images[0])}
           alt="event"
-          className="w-full h-48 object-cover rounded-lg"
-          onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/300x200?text=No+Image"; }}
+          className="w-full h-64 object-cover rounded-md mb-8"
+          onError={e => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/300x200?text=No+Image"; }}
         />
       </div>
 
       <div className="w-full lg:[w-50%] flex flex-col justify-center">
-  <h2 className={`${styles.productTitle} break-words`}>{data.name}</h2>
-  <p className="break-words line-clamp-2">{data.description}</p>
+        <h2 className={`${styles.productTitle}`}>{data.name}</h2>
+        <p>{data.description}</p>
 
         <div className="flex py-2 justify-between">
           <div className="flex">
