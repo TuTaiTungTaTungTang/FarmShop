@@ -26,7 +26,7 @@ export const eventReducer = createReducer(initialState, {
   },
   getAlleventsShopSuccess: (state, action) => {
     state.isLoading = false;
-    state.event = action.payload;
+    state.events = action.payload;
   },
   getAlleventsShopFailed: (state, action) => {
     state.isLoading = false;
