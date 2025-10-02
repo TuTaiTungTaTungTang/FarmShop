@@ -66,88 +66,73 @@ const ProductCard = ({ data, isEvent }) => {
 
 
     return (
-        <>
-            <div className='w-full h-[370px] bg-white rounded-lg shadow-sm p-3 relative cursor-pointer'>
-                <div className='flex justify-end'>
+        <div className='w-full h-[370px] bg-white rounded-lg shadow-sm p-3 relative cursor-pointer'>
+            <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`} className="block h-full">
+                <img
+                    src={getProductImage(data.images && data.images[0])}
+                    alt="prd"
+                    className='w-full h-[170px] object-contain mb-4 pr-8'
+                    onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/300x200?text=No+Image"; }}
+                />
+                <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
+                <h4 className='pb-3 font-[500]'>
+                    {data.name.length > 40 ? data.name.slice(0, 40) + '...' : data.name}
+                </h4>
+                {/* Star Rating */}
+                <div className='flex'>
+                    <Ratings rating={data?.ratings} />
                 </div>
-
-                <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
-                    <img
-                        src={getProductImage(data.images && data.images[0])}
-                        alt="prd"
-                        className='w-full h-[170px] object-contain mb-4 pr-8' // thêm pr-8 để tạo khoảng cách với icon bên phải
-                        onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/300x200?text=No+Image"; }}
-                    />
-                </Link>
-                <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
-                    <h5 className={`${styles.shop_name}`} >{data.shop.name}</h5>
-                </Link>
-                <Link to={`/product/${data._id}`}>
-                    <h4 className='pb-3 font-[500]'>
-                        {data.name.length > 40 ? data.name.slice(0, 40) + '...' : data.name}
-                    </h4>
-                    {/* Star Rating */}
+                <div className='py-2 flex items-center justify-between'>
                     <div className='flex'>
-                        <Ratings rating={data?.ratings} />
+                        <h5 className={`${styles.productDiscountPrice}`}>
+                            {data.originalPrice === 0 ? data.originalPrice : data.discountPrice}$
+                        </h5>
+                        <h4 className={`${styles.price}`}>
+                            {data.originalPrice ? data.originalPrice + " $" : null}
+                        </h4>
                     </div>
-
-                    <div className='py-2 flex items-center justify-between'>
-                        <div className='flex'>
-                            <h5 className={`${styles.productDiscountPrice}`}>
-                                {data.originalPrice === 0 ? data.originalPrice : data.discountPrice}$
-                            </h5>
-
-                            <h4 className={`${styles.price}`}>
-                                {data.originalPrice ? data.originalPrice + " $" : null}
-                            </h4>
-                        </div>
-
-                        <span className="font-[400] text-[17px] text-[#68d284]">
-                            {data?.sold_out} sold
-                        </span>
-                    </div>
-                </Link>
-
-                {/* side option */}
-                <div className="pr-2">
-                    {
-                        click ? (
-                            <AiFillHeart
-                                size={22}
-                                className="cursor-pointer absolute right-2 top-5"
-                                onClick={() => removeFromWishlistHandler(data)}
-                                color={click ? "red" : "#333"}
-                                title='Remove from wishlist'
-                            />
-                        ) : (
-                            <AiOutlineHeart
-                                size={22}
-                                className="cursor-pointer absolute right-2 top-5"
-                                onClick={() => addToWishlistHandler(data)}
-                                color={click ? "red" : "#333"}
-                                title='Add to wishlist'
-
-                            />
-                        )}
-                    <AiOutlineEye
-                        size={22}
-                        className="cursor-pointer absolute right-2 top-14"
-                        onClick={() => setOpen(!open)}
-                        color="#333"
-                        title='Quick view'
-                    />
-
-                    <AiOutlineShoppingCart
-                        size={25}
-                        className="cursor-pointer absolute right-2 top-24"
-                        onClick={() => addToCartHandler(data._id)}
-                        color="#444"
-                        title='Add to cart'
-                    />
-                    {open ? <ProductDetailsCard setOpen={setOpen} data={data} /> : null}
+                    <span className="font-[400] text-[17px] text-[#68d284]">
+                        {data?.sold_out} sold
+                    </span>
                 </div>
+            </Link>
+            {/* side option */}
+            <div className="pr-2">
+                {
+                    click ? (
+                        <AiFillHeart
+                            size={22}
+                            className="cursor-pointer absolute right-2 top-5"
+                            onClick={e => { e.preventDefault(); e.stopPropagation(); removeFromWishlistHandler(data); }}
+                            color={click ? "red" : "#333"}
+                            title='Remove from wishlist'
+                        />
+                    ) : (
+                        <AiOutlineHeart
+                            size={22}
+                            className="cursor-pointer absolute right-2 top-5"
+                            onClick={e => { e.preventDefault(); e.stopPropagation(); addToWishlistHandler(data); }}
+                            color={click ? "red" : "#333"}
+                            title='Add to wishlist'
+                        />
+                    )}
+                <AiOutlineEye
+                    size={22}
+                    className="cursor-pointer absolute right-2 top-14"
+                    onClick={e => { e.preventDefault(); e.stopPropagation(); setOpen(!open); }}
+                    color="#333"
+                    title='Quick view'
+                />
+                <AiOutlineShoppingCart
+                    size={25}
+                    className="cursor-pointer absolute right-2 top-24"
+                    onClick={e => { e.preventDefault(); e.stopPropagation(); addToCartHandler(data._id); }}
+                    color="#444"
+                    title='Add to cart'
+                />
+                {open ? <ProductDetailsCard setOpen={setOpen} data={data} /> : null}
             </div>
-        </>
+        </div>
     )
 }
 

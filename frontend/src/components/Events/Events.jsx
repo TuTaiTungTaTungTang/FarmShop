@@ -14,7 +14,7 @@ const Events = () => {
           <div className={`${styles.heading}`}>
             <h1>Popular Events</h1>
           </div>
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="w-full grid ">
             {allEvents.length > 0 ? (
               allEvents.map((event, idx) => (
                 <EventCard key={event._id || idx} data={event} />
