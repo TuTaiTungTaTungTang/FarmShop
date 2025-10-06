@@ -146,14 +146,14 @@ const Hero = () => {
 
         {/* Controls */}
         <button
-          aria-label="Previous"
+          aria-label="Trước"
           onClick={prevSlide}
           className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow-lg hover:bg-white z-20 text-2xl"
         >
           ‹
         </button>
         <button
-          aria-label="Next"
+          aria-label="Tiếp"
           onClick={nextSlide}
           className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow-lg hover:bg-white z-20 text-2xl"
         >
@@ -167,7 +167,7 @@ const Hero = () => {
               key={idx}
               onClick={() => setIndex(idx)}
               className={`w-4 h-4 rounded-full ${idx === index ? "bg-white" : "bg-white/60"}`}
-              aria-label={`Go to slide ${idx + 1}`}
+              aria-label={`Chuyển đến slide ${idx + 1}`}
             />
           ))}
         </div>

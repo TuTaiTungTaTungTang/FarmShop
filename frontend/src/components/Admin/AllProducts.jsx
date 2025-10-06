@@ -83,7 +83,7 @@ const AllProducts = () => {
       {adminProductsLoading ? (
         <div>Loading...</div>
       ) : adminProducts.length === 0 ? (
-        <div className="text-center text-gray-500 py-4">No products found.</div>
+  <div className="text-center text-gray-500 py-4">Không tìm thấy sản phẩm.</div>
       ) : (
         <DataGrid
           rows={row}

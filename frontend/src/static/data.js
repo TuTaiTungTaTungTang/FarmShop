@@ -1,23 +1,23 @@
 // navigation Data
 export const navItems = [
   {
-    title: "Home",
+    title: "Trang Chủ",
     url: "/",
   },
   {
-    title: "Best Selling",
+    title: "Bán Chạy",
     url: "/best-selling",
   },
   {
-    title: "Products",
+    title: "Sản Phẩm",
     url: "/products",
   },
   {
-    title: "Events",
+    title: "Sự Kiện",
     url: "/events",
   },
   {
-    title: "FAQ",
+    title: "Câu Hỏi Thường Gặp",
     url: "/faq",
   },
 ];
@@ -25,9 +25,9 @@ export const navItems = [
 // branding data
 export const brandingData = [
   {
-    id: 1,
-    title: "Free Shipping",
-    Description: "From all orders over 100$",
+  id: 1,
+  title: "Miễn phí vận chuyển",
+  Description: "Miễn phí cho đơn hàng từ 100$",
     icon: (
       <svg
         width="36"
@@ -75,9 +75,9 @@ export const brandingData = [
     ),
   },
   {
-    id: 2,
-    title: "Daily Surprise Offers",
-    Description: "Save up to 25% off",
+  id: 2,
+  title: "Ưu đãi hàng ngày",
+  Description: "Tiết kiệm đến 25%",
     icon: (
       <svg
         width="32"
@@ -103,9 +103,9 @@ export const brandingData = [
     ),
   },
   {
-    id: 4,
-    title: "Affortable Prices",
-    Description: "Get Factory direct price",
+  id: 4,
+  title: "Giá cả phải chăng",
+  Description: "Giá trực tiếp từ nhà máy",
     icon: (
       <svg
         width="32"
@@ -150,9 +150,9 @@ export const brandingData = [
     ),
   },
   {
-    id: 5,
-    title: "Secure Payments",
-    Description: "100% protected payments",
+  id: 5,
+  title: "Thanh toán an toàn",
+  Description: "Thanh toán được bảo vệ 100%",
     icon: (
       <svg
         width="32"
@@ -268,7 +268,7 @@ export const productData = [
     category: "Computers and Laptops",
     name: "MacBook pro M2 chipset 256gb ssd 8gb ram space-gray color with apple 1 year warranty",
     description:
-      "Product details are a crucial part of any eCommerce website or online marketplace. These details help the potential customers to make an informed decision about the product they are interested in buying. A well-written product description can also be a powerful marketing tool that can help to increase sales.Product details typically include information about the product's features, specifications, dimensions, weight, materials, and other relevant information that can help customers to understand the product better. The product details section should also include high-quality images and videos of the product, as well as customer reviews and ratings.",
+      "Mô tả sản phẩm ví dụ — thông tin tính năng, thông số kỹ thuật và hình ảnh chi tiết.",
     image_Url: [
       {
         public_id: "test",
@@ -298,7 +298,7 @@ export const productData = [
     category: "Mobile and Tablets",
     name: "Iphone 14 pro max 256 gb ssd and 8 gb ram silver colour",
     description:
-      "Product details are a crucial part of any eCommerce website or online marketplace. These details help the potential customers to make an informed decision about the product they are interested in buying. A well-written product description can also be a powerful marketing tool that can help to increase sales.Product details typically include information about the product's features, specifications, dimensions, weight, materials, and other relevant information that can help customers to understand the product better. The product details section should also include high-quality images and videos of the product, as well as customer reviews and ratings.",
+      "Mô tả sản phẩm ví dụ — thông tin tính năng, thông số kỹ thuật và hình ảnh chi tiết.",
     image_Url: [
       {
         public_id: "test",
@@ -591,21 +591,21 @@ export const productData = [
 
 export const footerProductLinks = [
   {
-    name: "About us",
+    name: "Về chúng tôi",
     link: "/about",
   },
   {
-    name: "Careers",
+    name: "Tuyển dụng",
     link: "/carrers",
   },
   {
-    name: "Store Locations",
+    name: "Cửa hàng",
   },
   {
-    name: "Our Blog",
+    name: "Blog",
   },
   {
-    name: "Reviews",
+    name: "Đánh giá",
   },
 ];
 
@@ -614,28 +614,28 @@ export const footercompanyLinks = [
     name: "Game & Video",
   },
   {
-    name: "Phone &Tablets",
+    name: "Điện thoại & Máy tính bảng",
   },
   {
-    name: "Computers & Laptop",
+    name: "Máy tính & Laptop",
   },
   {
-    name: "Sport Watches",
+    name: "Đồng hồ thể thao",
   },
   {
-    name: "Events",
+    name: "Sự kiện",
   },
 ];
 
 export const footerSupportLinks = [
   {
-    name: "FAQ",
+    name: "Câu hỏi thường gặp",
   },
   {
-    name: "Reviews",
+    name: "Đánh giá",
   },
   {
-    name: "Contact Us",
+    name: "Liên hệ",
   },
   {
     name: "Shipping",
