@@ -191,72 +191,73 @@ export const brandingData = [
 export const categoriesData = [
   {
     id: 1,
-    title: "Computers and Laptops",
+    title: "Gạo",
+    value: "Rice",
     subTitle: "",
-    image_Url:
-      "https://cdn.shopify.com/s/files/1/1706/9177/products/NEWAppleMacbookProwithM1ProChip14InchLaptop2021ModelMKGQ3LL_A_16GB_1TBSSD_custommacbd.jpg?v=1659592838",
+    image_Url: "https://picsum.photos/seed/rice/400/300",
   },
   {
     id: 2,
-    title: "cosmetics and body care",
+    title: "Rau củ",
+    value: "Vegetables",
     subTitle: "",
-    image_Url:
-      "https://indian-retailer.s3.ap-south-1.amazonaws.com/s3fs-public/2021-07/kosme1.png",
+    image_Url: "https://picsum.photos/seed/vegetables/400/300",
   },
   {
     id: 3,
-    title: "Accesories",
+    title: "Trái cây",
+    value: "Fruits",
     subTitle: "",
-    image_Url:
-      "https://img.freepik.com/free-vector/ordering-goods-online-internet-store-online-shopping-niche-e-commerce-website-mother-buying-babies-clothes-footwear-toys-infant-accessories_335657-2345.jpg?w=2000",
+    image_Url: "https://picsum.photos/seed/fruits/400/300",
   },
   {
     id: 4,
-    title: "Cloths",
+    title: "Cà phê",
+    value: "Coffee",
     subTitle: "",
-    image_Url:
-      "https://www.shift4shop.com/2015/images/industries/clothing/clothing-apparel.png",
+    image_Url: "https://picsum.photos/seed/coffee/400/300",
   },
   {
     id: 5,
-    title: "Shoes",
+    title: "Mật ong",
+    value: "Honey",
     subTitle: "",
-    image_Url:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvBQPQMVNRd6TtDkGs2dCri0Y-rxKkFOiEWw&usqp=CAU",
+    image_Url: "https://picsum.photos/seed/honey/400/300",
   },
   {
     id: 6,
-    title: "Gifts",
+    title: "Trứng",
+    value: "Eggs",
     subTitle: "",
-    image_Url:
-      "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    image_Url: "https://picsum.photos/seed/eggs/400/300",
   },
   {
     id: 7,
-    title: "Pet Care",
+    title: "Sản phẩm từ sữa",
+    value: "Dairy",
     subTitle: "",
-    image_Url: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    image_Url: "https://picsum.photos/seed/dairy/400/300",
   },
   {
     id: 8,
-    title: "Mobile and Tablets",
+    title: "Hải sản",
+    value: "Seafood",
     subTitle: "",
-    image_Url:
-      "https://st-troy.mncdn.com/mnresize/1500/1500/Content/media/ProductImg/original/mpwp3tua-apple-iphone-14-256gb-mavi-mpwp3tua-637986832343472449.jpg",
+    image_Url: "https://picsum.photos/seed/seafood/400/300",
   },
   {
     id: 9,
-    title: "Music and Gaming",
+    title: "Gia súc & Gia cầm",
+    value: "Livestock",
     subTitle: "",
-    image_Url:
-      "https://static.vecteezy.com/system/resources/previews/011/996/555/original/3d-black-headphone-illustration-ecommerce-icon-png.png",
+    image_Url: "https://picsum.photos/seed/livestock/400/300",
   },
   {
     id: 10,
-    title: "Others",
+    title: "Khác",
+    value: "Other",
     subTitle: "",
-    image_Url:
-      "https://searchspring.com/wp-content/uploads/2022/10/Hero-Image-Platform-Others-2.png",
+    image_Url: "https://picsum.photos/seed/others/400/300",
   },
 ];
 

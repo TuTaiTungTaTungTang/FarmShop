@@ -52,7 +52,7 @@ const CreateEvent = () => {
             navigate("/dashboard-events");
             window.location.reload();
         }
-    }, [dispatch, error, success]);
+    }, [dispatch, error, success, navigate]);
 
     const handleImageChange = (e) => {
         e.preventDefault();
@@ -133,7 +133,7 @@ const CreateEvent = () => {
                         <option value="Choose a category">Choose a category</option>
                         {categoriesData &&
                             categoriesData.map((i) => (
-                                <option value={i.title} key={i.title}>
+                                <option value={i.value || i.title} key={i.title}>
                                     {i.title}
                                 </option>
                             ))}

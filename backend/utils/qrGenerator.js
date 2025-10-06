@@ -5,6 +5,20 @@ const fs = require('fs');
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
 
+// Configure Cloudinary if environment variables are set. If not, we'll
+// fall back to writing QR files to the local uploads/qr-codes folder.
+let useCloudinary = false;
+if (process.env.CLOUDINARY_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+  useCloudinary = true;
+} else {
+  console.warn('⚠️ Cloudinary not configured - QR images will be written to backend/uploads/qr-codes');
+}
+
 // Đảm bảo cloudinary đã được cấu hình ở backend/multer.js hoặc .env
 
 /**
@@ -36,33 +50,59 @@ const generateProductQR = async (productId, productData) => {
       errorCorrectionLevel: 'M'
     });
 
-    // Upload buffer lên Cloudinary
-    const uploadStream = () =>
-      new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            folder: "farmshop/qr-codes",
-            resource_type: "image",
-            format: "png"
-          },
-          (error, result) => {
-            if (result) resolve(result);
-            else reject(error);
-          }
-        );
-        streamifier.createReadStream(qrBuffer).pipe(stream);
-      });
+    if (useCloudinary) {
+      // Upload buffer lên Cloudinary
+      const uploadStream = () =>
+        new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            {
+              folder: "farmshop/qr-codes",
+              resource_type: "image",
+              format: "png",
+            },
+            (error, result) => {
+              if (result) resolve(result);
+              else reject(error);
+            }
+          );
+          streamifier.createReadStream(qrBuffer).pipe(stream);
+        });
 
-    const uploadResult = await uploadStream();
+      const uploadResult = await uploadStream();
 
-    return {
-      success: true,
-      qrCodePath: uploadResult.secure_url, // URL Cloudinary
-      qrCodeUrl: traceabilityUrl,
-      traceabilityId: traceabilityId,
-      fileName: uploadResult.public_id,
-      message: `QR code tạo thành công cho sản phẩm: ${productData.name || 'Unknown'}`
-    };
+      return {
+        success: true,
+        qrCodePath: uploadResult.secure_url, // URL Cloudinary
+        qrCodeUrl: traceabilityUrl,
+        traceabilityId: traceabilityId,
+        fileName: uploadResult.public_id,
+        message: `QR code tạo thành công cho sản phẩm: ${productData.name || 'Unknown'}`,
+      };
+    }
+
+    // Fallback: write QR buffer to local uploads/qr-codes folder
+    const uploadsDir = path.join(__dirname, "../uploads/qr-codes");
+    try {
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+      const fileName = `${traceabilityId}.png`;
+      const filePath = path.join(uploadsDir, fileName);
+      fs.writeFileSync(filePath, qrBuffer);
+
+      // Return a local path (frontend/backoffice can use backend static serving)
+      const publicPath = `/qr-codes/${fileName}`; // note: backend serves uploads/ as static root
+      return {
+        success: true,
+        qrCodePath: publicPath,
+        qrCodeUrl: traceabilityUrl,
+        traceabilityId: traceabilityId,
+        fileName: fileName,
+        message: `QR code written to local uploads for product: ${productData.name || 'Unknown'}`,
+      };
+    } catch (err) {
+      throw err;
+    }
   } catch (error) {
     console.error('❌ QR generation error:', error);
     return {

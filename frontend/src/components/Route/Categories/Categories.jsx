@@ -35,7 +35,8 @@ const Categories = () => {
                         categoriesData &&
                         categoriesData.map((i) => {
                             const handleSubmit = (i) => {
-                                navigate(`/products?category=${i.title}`);
+                                const key = i.value || i.title;
+                                navigate(`/products?category=${encodeURIComponent(key)}`);
                             }
                             return (
                                 <div
