@@ -135,7 +135,7 @@ const Header = ({ activeHeading }) => {
               <button
                 className={`h-[100%] w-full flex justify-between items-center pl-10 bg-white font-sans text-lg font-[500] select-none rounded-t-md`}
               >
-                All Categories
+                Tất cả danh mục
               </button>
               <IoIosArrowDown
                 size={20}
