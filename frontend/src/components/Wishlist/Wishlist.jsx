@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { RxCross1 } from "react-icons/rx";
 import styles from "../../styles/styles";
-import { Link } from "react-router-dom";
+// Link not used in this component
 import { BsCartPlus } from "react-icons/bs";
 import { AiOutlineHeart } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromWishlist } from "../../redux/actions/wishlist";
 import { addTocart } from "../../redux/actions/cart";
 import getProductImage from "../../utils/getProductImage";
+import currency from "../../utils/currency";
 
 const Wishlist = ({ setOpenWishlist }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -78,7 +79,7 @@ const Wishlist = ({ setOpenWishlist }) => {
 };
 
 const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
-  const [value, setValue] = useState(1);
+  const [value /*, setValue */] = useState(1);
   const totalPrice = data.discountPrice * value;
 
   return (
@@ -99,7 +100,7 @@ const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
             <h1>{data.name}</h1>
 
             <h4 className="font-[600] pt-3 800px:pt-[3px] text-[17px] text-[#d02222] font-Roboto">
-              US${totalPrice}
+              {currency.formatPriceFromUsd(totalPrice)}
             </h4>
           </div>
 

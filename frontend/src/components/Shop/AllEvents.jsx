@@ -5,9 +5,8 @@ import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { deleteEvent, getAllEventsShop } from "../../redux/actions/event";
-import { getAllProductsShop } from "../../redux/actions/product";
-import { deleteProduct } from "../../redux/actions/product";
 import Loader from "../Layout/Loader";
+import currency from "../../utils/currency";
 
 const AllEvents = () => {
   const eventsState = useSelector((state) => state.event) || {};
@@ -16,11 +15,12 @@ const AllEvents = () => {
 
   const dispatch = useDispatch();
 
+  const sellerId = seller?._id;
   useEffect(() => {
-    if (seller && seller._id) {
-      dispatch(getAllEventsShop(seller._id));
+    if (sellerId) {
+      dispatch(getAllEventsShop(sellerId));
     }
-  }, [dispatch, seller && seller._id]);
+  }, [dispatch, sellerId]);
 
   const handleDelete = (id) => {
     dispatch(deleteEvent(id));
@@ -101,7 +101,7 @@ const AllEvents = () => {
       row.push({
         id: item._id,
         name: item.name,
-        price: "US$ " + item.discountPrice,
+        price: currency.formatPriceFromUsd(item.discountPrice),
         Stock: item.stock,
         sold: item.sold_out,
       });

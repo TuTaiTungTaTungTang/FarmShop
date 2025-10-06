@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styles from "../../styles/styles";
-import { AiOutlineArrowRight, AiOutlineMoneyCollect } from "react-icons/ai";
+import { AiOutlineMoneyCollect } from "react-icons/ai";
 import { MdBorderClear } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersOfAdmin } from "../../redux/actions/order";
 import Loader from "../Layout/Loader";
 import { getAllSellers } from "../../redux/actions/sellers";
+import currency from "../../utils/currency";
 
 const AdminDashboardMain = () => {
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ const AdminDashboardMain = () => {
   useEffect(() => {
     dispatch(getAllOrdersOfAdmin());
     dispatch(getAllSellers());
-  }, []);
+  }, [dispatch]);
 
   const adminEarning =
     adminOrders &&
@@ -69,11 +69,11 @@ const AdminDashboardMain = () => {
 
   const row = [];
   adminOrders &&
-    adminOrders.forEach((item) => {
+        adminOrders.forEach((item) => {
       row.push({
         id: item._id,
         itemsQty: item?.cart?.reduce((acc, item) => acc + item.qty, 0),
-        total: item?.totalPrice + " $",
+        total: currency.formatPriceFromUsd(item?.totalPrice),
         status: item?.status,
         createdAt: item?.createdAt.slice(0, 10),
       });
@@ -101,7 +101,7 @@ const AdminDashboardMain = () => {
                 </h3>
               </div>
               <h5 className="pt-2 pl-[36px] text-[22px] font-[500]">
-                $ {adminBalance}
+                {currency.formatPriceFromUsd(adminBalance)}
               </h5>
             </div>
 

@@ -5,6 +5,7 @@ import { getAllEventsAdmin } from "../../redux/actions/event";
 import { Button } from "@mui/material";
 import { AiOutlineEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import currency from "../../utils/currency";
 
 const AllEvents = () => {
   const dispatch = useDispatch();
@@ -72,7 +73,7 @@ const AllEvents = () => {
       row.push({
         id: item._id,
         name: item.name,
-        price: "US$ " + item.discountPrice,
+        price: currency.formatPriceFromUsd(item.discountPrice),
         Stock: item.stock,
         sold: item?.sold_out,
       });

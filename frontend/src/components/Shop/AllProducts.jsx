@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { deleteProduct } from "../../redux/actions/product";
 import Loader from "../Layout/Loader";
+import currency from "../../utils/currency";
 
 const AllProducts = () => {
   const productsState = useSelector((state) => state.product) || {};
@@ -19,11 +20,12 @@ const sellerState = useSelector((state) => state.seller) || {};
   // useEffect(() => {
   //   dispatch(getAllProductsShop(seller._id));
   // }, [dispatch]);
+const sellerId = seller && seller._id;
 useEffect(() => {
-  if (seller && seller._id) {
-    dispatch(getAllProductsShop(seller._id));
+  if (sellerId) {
+    dispatch(getAllProductsShop(sellerId));
   }
-}, [dispatch, seller && seller._id]);
+}, [dispatch, sellerId]);
 
   const handleDelete = (id) => {
     dispatch(deleteProduct(id));
@@ -99,12 +101,12 @@ useEffect(() => {
 
   const row = [];
 
-  products &&
+    products &&
     products.forEach((item) => {
       row.push({
         id: item._id,
         name: item.name,
-        price: "US$ " + item.discountPrice,
+        price: currency.formatPriceFromUsd(item.discountPrice),
         Stock: item.stock,
         sold: item.sold_out,
       });

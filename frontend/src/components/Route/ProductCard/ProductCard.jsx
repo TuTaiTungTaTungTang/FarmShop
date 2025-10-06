@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from "react-router-dom";
 import styles from "../../../styles/styles";
-import {
-    AiFillHeart,
-    AiFillStar,
-    AiOutlineEye,
-    AiOutlineHeart,
-    AiOutlineShoppingCart,
-    AiOutlineStar,
-} from "react-icons/ai";
-import { backend_url } from "../../../server";
+import { AiFillHeart, AiOutlineEye, AiOutlineHeart, AiOutlineShoppingCart } from "react-icons/ai";
+// backend_url intentionally not used here
 import ProductDetailsCard from "../ProductDetailsCard/ProductDetailsCard.jsx";
 import { useDispatch, useSelector } from 'react-redux'
 import { addToWishlist, removeFromWishlist } from '../../../redux/actions/wishlist';
@@ -17,6 +10,7 @@ import { addTocart } from '../../../redux/actions/cart';
 import { toast } from 'react-toastify';
 import Ratings from "../../Products/Ratings";
 import getProductImage from "../../../utils/getProductImage";
+import currency from "../../../utils/currency";
 
 const ProductCard = ({ data, isEvent }) => {
     const { wishlist } = useSelector((state) => state.wishlist);
@@ -33,7 +27,7 @@ const ProductCard = ({ data, isEvent }) => {
         } else {
             setClick(false);
         }
-    }, [wishlist]);
+    }, [wishlist, data._id]);
 
     // Remove from wish list 
     const removeFromWishlistHandler = (data) => {
@@ -85,10 +79,10 @@ const ProductCard = ({ data, isEvent }) => {
                 <div className='py-2 flex items-center justify-between'>
                     <div className='flex'>
                         <h5 className={`${styles.productDiscountPrice}`}>
-                            {data.originalPrice === 0 ? data.originalPrice : data.discountPrice}$
+                            {data.originalPrice === 0 ? currency.formatPriceFromUsd(data.originalPrice) : currency.formatPriceFromUsd(data.discountPrice)}
                         </h5>
                         <h4 className={`${styles.price}`}>
-                            {data.originalPrice ? data.originalPrice + " $" : null}
+                            {data.originalPrice ? currency.formatPriceFromUsd(data.originalPrice) : null}
                         </h4>
                     </div>
                     <span className="font-[400] text-[17px] text-[#68d284]">

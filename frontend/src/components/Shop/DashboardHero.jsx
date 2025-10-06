@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { AiOutlineArrowRight, AiOutlineMoneyCollect } from "react-icons/ai";
 import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
@@ -8,6 +8,7 @@ import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import currency from "../../utils/currency";
 
 const DashboardHero = () => {
     const dispatch = useDispatch();
@@ -19,12 +20,14 @@ const DashboardHero = () => {
     const { products = [] } = productsState;
 
     useEffect(() => {
-        dispatch(getAllOrdersOfShop(seller._id));
-        dispatch(getAllProductsShop(seller._id));
-    }, [dispatch]);
+        if (seller?._id) {
+            dispatch(getAllOrdersOfShop(seller._id));
+            dispatch(getAllProductsShop(seller._id));
+        }
+    }, [dispatch, seller?._id]);
 
-    /*  is calculating the available balance of the seller and rounding it to 2 decimal places. */
-    const availableBalance = seller?.availableBalance.toFixed(2);
+    /*  is calculating the available balance of the seller */
+    const availableBalance = seller?.availableBalance ? Number(seller.availableBalance) : 0;
 
 
     const columns = [
@@ -84,7 +87,7 @@ const DashboardHero = () => {
         row.push({
             id: item._id,
             itemsQty: item.cart.reduce((acc, item) => acc + item.qty, 0),
-            total: "US$ " + item.totalPrice,
+            total: currency.formatPriceFromUsd(item.totalPrice),
             status: item.status,
         });
     });
@@ -106,7 +109,7 @@ const DashboardHero = () => {
                             <span className="text-[16px]">(with 10% service charge)</span>
                         </h3>
                     </div>
-                    <h5 className="pt-2 pl-[36px] text-[22px] font-[500]">${availableBalance}</h5>
+                    <h5 className="pt-2 pl-[36px] text-[22px] font-[500]'">{currency.formatPriceFromUsd(availableBalance)}</h5>
                     <Link to="/dashboard-withdraw-money">
                         <h5 className="pt-4 pl-[2] text-[#077f9c]">Withdraw Money</h5>
                     </Link>

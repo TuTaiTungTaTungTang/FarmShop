@@ -13,14 +13,13 @@ import { toast } from "react-toastify"
 import { addTocart } from "../../../redux/actions/cart"
 import { addToWishlist, removeFromWishlist } from '../../../redux/actions/wishlist';
 import getProductImage from "../../../utils/getProductImage";
-import currency from "../../../utils/currency";
 const ProductDetailsCard = ({ setOpen, data }) => {
     const { cart } = useSelector((state) => state.cart);
     const { wishlist } = useSelector((state) => state.wishlist);
     const dispatch = useDispatch();
     const [count, setCount] = useState(1)
     const [click, setClick] = useState(false)
-    // select state not used in this small card; keep minimal state
+    const [select, setSelect] = useState(false)
 
     const handleMessageSubmit = () => {
 
@@ -59,7 +58,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
         } else {
             setClick(false);
         }
-    }, [wishlist, data._id]);
+    }, [wishlist]);
 
     // Remove from wish list 
     const removeFromWishlistHandler = (data) => {
@@ -137,10 +136,10 @@ const ProductDetailsCard = ({ setOpen, data }) => {
 
                                         <div className='flex  pt-3 '>
                                             <h4 className={`${styles.productDiscountPrice}`}>
-                                                {currency.formatPriceFromUsd(data.discountPrice)}
+                                                {data.discountPrice}$
                                             </h4>
                                             <h3 className={`${styles.price}`}>
-                                                {data.originalPrice ? currency.formatPriceFromUsd(data.originalPrice) : null}
+                                                {data.originalPrice ? data.originalPrice + "$" : null}
                                             </h3>
                                         </div>
 

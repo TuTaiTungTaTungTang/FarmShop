@@ -6,7 +6,6 @@ import axios from 'axios';
 import { server, backend_url } from '../server';
 import styles from '../styles/styles';
 import getProductImage from "../utils/getProductImage";
-import currency from "../utils/currency";
 
 const ProductTraceabilityPage = () => {
   const [searchParams] = useSearchParams();
@@ -15,6 +14,7 @@ const ProductTraceabilityPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const pId = searchParams.get('pId'); // Product ID encoded
     const tId = searchParams.get('tId'); // Traceability ID
     
     if (tId) {
@@ -192,11 +192,11 @@ const ProductTraceabilityPage = () => {
                                 </tr>
                                 <tr>
                                   <td className="font-medium text-gray-600 py-1">Giá bán:</td>
-                                  <td className="text-green-700 font-bold">{currency.formatPriceFromUsd(product.discountPrice)}</td>
+                                  <td className="text-green-700 font-bold">${product.discountPrice}</td>
                                 </tr>
                                 <tr>
                                   <td className="font-medium text-gray-600 py-1">Giá gốc:</td>
-                                  <td>{currency.formatPriceFromUsd(product.originalPrice)}</td>
+                                  <td>${product.originalPrice}</td>
                                 </tr>
                                 <tr>
                                   <td className="font-medium text-gray-600 py-1">Tồn kho:</td>

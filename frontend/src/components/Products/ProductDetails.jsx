@@ -10,7 +10,7 @@ import {
 import { HiQrCode } from "react-icons/hi2";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
-import { backend_url, server } from "../../server";
+import { server } from "../../server";
 import {
   addToWishlist,
   removeFromWishlist,
@@ -21,6 +21,7 @@ import Ratings from "./Ratings";
 import axios from "axios";
 
 import getProductImage from "../../utils/getProductImage";
+import currency from "../../utils/currency";
 
 const ProductDetails = ({ data }) => {
   const productsState = useSelector((state) => state.product) || {};
@@ -186,10 +187,10 @@ const ProductDetails = ({ data }) => {
 
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
-                    {data.discountPrice}$
+                    {currency.formatPriceFromUsd(data.discountPrice)}
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {data.originalPrice ? data.originalPrice + "$" : null}
+                    {data.originalPrice ? currency.formatPriceFromUsd(data.originalPrice) : null}
                   </h3>
                 </div>
 
@@ -525,8 +526,8 @@ const ProductDetailsInfo = ({
                     <h4 className="font-semibold mb-2">📊 Thông Tin Cơ Bản</h4>
                     <div className="space-y-1 text-sm">
                       <p><span className="font-medium">Danh mục:</span> {traceabilityData.product.category}</p>
-                      <p><span className="font-medium">Giá gốc:</span> ${traceabilityData.product.originalPrice}</p>
-                      <p><span className="font-medium">Giá bán:</span> ${traceabilityData.product.discountPrice}</p>
+                      <p><span className="font-medium">Giá gốc:</span> {currency.formatPriceFromUsd(traceabilityData.product.originalPrice)}</p>
+                      <p><span className="font-medium">Giá bán:</span> {currency.formatPriceFromUsd(traceabilityData.product.discountPrice)}</p>
                       <p><span className="font-medium">Tồn kho:</span> {traceabilityData.product.stock} sản phẩm</p>
                       <p><span className="font-medium">Đã bán:</span> {traceabilityData.product.sold_out} sản phẩm</p>
                     </div>

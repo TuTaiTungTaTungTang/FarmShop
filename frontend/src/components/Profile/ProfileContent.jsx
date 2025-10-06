@@ -19,6 +19,7 @@ import axios from 'axios';
 import { Country, State } from "country-state-city";
 import { getAllOrdersOfUser, getAllOrdersOfAdmin } from '../../redux/actions/order';
 import getProductImage from "../../utils/getProductImage";
+import currency from "../../utils/currency";
 
 const ProfileContent = ({ active }) => {
     const { user, error, successMessage } = useSelector((state) => state.user);
@@ -280,12 +281,12 @@ const AllOrders = () => {
 
     const row = [];
 
-    displayOrders &&
+            displayOrders &&
         displayOrders.forEach((item) => {
             row.push({
                 id: item._id,
                 itemsQty: item.cart.length,
-                total: "US$ " + item.totalPrice,
+                total: currency.formatPriceFromUsd(item.totalPrice),
                 status: item.status,
             });
         });
@@ -375,11 +376,11 @@ const AllRefundOrders = () => {
     const row = [];
 
     eligibleOrders &&
-        eligibleOrders.forEach((item) => {
+            eligibleOrders.forEach((item) => {
             row.push({
                 id: item._id,
                 itemsQty: item.cart.length,
-                total: "US$ " + item.totalPrice,
+                total: currency.formatPriceFromUsd(item.totalPrice),
                 status: item.status,
             });
         });
@@ -465,11 +466,11 @@ const TrackOrder = () => {
     const row = []
 
     orders &&
-        orders.forEach((item) => {
+            orders.forEach((item) => {
             row.push({
                 id: item._id,
                 itemsQty: item.cart.length,
-                total: "US$ " + item.totalPrice,
+                total: currency.formatPriceFromUsd(item.totalPrice),
                 status: item.status,
             });
         });
