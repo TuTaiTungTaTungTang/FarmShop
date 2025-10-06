@@ -6,31 +6,31 @@ const Hero = () => {
   // Curated slides for agro carousel (do NOT use static/data.js)
   const slides = [
     {
-      src: "https://images.unsplash.com/photo-1506806732259-39c2d0268443?auto=format&fit=crop&w=1400&q=80",
+      src: "https://thoibaotaichinhvietnam.vn/stores/news_dataimages/2025/102025/06/05/in_article/ngay-610-gia-lua-gao-tai-dong-bang-song-cuu-long-di-ngang-sang-dau-tuan-20251006055154.jpg?rt=20251006055157",
       title: "Gạo hữu cơ chất lượng cao",
       value: "Rice",
       caption: "Gạo thơm ngon, sản xuất theo quy trình hữu cơ."
     },
     {
-      src: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1400&q=80",
+      src: "https://mtcs.1cdn.vn/2023/05/30/rau-cu-qua.jpg",
       title: "Rau củ tươi sạch",
       value: "Vegetables",
       caption: "Rau thu hái trong ngày — an toàn cho gia đình bạn."
     },
     {
-      src: "https://images.unsplash.com/photo-1495195134817-aeb325a55b65?auto=format&fit=crop&w=1400&q=80",
+      src: "https://cdn2.fptshop.com.vn/unsafe/800x0/mua_nay_co_qua_gi_08_0592cc739c.jpg",
       title: "Trái cây theo mùa",
       value: "Fruits",
       caption: "Đa dạng trái cây theo mùa — ngọt tự nhiên, ít xử lý."
     },
     {
-      src: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1400&q=80",
+      src: "https://arockacoffee.com/upload/news/cafe-ngon-1059.png",
       title: "Cà phê rang xay nguyên chất",
       value: "Coffee",
       caption: "Cà phê địa phương, rang tại chỗ để giữ hương thơm."
     },
     {
-      src: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1400&q=80",
+      src: "https://suckhoedoisong.qltns.mediacdn.vn/zoom/600_315/324455921873985536/2022/3/17/loi-ich-mat-ong-1200x676-1647530259590803088207-0-0-676-1082-crop-1647530264945220536639.jpg",
       title: "Mật ong nguyên chất",
       value: "Honey",
       caption: "Mật ong rừng, không chất bảo quản."
