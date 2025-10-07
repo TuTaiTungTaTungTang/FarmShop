@@ -26,6 +26,8 @@ const ProductDetailsCard = ({ setOpen, data }) => {
     const shop = data?.shop || null;
     const shopAvatar = shop?.avatar || shop?.shop_avatar?.url || shop?.shop_avatar || shop?.avatarUrl || null;
     const shopName = shop?.name || shop?.shop_name || data?.shop?.shop_name || "Unknown Shop";
+    // Prefer product's own rating if available, otherwise fallback to shop rating
+    const shopRating = (data?.ratings || shop?.ratings || data?.shop?.ratings || 0);
     // select state not used in this small card; keep minimal state
 
     const handleMessageSubmit = () => {
@@ -115,7 +117,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                                                                 {shopName}
                                                             </h3>
                                                             <h5 className="pb-3 text-[15px]">
-                                                                (4.5) Ratings
+                                                                ({shopRating.toFixed(1)}) Ratings
                                                             </h5>
                                                         </div>
                                                     </Link>
@@ -132,7 +134,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                                                                 {shopName}
                                                             </h3>
                                                             <h5 className="pb-3 text-[15px]">
-                                                                (4.5) Ratings
+                                                                ({shopRating.toFixed(1)}) Ratings
                                                             </h5>
                                                         </div>
                                                     </div>

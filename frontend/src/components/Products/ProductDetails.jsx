@@ -150,6 +150,8 @@ const ProductDetails = ({ data }) => {
   const avg = totalRatings / totalReviewsLength || 0;
 
   const averageRating = avg.toFixed(2);
+  // product-level rating (use product's own rating when available)
+  const productRating = data?.ratings ?? 0;
 
   // Sand message
   const handleMessageSubmit = async () => {
@@ -303,7 +305,7 @@ const ProductDetails = ({ data }) => {
                     )}
                     <h5 className="pb-3 text-[15px]">
                       {" "}
-                      ({averageRating}/5) Ratingss
+                      ({productRating.toFixed(1)}/5) Ratings
                     </h5>
                   </div>
 
@@ -357,6 +359,7 @@ const ProductDetailsInfo = ({
   // local shop id for nested component
   const localShopId = shopForInfo?._id || data?.shopId || null;
   const shop = shopForInfo || data?.shop || null;
+  const shopRating = shop?.ratings ?? data?.ratings ?? 0;
 
   return (
     <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded">
@@ -492,7 +495,7 @@ const ProductDetailsInfo = ({
                         <h3 className={`${styles.shop_name}`}>
                           {shop?.name || "Unknown Shop"}
                         </h3>
-                        <h5 className="pb-3 text-[15px]">({averageRating}/5) Ratings</h5>
+                        <h5 className="pb-3 text-[15px]">({shopRating.toFixed(1)}/5) Ratings</h5>
                       </div>
                     </div>
                   </Link>
