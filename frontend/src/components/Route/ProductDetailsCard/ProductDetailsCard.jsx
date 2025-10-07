@@ -20,6 +20,12 @@ const ProductDetailsCard = ({ setOpen, data }) => {
     const dispatch = useDispatch();
     const [count, setCount] = useState(1)
     const [click, setClick] = useState(false)
+    // safe shop id for products that may only contain shopId or an embedded shop object
+    const shopId = data ? (data.shop?._id || data.shopId) : null;
+    // normalize shop avatar/name for seed shapes (e.g., shop.shop_avatar.url)
+    const shop = data?.shop || null;
+    const shopAvatar = shop?.avatar || shop?.shop_avatar?.url || shop?.shop_avatar || shop?.avatarUrl || null;
+    const shopName = shop?.name || shop?.shop_name || data?.shop?.shop_name || "Unknown Shop";
     // select state not used in this small card; keep minimal state
 
     const handleMessageSubmit = () => {
@@ -96,22 +102,41 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                                         />
                                         <div className='flex' >
                                             {data.shop && (
-                                                <Link to={`/shop/preview/${data.shop._id}`} className="flex">
-                                                    <img
-                                                        src={getProductImage(data.shop.avatar)}
-                                                        alt=""
-                                                        className='w-[50px] h-[50px] rounded-full mr-2'
-                                                        onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/100x100?text=No+Logo"; }}
-                                                    />
-                                                    <div>
-                                                        <h3 className={`${styles.shop_name}`}>
-                                                            {data.shop.name}
-                                                        </h3>
-                                                        <h5 className="pb-3 text-[15px]">
-                                                            (4.5) Ratings
-                                                        </h5>
+                                                (shopId) ? (
+                                                    <Link to={`/shop/preview/${shopId}`} className="flex">
+                                                        <img
+                                                            src={getProductImage(shopAvatar)}
+                                                            alt=""
+                                                            className='w-[50px] h-[50px] rounded-full mr-2'
+                                                            onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/100x100?text=No+Logo"; }}
+                                                        />
+                                                        <div>
+                                                            <h3 className={`${styles.shop_name}`}>
+                                                                {shopName}
+                                                            </h3>
+                                                            <h5 className="pb-3 text-[15px]">
+                                                                (4.5) Ratings
+                                                            </h5>
+                                                        </div>
+                                                    </Link>
+                                                ) : (
+                                                    <div className="flex items-center">
+                                                        <img
+                                                            src={getProductImage(shopAvatar)}
+                                                            alt=""
+                                                            className='w-[50px] h-[50px] rounded-full mr-2'
+                                                            onError={e => { e.target.onerror = null; e.target.src = "https://placehold.co/100x100?text=No+Logo"; }}
+                                                        />
+                                                        <div>
+                                                            <h3 className={`${styles.shop_name}`}>
+                                                                {shopName}
+                                                            </h3>
+                                                            <h5 className="pb-3 text-[15px]">
+                                                                (4.5) Ratings
+                                                            </h5>
+                                                        </div>
                                                     </div>
-                                                </Link>
+                                                )
                                             )}
                                         </div>
                                         <div
