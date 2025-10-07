@@ -53,23 +53,26 @@ const ProductDetailsPage = () => {
         the component is rendered. This ensures that when the user navigates to the
         `ProductDetailsPage`, the page starts at the top rather than at the previous scroll position. */
         window.scrollTo(0, 0)
-    }, [allProducts, allEvents]);
+    }, [allProducts, allEvents, data, eventData, id]);
 
 
 
     return (
-        <div>
-            <Header />
-            <ProductDetails data={data} />
-            {
-                !eventData && (
+            <div>
+                <Header />
+                {data ? (
                     <>
-                        {data && <SuggestedProduct data={data} />}
+                        <ProductDetails data={data} />
+                        {!eventData && <SuggestedProduct data={data} />}
                     </>
-                )
-            }
-            <Footer />
-        </div>
+                ) : (
+                    <div className="w-full flex flex-col items-center justify-center py-20">
+                        <h2 className="text-2xl font-bold text-red-500 mb-4">Product not found</h2>
+                        <p className="text-gray-600">The product you are looking for does not exist or has been removed.</p>
+                    </div>
+                )}
+                <Footer />
+            </div>
     )
 }
 
