@@ -121,11 +121,16 @@ router.post("/create-user", upload.single("file"), validate(schemas.user.registe
 });
 
 // create activation token
+// const createActivationToken = (user) => {
+//   // why use create activatetoken?
+//   // to create a token for the user to activate their account  after they register
+//   return jwt.sign(user, process.env.ACTIVATION_SECRET, {
+//     expiresIn: "5m",
+//   });
+// };
 const createActivationToken = (user) => {
-  // why use create activatetoken?
-  // to create a token for the user to activate their account  after they register
   return jwt.sign(user, process.env.ACTIVATION_SECRET, {
-    expiresIn: "5m",
+    expiresIn: process.env.ACTIVATION_EXPIRES || "2h", // cấu hình qua .env, mặc định 2h
   });
 };
 
@@ -143,7 +148,12 @@ router.post(
       if (!newUser) {
         return next(new ErrorHandler("Invalid token", 400));
       }
-      const { name, email, password, avatar } = newUser;
+      let { name, email, password, avatar } = newUser;
+
+      // Nếu avatar rỗng, gán giá trị mặc định
+      if (!avatar) {
+        avatar = "https://ui-avatars.com/api/?name=" + encodeURIComponent(name);
+      }
 
       let user = await User.findOne({ email });
 
