@@ -15,16 +15,21 @@ const ProductsPage = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    if (categoryData === null) {
-      const d = allProducts;
-      setData(d);
+    // decode in case categories were encoded in the URL
+    const requestedCategory = categoryData ? decodeURIComponent(categoryData) : null;
+    if (!requestedCategory) {
+      setData(allProducts);
     } else {
+      // match either the product.category (seed uses English values) or the Vietnamese title
       const d =
-        allProducts && allProducts.filter((i) => i.category === categoryData);
-      setData(d);
+        allProducts && allProducts.filter((i) => {
+          if (!i || !i.category) return false;
+          return i.category === requestedCategory || i.category === requestedCategory;
+        });
+      setData(d || []);
     }
     //    window.scrollTo(0,0);
-  }, [allProducts]);
+  }, [allProducts, categoryData]);
 
   return (
     <>
@@ -42,7 +47,7 @@ const ProductsPage = () => {
             </div>
             {data && data.length === 0 ? (
               <h1 className="text-center w-full pb-[100px] text-[20px]">
-                No products Found!
+                Không tìm thấy sản phẩm!
               </h1>
             ) : null}
           </div>

@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import Loader from "../Layout/Loader";
 import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { AiOutlineArrowRight } from "react-icons/ai";
+import currency from "../../utils/currency";
 
 const AllOrders = () => {
     const { orders, isLoading } = useSelector((state) => state.order);
@@ -14,14 +15,14 @@ const AllOrders = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getAllOrdersOfShop(seller._id));
-    }, [dispatch]);
+        if (seller?._id) dispatch(getAllOrdersOfShop(seller._id));
+    }, [dispatch, seller?._id]);
 
     const columns = [
         { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
 
         {
-            field: "status",
+            field: "status", 
             headerName: "Status",
             minWidth: 130,
             flex: 0.7,
@@ -72,10 +73,10 @@ const AllOrders = () => {
 
     orders &&
         orders.forEach((item) => {
-            row.push({
+                row.push({
                 id: item._id,
                 itemsQty: item.cart.length,
-                total: "US$ " + item.totalPrice,
+                total: currency.formatPriceFromUsd(item.totalPrice),
                 status: item.status,
             });
         });

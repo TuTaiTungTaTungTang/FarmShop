@@ -12,7 +12,7 @@ require("dotenv").config({
 
 // app.use(cors());
 app.use(cors({
-  origin: process.env.FRONTEND_URL, // domain Vercel
+  origin: process.env.FRONTEND_URL || "https://agritechsolution.vercel.app, // domain Vercel
   credentials: true
 }));
 app.use(express.json());

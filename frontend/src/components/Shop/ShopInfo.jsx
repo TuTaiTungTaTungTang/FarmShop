@@ -25,10 +25,10 @@ const ShopInfo = ({ isOwner }) => {
             setData(res.data.shop);
             setIsLoading(false);
         }).catch((error) => {
-            console.log(error);
+            // error fetching shop info
             setIsLoading(false);
         })
-    }, [])
+    }, [dispatch, id])
 
 
     const logoutHandler = async () => {

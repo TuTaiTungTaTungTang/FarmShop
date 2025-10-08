@@ -285,7 +285,29 @@ router.get(
   })
 );
 
-// 🔄 Regenerate QR code for existing product (cho seller)
+// � Get single product by id (populated with shop) - used by frontend fallback
+router.get(
+  "/get-product/:id",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const product = await Product.findById(req.params.id).populate("shop");
+
+      if (!product) {
+        return next(new ErrorHandler("Không tìm thấy sản phẩm!", 404));
+      }
+
+      res.status(200).json({
+        success: true,
+        product,
+      });
+    } catch (error) {
+      console.error("Error fetching product by id:", error);
+      return next(new ErrorHandler(error.message || "Lỗi máy chủ", 500));
+    }
+  })
+);
+
+// �🔄 Regenerate QR code for existing product (cho seller)
 router.put(
   "/regenerate-qr/:id",
   isAuthenticated,

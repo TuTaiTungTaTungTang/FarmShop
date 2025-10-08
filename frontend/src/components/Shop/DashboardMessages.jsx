@@ -56,7 +56,7 @@ const DashboardMessages = () => {
 
         setConversations(resonse.data.conversations);
       } catch (error) {
-        // console.log(error);
+  // error fetching messages
       }
     };
     getConversation();
@@ -88,7 +88,7 @@ const DashboardMessages = () => {
         );
         setMessages(response.data.messages);
       } catch (error) {
-        console.log(error);
+  // error fetching conversation
       }
     };
     getMessage();
@@ -122,11 +122,11 @@ const DashboardMessages = () => {
             updateLastMessage();
           })
           .catch((error) => {
-            console.log(error);
+            // error fetching conversation detail
           });
       }
     } catch (error) {
-      console.log(error);
+  // conversation action error
     }
   };
 
@@ -142,11 +142,11 @@ const DashboardMessages = () => {
         lastMessageId: seller._id,
       })
       .then((res) => {
-        console.log(res.data.conversation);
+  // conversation loaded
         setNewMessage("");
       })
       .catch((error) => {
-        console.log(error);
+  // conversation fetch error
       });
   };
 
@@ -189,7 +189,7 @@ const DashboardMessages = () => {
           updateLastMessageForImage();
         });
     } catch (error) {
-      console.log(error);
+  // messages fetch error
     }
   };
 
@@ -278,7 +278,7 @@ const MessageList = ({
         const res = await axios.get(`${server}/user/user-info/${userId}`);
         setUser(res.data.user);
       } catch (error) {
-        console.log(error);
+  // messages fetch error
       }
     };
     getUser();

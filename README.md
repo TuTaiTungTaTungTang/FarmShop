@@ -366,17 +366,17 @@ How to run the app locally!
 - use your Cradincial in.env file
 
 ```
-PORT = 8000
-DB_URL = ""
-JWT_SECRET_KEY = ""
-JWT_EXPIRES = 7d
-ACTIVATION_SECRET = 
-SMPT_HOST = 'smtp.gmail.com'
-SMPT_PORT = 465
-SMPT_PASSWORD = 
-SMPT_MAIL =
-STRIPE_API_KEY = 
-STRIPE_SECRET_KEY = 
+PORT=8000
+DB_URL=""
+JWT_SECRET_KEY=""
+JWT_EXPIRES=7d
+ACTIVATION_SECRET=
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_PASSWORD=
+SMTP_MAIL=
+STRIPE_API_KEY=
+STRIPE_SECRET_KEY=
 ```
 - `yarn start`
 

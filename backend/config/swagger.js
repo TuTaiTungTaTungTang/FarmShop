@@ -23,7 +23,7 @@ const options = {
         description: 'Development server',
       },
       {
-        url: 'https://your-domain.com/api/v2',
+        url: 'https://backend-26sf.onrender.com/api/v2',
         description: 'Production server',
       },
     ],

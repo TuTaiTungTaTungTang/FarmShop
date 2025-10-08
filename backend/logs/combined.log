@@ -1,0 +1,7 @@
+2025-10-08 19:40:15 [WARN]: Validation error: [{"field":"name","message":"\"name\" is required"},{"field":"email","message":"\"email\" is required"},{"field":"password","message":"\"password\" is required"}]
+2025-10-08 19:41:28 [WARN]: Validation error: [{"field":"name","message":"\"name\" is required"},{"field":"email","message":"\"email\" is required"},{"field":"password","message":"\"password\" is required"}]
+2025-10-08 19:41:38 [WARN]: Validation error: [{"field":"name","message":"\"name\" is required"},{"field":"email","message":"\"email\" is required"},{"field":"password","message":"\"password\" is required"}]
+2025-10-08 19:43:05 [WARN]: Validation error: [{"field":"name","message":"\"name\" is required"},{"field":"email","message":"\"email\" is required"},{"field":"password","message":"\"password\" is required"}]
+2025-10-08 19:46:14 [WARN]: Validation error: [{"field":"name","message":"\"name\" is required"},{"field":"email","message":"\"email\" is required"},{"field":"password","message":"\"password\" is required"}]
+2025-10-08 21:38:42 [WARN]: Validation error: [{"field":"name","message":"\"name\" is required"},{"field":"email","message":"\"email\" is required"},{"field":"password","message":"\"password\" is required"}]
+2025-10-08 21:40:31 [WARN]: Validation error: [{"field":"name","message":"\"name\" is required"},{"field":"email","message":"\"email\" is required"},{"field":"password","message":"\"password\" is required"}]

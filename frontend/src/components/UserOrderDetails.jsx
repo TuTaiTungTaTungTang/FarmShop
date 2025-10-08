@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "../styles/styles";
 import { BsFillBagFill } from "react-icons/bs";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { server } from "../server";
@@ -10,6 +10,7 @@ import { RxCross1 } from "react-icons/rx";
 import { getAllOrdersOfUser } from "../redux/actions/order";
 import { useDispatch, useSelector } from "react-redux";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import currency from "../utils/currency";
 
 const UserOrderDetails = () => {
   const { orders } = useSelector((state) => state.order);
@@ -53,8 +54,8 @@ const UserOrderDetails = () => {
       setRating(null);
       setOpen(false);
     } catch (error) {
-      console.error(error); // Log the error to the console for debugging
       toast.error("An error occurred. Please try again."); // Display a generic error message
+        // error fetching order details
     }
   };
 
@@ -110,12 +111,12 @@ const UserOrderDetails = () => {
                 alt="Product item order img"
                 className="w-[80x] h-[80px]"
               />
-              <div className="w-full">
-                <h5 className="pl-3 text-[20px]">{item.name}</h5>
-                <h5 className="pl-3 text-[20px] text-[#00000091]">
-                  US${item.discountPrice} x {item.qty}
-                </h5>
-              </div>
+                  <div className="w-full">
+                    <h5 className="pl-3 text-[20px]">{item.name}</h5>
+                    <h5 className="pl-3 text-[20px] text-[#00000091]">
+                      {currency.formatPriceFromUsd(item.discountPrice)} x {item.qty}
+                    </h5>
+                  </div>
               {!item.isReviewed && data?.status === "Delivered" ? (
                 <div
                   className={`${styles.button} text-[#fff]`}
@@ -149,12 +150,12 @@ const UserOrderDetails = () => {
                 alt=""
                 className="w-[80px] h-[80px]"
               />
-              <div>
-                <div className="pl-3 text-[20px]">{selectedItem?.name}</div>
-                <h4 className="pl-3 text-[20px]">
-                  US${selectedItem?.discountPrice} x {selectedItem?.qty}
-                </h4>
-              </div>
+                <div>
+                  <div className="pl-3 text-[20px]">{selectedItem?.name}</div>
+                  <h4 className="pl-3 text-[20px]">
+                    {currency.formatPriceFromUsd(selectedItem?.discountPrice)} x {selectedItem?.qty}
+                  </h4>
+                </div>
             </div>
 
             <br />
@@ -217,7 +218,7 @@ const UserOrderDetails = () => {
 
       <div className="border-t w-full text-right">
         <h5>
-          Total Price: <strong>US${data?.totalPrice}</strong>
+          Tổng tiền: <strong>{currency.formatPriceFromUsd(data?.totalPrice)}</strong>
         </h5>
       </div>
       <br />

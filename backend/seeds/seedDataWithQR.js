@@ -101,174 +101,202 @@ const seedCompleteData = async () => {
       }
     ]);
 
-    // 3. 🏪 Tạo TEST SHOPS
-    console.log("🏪 Creating test shops...");
+    // 3. 🏪 Tạo TEST SHOPS (nông sản / farm shops)
+    console.log("🏪 Creating farm shops...");
     const shops = await Shop.create([
       {
-        name: "TechStore Vietnam",
-        email: "techstore@example.com",
+        name: "FreshFarm Co",
+        email: "freshfarm@example.com",
         password: "shop123",
-        description: "Chuyên cung cấp thiết bị công nghệ chất lượng cao với QR truy xuất",
-        address: "456 Lê Lợi, Quận 1, TP.HCM, Việt Nam",
-        phoneNumber: 84901234567,
-        zipCode: 70000,
-        avatar: "techstore-avatar.png",
+        description: "Tập đoàn nông sản sạch, cung cấp gạo, rau củ quả tươi ngon truy xuất nguồn gốc.",
+        address: "123 Farm Road, Đồng Tháp, Việt Nam",
+        phoneNumber: 84901230001,
+        zipCode: 87000,
+        avatar: "https://picsum.photos/seed/farm1/200",
         availableBalance: 15000,
       },
       {
-        name: "Nông Sản Sạch Premium",
-        email: "nongsansach@example.com", 
+        name: "Green Valley Farm",
+        email: "greenvalley@example.com",
         password: "shop123",
-        description: "Nông sản hữu cơ truy xuất nguồn gốc từ trang trại",
-        address: "789 Hai Bà Trưng, Quận 3, TP.HCM, Việt Nam",
-        phoneNumber: 84909876543,
-        zipCode: 70000,
-        avatar: "organic-avatar.png",
+        description: "Nông trại hữu cơ chuyên rau củ sạch, trái cây theo mùa và sản phẩm chế biến.",
+        address: "45 Valley Lane, Lâm Đồng, Việt Nam",
+        phoneNumber: 84909870002,
+        zipCode: 67000,
+        avatar: "https://picsum.photos/seed/farm2/200",
         availableBalance: 8000,
       },
       {
-        name: "Fashion Hub VN",
-        email: "fashion@example.com",
-        password: "shop123", 
-        description: "Thời trang xu hướng với tem truy xuất chất lượng",
-        address: "321 Nguyễn Trãi, Quận 5, TP.HCM, Việt Nam",
-        phoneNumber: 84905555666,                                                                                                                           
-        zipCode: 70000,
-        avatar: "fashion-avatar.png",
+        name: "Organic Harvest",
+        email: "organicharvest@example.com",
+        password: "shop123",
+        description: "Chuỗi cung ứng nông sản hữu cơ, mật ong, trứng và các sản phẩm chế biến từ nông trại.",
+        address: "78 Harvest Street, Tiền Giang, Việt Nam",
+        phoneNumber: 84905550003,
+        zipCode: 79000,
+        avatar: "https://picsum.photos/seed/farm3/200",
         availableBalance: 5500,
       }
     ]);
 
     // 4. 📦 Tạo PRODUCTS (SẼ CÓ QR SAU)
-    console.log("📦 Creating products...");
-    const productsData = [
+    console.log("📦 Generating many farm product variants (this may take a moment)...");
+
+    // Base templates to expand into many products
+    const baseProducts = [
       {
-        name: "MacBook Pro M2 256GB - Truy xuất nguồn gốc",
-        description: "MacBook Pro mới nhất với chip M2, bảo hành chính hãng Apple. Có QR code truy xuất nguồn gốc nhập khẩu.",
-        category: "Computers and Laptops",
-        tags: "laptop,apple,macbook,traceability,authentic",
-        originalPrice: 1299,
-        discountPrice: 1199,
-        stock: 50,
-        images: ["macbook1.png", "macbook2.png"],
-        shopId: shops[0]._id,
-        shop: {
-          name: shops[0].name,
-          shop_avatar: { public_id: "test", url: shops[0].avatar },
-          ratings: 4.5
-        },
-        sold_out: 25,
-        ratings: 4.5
+        name: "Gạo ST25 Hữu Cơ",
+        description: "Gạo ST25 hữu cơ, trồng theo tiêu chuẩn VietGAP, thơm và dẻo.",
+        category: "Rice",
+        tags: "rice,organic,st25,traceable",
+        basePrice: 40,
+        shopIndex: 0,
+        imgSeed: "rice"
       },
       {
-        name: "Gạo ST25 Hữu Cơ - Trại Nông Sản Sạch",
-        description: "Gạo ST25 hữu cơ được trồng theo tiêu chuẩn VietGAP tại Đồng Tháp. Truy xuất được từ ruộng đến bàn ăn.",
-        category: "Others",
-        tags: "rice,organic,vietnam,traceable,st25",
-        originalPrice: 25,
-        discountPrice: 22,
-        stock: 100,
-        images: ["rice1.png", "rice2.png"],
-        shopId: shops[1]._id,
-        shop: {
-          name: shops[1].name,
-          shop_avatar: { public_id: "test", url: shops[1].avatar },
-          ratings: 4.8
-        },
-        sold_out: 45,
-        ratings: 4.7
+        name: "Combo Rau Sạch Hữu Cơ",
+        description: "Combo rau củ hữu cơ gồm xà lách, cải, cà rốt - hái tươi trong ngày.",
+        category: "Vegetables",
+        tags: "vegetable,organic,fresh,traceable",
+        basePrice: 6,
+        shopIndex: 1,
+        imgSeed: "veg"
       },
       {
-        name: "iPhone 14 Pro Max 256GB - Chính hãng VN/A",
-        description: "iPhone 14 Pro Max chính hãng với đầy đủ tem CO CQ, phiếu bảo hành. QR truy xuất nhập khẩu chính hãng.",
-        category: "Mobile and Tablets", 
-        tags: "phone,apple,iphone,authentic,warranty",
-        originalPrice: 1099,
-        discountPrice: 999,
-        stock: 30,
-        images: ["iphone1.png", "iphone2.png"],
-        shopId: shops[0]._id,
-        shop: {
-          name: shops[0].name,
-          shop_avatar: { public_id: "test", url: shops[0].avatar },
-          ratings: 4.5
-        },
-        sold_out: 15,
-        ratings: 4.8
+        name: "Mật Ong Rừng",
+        description: "Mật ong rừng nguyên chất, thu hái thủ công.",
+        category: "Honey",
+        tags: "honey,organic,forest,traceable",
+        basePrice: 15,
+        shopIndex: 2,
+        imgSeed: "honey"
       },
       {
-        name: "Cà phê Arabica Đà Lạt - Nguyên chất",
-        description: "Cà phê Arabica trồng tại độ cao 1500m Đà Lạt, rang xay nguyên chất. Truy xuất từ trang trại cà phê.",
-        category: "Others",
-        tags: "coffee,arabica,dalat,organic,traceable",
-        originalPrice: 15,
-        discountPrice: 12,
-        stock: 200,
-        images: ["coffee1.png", "coffee2.png"], 
-        shopId: shops[1]._id,
-        shop: {
-          name: shops[1].name,
-          shop_avatar: { public_id: "test", url: shops[1].avatar },
-          ratings: 4.8
-        },
-        sold_out: 80,
-        ratings: 4.6
+        name: "Trứng Gà Hữu Cơ",
+        description: "Trứng gà chăn thả, nguồn gốc rõ ràng, an toàn cho gia đình.",
+        category: "Eggs",
+        tags: "eggs,organic,free-range,traceable",
+        basePrice: 5,
+        shopIndex: 2,
+        imgSeed: "eggs"
       },
       {
-        name: "Áo Thun Nam Cotton 100% - Made in Vietnam",
-        description: "Áo thun nam chất liệu cotton 100% được dệt và may tại Việt Nam. QR truy xuất nguồn gốc vải và quy trình sản xuất.",
-        category: "Cloths",
-        tags: "tshirt,cotton,vietnam,fashion,traceable",
-        originalPrice: 20,
-        discountPrice: 16, 
-        stock: 75,
-        images: ["tshirt1.png", "tshirt2.png"],
-        shopId: shops[2]._id,
-        shop: {
-          name: shops[2].name,
-          shop_avatar: { public_id: "test", url: shops[2].avatar },
-          ratings: 4.3
-        },
-        sold_out: 30,
-        ratings: 4.4
-      },
-      {
-        name: "Chăm sóc thú cưng - Thức ăn cho chó Premium",
-        description: "Thức ăn cao cấp cho chó con và chó trưởng thành, có chứng nhận chất lượng. QR truy xuất thành phần và nguồn gốc.",
-        category: "Pet Care",
-        tags: "pet,dog,food,premium,safe",
-        originalPrice: 35,
-        discountPrice: 30,
-        stock: 60,
-        images: ["petfood1.png", "petfood2.png"],
-        shopId: shops[1]._id,
-        shop: {
-          name: shops[1].name,
-          shop_avatar: { public_id: "test", url: shops[1].avatar },
-          ratings: 4.8
-        },
-        sold_out: 20,
-        ratings: 4.5
-      },
-      {
-        name: "Bộ quà tặng cao cấp - Premium Gift Set",
-        description: "Bộ quà tặng cao cấp gồm nhiều sản phẩm đặc biệt, có hộp đẹp và QR truy xuất nguồn gốc từng món quà.",
-        category: "Gifts", 
-        tags: "gift,premium,luxury,traceable,special",
-        originalPrice: 80,
-        discountPrice: 65,
-        stock: 40,
-        images: ["giftset1.png", "giftset2.png"],
-        shopId: shops[2]._id,
-        shop: {
-          name: shops[2].name,
-          shop_avatar: { public_id: "test", url: shops[2].avatar },
-          ratings: 4.3
-        },
-        sold_out: 12,
-        ratings: 4.2
+        name: "Cà Phê Arabica Hạt",
+        description: "Cà phê Arabica Đà Lạt hạt, rang xay vừa, hương vị đậm đà.",
+        category: "Coffee",
+        tags: "coffee,arabica,dalat,traceable",
+        basePrice: 10,
+        shopIndex: 1,
+        imgSeed: "coffee"
       }
     ];
+
+    // Generate richer variants to reach ~60 products with distinct names and attributes
+    const productsData = [];
+    const choose = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+    // descriptor pools by category
+    const descriptors = {
+      Rice: {
+        sizes: ["1kg", "2kg", "5kg", "10kg"],
+        packs: ["Túi giấy", "Bao vải", "Hộp quà"],
+        regions: ["Đồng Tháp", "An Giang", "Cần Thơ", "Long An"],
+        certs: ["VietGAP", "Hữu cơ", "GlobalGAP", "Không chứng nhận"]
+      },
+      Vegetables: {
+        sizes: ["0.5kg", "1kg", "2kg", "Combo gia đình"],
+        packs: ["Túi lưới", "Hộp giấy", "Bao đổi hàng"],
+        regions: ["Lâm Đồng", "Đà Lạt", "Bảo Lộc"],
+        certs: ["Hữu cơ", "Hydroponic", "VietGAP"]
+      },
+      Honey: {
+        sizes: ["250g", "500g", "1kg"],
+        types: ["Mật ong rừng", "Mật ong hoa cà phê", "Mật ong hoa nhãn"],
+        regions: ["Bình Phước", "Kon Tum", "Phú Thọ"],
+        certs: ["Nguyên chất", "Pha loãng"]
+      },
+      Eggs: {
+        packs: ["Hộp 6", "Hộp 10", "Hộp 20"],
+        types: ["Gà ta chăn thả", "Gà công nghiệp"],
+        regions: ["Tiền Giang", "An Giang", "Sóc Trăng"]
+      },
+      Coffee: {
+        sizes: ["250g", "500g", "1kg"],
+        roast: ["Light Roast", "Medium Roast", "Dark Roast"],
+        regions: ["Đà Lạt", "Lâm Đồng", "Buôn Ma Thuột"]
+      }
+    };
+
+    for (const base of baseProducts) {
+      const pool = descriptors[base.category] || {};
+      // create up to 12 variants with varied descriptors
+      for (let v = 1; v <= 12; v++) {
+        // build variant attrs
+        const size = pool.sizes ? choose(pool.sizes) : (pool.packs ? choose(pool.packs) : `${v * 100}g`);
+        const pack = pool.packs ? choose(pool.packs) : null;
+        const region = pool.regions ? choose(pool.regions) : "Vùng miền";
+        const cert = pool.certs ? choose(pool.certs) : (pool.types ? choose(pool.types) : "Tiêu chuẩn") ;
+        const roast = pool.roast ? choose(pool.roast) : null;
+
+        // nicer name construction per category
+        let variantName = base.name;
+        if (base.category === "Rice") {
+          variantName = `${base.name} - ${size} (${cert}) - ${region}`;
+        } else if (base.category === "Vegetables") {
+          variantName = `${base.name} - ${size} - ${region} ${cert ? `(${cert})` : ''}`;
+        } else if (base.category === "Honey") {
+          variantName = `${choose(pool.types || [base.name])} - ${size} - ${region}`;
+        } else if (base.category === "Eggs") {
+          variantName = `${base.name} - ${choose(pool.packs)} - ${choose(pool.types)}`;
+        } else if (base.category === "Coffee") {
+          variantName = `${base.name} - ${size} - ${roast} - ${region}`;
+        } else {
+          variantName = `${base.name} - Variant ${v}`;
+        }
+
+        // price calculation influenced by size and certification
+        let originalPrice = base.basePrice * (1 + (Math.random() * 0.6 - 0.2));
+        if (size && typeof size === 'string') {
+          if (size.includes('kg')) originalPrice *= parseFloat(size.replace('kg','')) || 1;
+          if (size.includes('g')) originalPrice *= (parseFloat(size.replace('g',''))/1000) || 1;
+          if (size.toLowerCase().includes('combo')) originalPrice *= 3;
+        }
+        if (cert && cert.toLowerCase().includes('hữu cơ')) originalPrice *= 1.25;
+        const originalPriceRounded = Math.round(originalPrice * 100) / 100;
+        const discountPrice = Math.round((originalPriceRounded * (0.85 + Math.random()*0.2)) * 100) / 100;
+
+        // Create multiple distinct images per product using picsum seeds
+        const seedBase = (base.imgSeed || variantName).toString().slice(0,30).replace(/[^a-zA-Z0-9]/g, '');
+        const sizes = [ [1200,800], [800,600], [600,600], [400,400] ];
+        const images = Array.from({ length: 4 }).map((_, idx) => {
+          const s = `${seedBase}-${v}-${idx}`;
+          const [w, h] = sizes[idx % sizes.length];
+          return `https://picsum.photos/seed/${encodeURIComponent(s)}/${w}/${h}`;
+        });
+
+        // pick shop (mostly base shop but sometimes other shops to diversify)
+        const shopPick = Math.random() < 0.85 ? shops[base.shopIndex] : choose(shops);
+
+        productsData.push({
+          name: variantName,
+          description: `${base.description} - ${size ? size : ''} ${cert ? '- ' + cert : ''}. Nguồn: ${region}.`,
+          category: base.category,
+          tags: `${base.tags},${cert || ''},${region}`,
+          originalPrice: originalPriceRounded,
+          discountPrice: discountPrice,
+          stock: Math.floor(20 + Math.random() * 480),
+          images,
+          shopId: shopPick._id,
+          shop: {
+            name: shopPick.name,
+            shop_avatar: { public_id: "test", url: shopPick.avatar },
+            ratings: 4 + Math.round(Math.random() * 10) / 10
+          },
+          sold_out: Math.floor(Math.random() * 50),
+          ratings: 3.5 + Math.round(Math.random() * 15) / 10
+        });
+      }
+    }
 
     const products = await Product.create(productsData);
 
@@ -293,45 +321,45 @@ const seedCompleteData = async () => {
     }
 
     // 6. 🎉 Tạo EVENTS với QR
-    console.log("🎉 Creating events with QR codes...");
+    console.log("🎉 Creating farm events with QR codes...");
     const eventsData = [
       {
-        name: "Black Friday - MacBook Pro Sale",
-        description: "Giảm giá đặc biệt MacBook Pro trong dịp Black Friday. Sản phẩm có QR truy xuất nguồn gốc.",
-        category: "Computers and Laptops",
+        name: "Harvest Festival - FreshFarm 2025",
+        description: "Lễ hội thu hoạch và bán sản phẩm tươi ngon từ trang trại FreshFarm. Nhiều ưu đãi cho khách tham quan.",
+        category: "Farm Events",
         start_Date: new Date(),
-        Finish_Date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        originalPrice: 1299,
-        discountPrice: 999,
-        stock: 20,
-        images: ["macbook-event.png"],
+        Finish_Date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+        originalPrice: 0,
+        discountPrice: 0,
+        stock: 0,
+        images: ["https://picsum.photos/seed/event1/1200/600"],
         shopId: shops[0]._id,
         shop: {
           name: shops[0].name,
           shop_avatar: { public_id: "test", url: shops[0].avatar },
-          ratings: 4.5
+          ratings: 4.8
         },
-        sold_out: 5,
-        tags: "laptop,sale,blackfriday"
+        sold_out: 0,
+        tags: "harvest,farm,freshfarm"
       },
       {
-        name: "Nông sản hữu cơ - Khuyến mãi cuối năm", 
-        description: "Giảm giá đặc biệt cho tất cả nông sản hữu cơ có truy xuất nguồn gốc.",
-        category: "Others",
+        name: "Organic Market - Green Valley",
+        description: "Chợ nông sản hữu cơ với các gian hàng từ Green Valley Farm và đối tác, giảm giá đặc biệt cho combo rau củ.",
+        category: "Farm Events",
         start_Date: new Date(),
-        Finish_Date: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
-        originalPrice: 50,
-        discountPrice: 35,
-        stock: 100,
-        images: ["organic-event.png"],
+        Finish_Date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        originalPrice: 0,
+        discountPrice: 0,
+        stock: 0,
+        images: ["https://picsum.photos/seed/event2/1200/600"],
         shopId: shops[1]._id,
         shop: {
           name: shops[1].name,
           shop_avatar: { public_id: "test", url: shops[1].avatar },
-          ratings: 4.8
+          ratings: 4.6
         },
-        sold_out: 25,
-        tags: "organic,sale,healthy"
+        sold_out: 0,
+        tags: "organic,market,greenvalley"
       }
     ];
 

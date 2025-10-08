@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { server } from "../../server";
 import getProductImage from "../../utils/getProductImage";
+import currency from "../../utils/currency";
 import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -20,8 +21,8 @@ const OrderDetails = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    dispatch(getAllOrdersOfShop(seller._id));
-  }, [dispatch]);
+    if (seller?._id) dispatch(getAllOrdersOfShop(seller._id));
+  }, [dispatch, seller?._id]);
 
   const data = orders && orders.find((item) => item._id === id);
 
@@ -102,14 +103,14 @@ const OrderDetails = () => {
             <div className="w-full">
               <h5 className="pl-3 text-[20px]">{item.name}</h5>
               <h5 className="pl-3 text-[20px] text-[#00000091]">
-                US${item.discountPrice} x {item.qty}
+                {currency.formatPriceFromUsd(item.discountPrice)} x {item.qty}
               </h5>
             </div>
           </div>
         ))}
       <div className="border-t w-full text-right">
         <h5>
-          Total Price: <strong>US${data?.totalPrice}</strong>
+          Tổng tiền: <strong>{currency.formatPriceFromUsd(data?.totalPrice)}</strong>
         </h5>
       </div>
       <br />

@@ -5,6 +5,7 @@ import { getAllProductsAdmin } from "../../redux/actions/product";
 import { Button } from "@mui/material";
 import { AiOutlineEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import currency from "../../utils/currency";
 
 const AllProducts = () => {
   const dispatch = useDispatch();
@@ -72,7 +73,7 @@ const AllProducts = () => {
       row.push({
         id: item._id,
         name: item.name,
-        price: "US$ " + item.discountPrice,
+        price: currency.formatPriceFromUsd(item.discountPrice),
         Stock: item.stock,
         sold: item?.sold_out,
       });
@@ -83,7 +84,7 @@ const AllProducts = () => {
       {adminProductsLoading ? (
         <div>Loading...</div>
       ) : adminProducts.length === 0 ? (
-        <div className="text-center text-gray-500 py-4">No products found.</div>
+  <div className="text-center text-gray-500 py-4">Không tìm thấy sản phẩm.</div>
       ) : (
         <DataGrid
           rows={row}

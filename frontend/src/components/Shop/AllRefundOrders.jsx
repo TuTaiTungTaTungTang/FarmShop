@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import Loader from "../Layout/Loader";
 import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { AiOutlineArrowRight } from "react-icons/ai";
+import currency from "../../utils/currency";
 
 const AllRefundOrders = () => {
     const { orders, isLoading } = useSelector((state) => state.order);
@@ -14,8 +15,8 @@ const AllRefundOrders = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getAllOrdersOfShop(seller._id));
-    }, [dispatch]);
+        if (seller && seller._id) dispatch(getAllOrdersOfShop(seller._id));
+    }, [dispatch, seller && seller._id]);
 
     const refundOrders = orders && orders.filter((item) => item.status === "Processing refund" || item.status === "Refund Success");
 
@@ -77,7 +78,7 @@ const AllRefundOrders = () => {
             row.push({
                 id: item._id,
                 itemsQty: item.cart.length,
-                total: "US$ " + item.totalPrice,
+                total: currency.formatPriceFromUsd(item.totalPrice),
                 status: item.status,
             });
         });

@@ -19,7 +19,7 @@ const ShopLogin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log("🏪 Frontend shop login data:", { email, password }); // Debug log
+    // debug: removed verbose log
 
         await axios
             .post(
@@ -30,13 +30,13 @@ const ShopLogin = () => {
                 },
                 { withCredentials: true }
             ).then((res) => {
-                console.log("✅ Shop login success:", res.data); // Debug log
+                // login success - removed verbose console log
                 toast.success("Login Success!")
                 navigate("/dashboard")
                 window.location.reload(true);
             })
             .catch((err) => {
-                console.error("❌ Shop login error:", err.response?.data); // Debug log
+                // login error - handled below
                 toast.error(err.response.data.message);
             });
     };
@@ -122,7 +122,7 @@ const ShopLogin = () => {
                             </div>
                             <div className='text-sm'>
                                 <a
-                                    href=".forgot-password"
+                                    href="/forgot-password"
                                     className="font-medium text-blue-600 hover:text-blue-500"
                                 >
                                     Forgot your password?

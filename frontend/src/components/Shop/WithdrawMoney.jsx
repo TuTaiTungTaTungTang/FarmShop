@@ -8,6 +8,7 @@ import { server } from "../../server";
 import { toast } from "react-toastify";
 import { loadSeller } from "../../redux/actions/user";
 import { AiOutlineDelete } from "react-icons/ai";
+import currency from "../../utils/currency";
 
 const WithdrawMoney = () => {
   const [open, setOpen] = useState(false);
@@ -25,8 +26,8 @@ const WithdrawMoney = () => {
   });
 
   useEffect(() => {
-    dispatch(getAllOrdersOfShop(seller._id));
-  }, [dispatch]);
+    if (seller?._id) dispatch(getAllOrdersOfShop(seller._id));
+  }, [dispatch, seller?._id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,7 +64,7 @@ const WithdrawMoney = () => {
         });
       })
       .catch((error) => {
-        console.log(error.response.data.message);
+  // withdraw error
       });
   };
 
@@ -99,13 +100,13 @@ const WithdrawMoney = () => {
     }
   };
 
-  const availableBalance = seller?.availableBalance.toFixed(2);
+  const availableBalance = seller?.availableBalance ? Number(seller.availableBalance) : 0;
 
   return (
     <div className="w-full h-[90vh] p-8">
       <div className="w-full bg-white h-full rounded flex items-center justify-center flex-col">
         <h5 className="text-[20px] pb-4">
-          Available Balance: ${availableBalance}
+          Số dư khả dụng: {currency.formatPriceFromUsd(availableBalance)}
         </h5>
         <div
           className={`${styles.button} text-white !h-[42px] !rounded`}
@@ -271,7 +272,7 @@ const WithdrawMoney = () => {
 
                 {seller && seller?.withdrawMethod ? (
                   <div>
-                    <div className="800px:flex w-full justify-between items-center">
+                <div className="800px:flex w-full justify-between items-center">
                       <div className="800px:w-[50%]">
                         <h5>
                           Account Number:{" "}
@@ -291,7 +292,7 @@ const WithdrawMoney = () => {
                       </div>
                     </div>
                     <br />
-                    <h4>Available Balance: {availableBalance}$</h4>
+                    <h4>Số dư khả dụng: {currency.formatPriceFromUsd(availableBalance)}</h4>
                     <br />
                     <div className="800px:flex w-full items-center">
                       <input

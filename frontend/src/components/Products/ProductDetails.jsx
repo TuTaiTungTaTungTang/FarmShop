@@ -10,7 +10,7 @@ import {
 import { HiQrCode } from "react-icons/hi2";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
-import { backend_url, server } from "../../server";
+import { server } from "../../server";
 import {
   addToWishlist,
   removeFromWishlist,
@@ -21,6 +21,7 @@ import Ratings from "./Ratings";
 import axios from "axios";
 
 import getProductImage from "../../utils/getProductImage";
+import currency from "../../utils/currency";
 
 const ProductDetails = ({ data }) => {
   const productsState = useSelector((state) => state.product) || {};
@@ -34,18 +35,63 @@ const ProductDetails = ({ data }) => {
   const [click, setClick] = useState(false);
   const [select, setSelect] = useState(0);
   const [showTraceabilityModal, setShowTraceabilityModal] = useState(false);
+  // the setters are intentionally kept for future traceability calls
+  /* eslint-disable-next-line no-unused-vars */
   const [traceabilityData, setTraceabilityData] = useState(null);
+  /* eslint-disable-next-line no-unused-vars */
   const [loadingTrace, setLoadingTrace] = useState(false);
   const navigate = useNavigate();
 
+  // If the product does not include an embedded `shop` object but has `shopId`,
+  // fetch the shop info so we can render avatar/name correctly.
+  const [remoteShop, setRemoteShop] = useState(null);
+
   useEffect(() => {
-    dispatch(getAllProductsShop(data && data?.shop._id));
+    let active = true;
+    const fetchShop = async () => {
+      try {
+        if (data && !data.shop && data.shopId) {
+          const res = await axios.get(`${server}/shop/get-shop-info/${data.shopId}`);
+          if (active && res?.data?.shop) setRemoteShop(res.data.shop);
+        }
+      } catch (err) {
+        // ignore - keep remoteShop null
+        if (process.env.NODE_ENV !== 'production') console.debug('Could not fetch shop info:', err?.message || err);
+      }
+    };
+    fetchShop();
+    return () => { active = false; };
+  }, [data]);
+
+  // displayShop prefers embedded shop, fallback to fetched remoteShop
+  const displayShop = data ? (data.shop || remoteShop) : null;
+
+  // Normalize displayShop shape so components can read `.avatar` and `.name` consistently
+  const displayShopNormalized = displayShop
+    ? {
+        ...displayShop,
+        avatar:
+          displayShop.avatar ||
+          displayShop.shop_avatar?.url ||
+          displayShop.shop_avatar ||
+          displayShop.avatarUrl ||
+          null,
+      }
+    : null;
+
+  // safe shop id: prefer the shop._id from the displayShop (embedded or fetched)
+  const shopId = displayShopNormalized?._id || data?.shopId || null;
+
+    // removed development debug logs
+
+  useEffect(() => {
+    dispatch(getAllProductsShop(shopId));
     if (wishlist && wishlist.find((i) => i._id === data?._id)) {
       setClick(true);
     } else {
       setClick(false);
     }
-  }, [data, wishlist, dispatch]);
+  }, [shopId, data, wishlist, dispatch]);
 
   // Remove from wish list
   const removeFromWishlistHandler = (data) => {
@@ -100,13 +146,19 @@ const ProductDetails = ({ data }) => {
   const avg = totalRatings / totalReviewsLength || 0;
 
   const averageRating = avg.toFixed(2);
+  // product-level rating (use product's own rating when available)
+  const productRating = data?.ratings ?? 0;
 
   // Sand message
   const handleMessageSubmit = async () => {
     if (isAuthenticated) {
       const groupTitle = data._id + user._id;
       const userId = user._id;
-      const sellerId = data.shop._id;
+      const sellerId = shopId;
+      if (!sellerId) {
+        toast.error("Seller information is not available");
+        return;
+      }
       await axios
         .post(`${server}/conversation/create-new-conversation`, {
           groupTitle,
@@ -117,32 +169,14 @@ const ProductDetails = ({ data }) => {
           navigate(`/inbox?${res.data.conversation._id}`);
         })
         .catch((error) => {
-          toast.error(error.response.data.message);
+          toast.error(error.response?.data?.message || error.message);
         });
     } else {
       toast.error("Please login to create a conversation");
     }
   };
 
-  // 🔍 Handle QR Code click - Fetch traceability data
-  const handleQRClick = async (traceabilityId) => {
-    if (!traceabilityId) {
-      toast.error("Không có mã truy xuất cho sản phẩm này");
-      return;
-    }
-    setLoadingTrace(true);
-    try {
-      const response = await axios.get(`${server}/product/traceability/${traceabilityId}`);
-      setTraceabilityData(response.data.data);
-      setShowTraceabilityModal(true);
-      toast.success("Đã tải thông tin truy xuất nguồn gốc!");
-    } catch (error) {
-      console.error("Traceability fetch error:", error);
-      toast.error("Không thể tải thông tin truy xuất. Vui lòng thử lại!");
-    } finally {
-      setLoadingTrace(false);
-    }
-  };
+  // Traceability-related network calls are handled inline where needed.
 
   return (
     <div className="bg-white">
@@ -186,10 +220,10 @@ const ProductDetails = ({ data }) => {
 
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
-                    {data.discountPrice}$
+                    {currency.formatPriceFromUsd(data.discountPrice)}
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {data.originalPrice ? data.originalPrice + "$" : null}
+                    {data.originalPrice ? currency.formatPriceFromUsd(data.originalPrice) : null}
                   </h3>
                 </div>
 
@@ -243,25 +277,31 @@ const ProductDetails = ({ data }) => {
                   </span>
                 </div>
                 <div className="flex items-center pt-8">
-                  <Link to={`/shop/preview/${data?.shop._id}`}>
-                    <img
-                      src={getProductImage(data?.shop?.avatar)}
-                      alt=""
-                      className="w-[50px] h-[50px] rounded-full mr-2"
-                    />
-                  </Link>
+                  {shopId ? (
+                    <Link to={`/shop/preview/${shopId}`}>
+                      <img
+                        src={getProductImage(displayShopNormalized?.avatar)}
+                        alt=""
+                        className="w-[50px] h-[50px] rounded-full mr-2"
+                      />
+                    </Link>
+                  ) : (
+                    <div className="w-[50px] h-[50px] rounded-full mr-2 bg-gray-100" aria-hidden="true" />
+                  )}
 
                   <div className="pr-8">
-                    <Link to={`/shop/preview/${data?.shop._id}`}>
-                      <h3
-                        className={`${styles.shop_name} pb-1 pt-1 cursor-pointer`}
-                      >
-                        {data.shop.name}
-                      </h3>
-                    </Link>
+                    {shopId ? (
+                      <Link to={`/shop/preview/${shopId}`}>
+                        <h3 className={`${styles.shop_name} pb-1 pt-1 cursor-pointer`}>
+                          {displayShopNormalized?.name || "Unknown Shop"}
+                        </h3>
+                      </Link>
+                    ) : (
+                      <h3 className={`${styles.shop_name} pb-1 pt-1`}>{displayShopNormalized?.name || "Unknown Shop"}</h3>
+                    )}
                     <h5 className="pb-3 text-[15px]">
                       {" "}
-                      ({averageRating}/5) Ratingss
+                      ({productRating.toFixed(1)}/5) Ratings
                     </h5>
                   </div>
 
@@ -281,6 +321,7 @@ const ProductDetails = ({ data }) => {
           {/* Product Details  info */}
           <ProductDetailsInfo
             data={data}
+            shopForInfo={displayShopNormalized}
             products={products}
             totalReviewsLength={totalReviewsLength}
             averageRating={averageRating}
@@ -300,6 +341,7 @@ const ProductDetails = ({ data }) => {
 // Move ProductDetailsInfo outside of ProductDetails
 const ProductDetailsInfo = ({
   data,
+  shopForInfo,
   products,
   totalReviewsLength,
   averageRating,
@@ -309,6 +351,11 @@ const ProductDetailsInfo = ({
   loadingTrace,
 }) => {
   const [active, setActive] = useState(1);
+
+  // local shop id for nested component
+  const localShopId = shopForInfo?._id || data?.shopId || null;
+  const shop = shopForInfo || data?.shop || null;
+  const shopRating = shop?.ratings ?? data?.ratings ?? 0;
 
   return (
     <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded">
@@ -432,26 +479,38 @@ const ProductDetailsInfo = ({
           <div className="w-full block 800px:flex p-5 ">
             <div className="w-full 800px:w-[50%]">
               <div className="flex items-center">
-                <Link to={`/shop/preview/${data.shop._id}`}>
+                {localShopId ? (
+                  <Link to={`/shop/preview/${localShopId}`}>
+                    <div className="flex items-center">
+                      <img
+                        src={getProductImage(shop?.avatar)}
+                        className="w-[50px] h-[50px] rounded-full"
+                        alt=""
+                      />
+                      <div className="pl-3">
+                        <h3 className={`${styles.shop_name}`}>
+                          {shop?.name || "Unknown Shop"}
+                        </h3>
+                        <h5 className="pb-3 text-[15px]">({shopRating.toFixed(1)}/5) Ratings</h5>
+                      </div>
+                    </div>
+                  </Link>
+                ) : (
                   <div className="flex items-center">
                     <img
-                      src={getProductImage(data?.shop?.avatar)}
+                      src={getProductImage(shop?.avatar)}
                       className="w-[50px] h-[50px] rounded-full"
                       alt=""
                     />
                     <div className="pl-3">
-                      <h3 className={`${styles.shop_name}`}>
-                        {data.shop.name}
-                      </h3>
-                      <h5 className="pb-3 text-[15px]">
-                        ({averageRating}/5) Ratings
-                      </h5>
+                      <h3 className={`${styles.shop_name}`}>{shop?.name || "Unknown Shop"}</h3>
+                      <h5 className="pb-3 text-[15px]">({averageRating}/5) Ratings</h5>
                     </div>
                   </div>
-                </Link>
+                )}
               </div>
 
-              <p className="pt-2">{data.shop.description}</p>
+              <p className="pt-2">{shop?.description}</p>
             </div>
 
             <div className="w-full 800px:w-[50%] mt-5 800px:mt-0 800px:flex flex-col items-end">
@@ -472,13 +531,17 @@ const ProductDetailsInfo = ({
                   Total Reviews:{" "}
                   <span className="font-[500]">{totalReviewsLength}</span>
                 </h5>
-                <Link to={`/shop/preview/${data.shop._id}`}>
-                  <div
-                    className={`${styles.button} !rounded-[4px] !h-[39.5px] mt-3`}
-                  >
-                    <h4 className="text-white">Visit Shop</h4>
-                  </div>
-                </Link>
+                    {localShopId ? (
+                      <Link to={`/shop/preview/${localShopId}`}>
+                        <div className={`${styles.button} !rounded-[4px] !h-[39.5px] mt-3`}>
+                          <h4 className="text-white">Visit Shop</h4>
+                        </div>
+                      </Link>
+                    ) : (
+                      <div className={`${styles.button} !rounded-[4px] !h-[39.5px] mt-3 opacity-60 cursor-not-allowed`}>
+                        <h4 className="text-white">Visit Shop</h4>
+                      </div>
+                    )}
               </div>
             </div>
           </div>
@@ -525,8 +588,8 @@ const ProductDetailsInfo = ({
                     <h4 className="font-semibold mb-2">📊 Thông Tin Cơ Bản</h4>
                     <div className="space-y-1 text-sm">
                       <p><span className="font-medium">Danh mục:</span> {traceabilityData.product.category}</p>
-                      <p><span className="font-medium">Giá gốc:</span> ${traceabilityData.product.originalPrice}</p>
-                      <p><span className="font-medium">Giá bán:</span> ${traceabilityData.product.discountPrice}</p>
+                      <p><span className="font-medium">Giá gốc:</span> {currency.formatPriceFromUsd(traceabilityData.product.originalPrice)}</p>
+                      <p><span className="font-medium">Giá bán:</span> {currency.formatPriceFromUsd(traceabilityData.product.discountPrice)}</p>
                       <p><span className="font-medium">Tồn kho:</span> {traceabilityData.product.stock} sản phẩm</p>
                       <p><span className="font-medium">Đã bán:</span> {traceabilityData.product.sold_out} sản phẩm</p>
                     </div>

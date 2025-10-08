@@ -4,6 +4,7 @@ const connectDatabase = require("./db/Database");
 // const logger = require("./utils/logger"); // Tạm comment để test QR system
 // const helmet = require("helmet"); // Tạm comment
 // const rateLimit = require("express-rate-limit"); // Tạm comment
+
 const app = express();
 
 const cookieParser = require("cookie-parser");
@@ -41,6 +42,53 @@ const server = app.listen(process.env.PORT, () => {
   console.log(`✅ Server is running on http://localhost:${process.env.PORT}`);
 });
 
+// DEV: print mounted routes for debugging
+if (process.env.NODE_ENV !== 'production') {
+  const listRoutes = () => {
+    const routes = [];
+    app._router.stack.forEach((middleware) => {
+      if (middleware.route) {
+        // routes registered directly on the app
+        const methods = Object.keys(middleware.route.methods).join(',').toUpperCase();
+        routes.push(`${methods} ${middleware.route.path}`);
+      } else if (middleware.name === 'router' && middleware.handle.stack) {
+        // router middleware
+        middleware.handle.stack.forEach((handler) => {
+          const route = handler.route;
+          if (route) {
+            const methods = Object.keys(route.methods).join(',').toUpperCase();
+            routes.push(`${methods} ${route.path}`);
+          }
+        });
+      }
+    });
+    console.log('DEV mounted routes:');
+    routes.forEach(r => console.log('  ', r));
+  };
+
+  // print once after a short delay to allow routes to be registered
+  setTimeout(listRoutes, 500);
+
+  app.get('/__routes', (req, res) => {
+    const routes = [];
+    app._router.stack.forEach((middleware) => {
+      if (middleware.route) {
+        const methods = Object.keys(middleware.route.methods).join(',').toUpperCase();
+        routes.push({ methods, path: middleware.route.path });
+      } else if (middleware.name === 'router' && middleware.handle.stack) {
+        middleware.handle.stack.forEach((handler) => {
+          const route = handler.route;
+          if (route) {
+            const methods = Object.keys(route.methods).join(',').toUpperCase();
+            routes.push({ methods, path: route.path });
+          }
+        });
+      }
+    });
+    res.json({ routes });
+  });
+}
+
 // middlewares
 app.use(express.json());
 app.use(cookieParser());
@@ -57,7 +105,7 @@ app.use(
    origin: [
       // "https://farm-shop-eight.vercel.app", // domain frontend Vercel
       "https://agritechsolution.vercel.app",
-      "http://localhost:3000"               // cho dev local
+      // "http://localhost:3000"               // cho dev local
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],

@@ -26,6 +26,10 @@ const Signup = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+          if (!name || !email || !password) {
+        toast.error("Vui lòng nhập đầy đủ thông tin!");
+        return;
+    }
         const config = { headers: { "Content-Type": "multipart/form-data" } };
         // meaning of uper line is that we are creating a new object with the name of config and the value of config is {headers:{'Content-Type':'multipart/form-data'}}  
 
@@ -70,8 +74,8 @@ const Signup = () => {
                             </label>
                             <div className='mt-1'>
                                 <input type="text"
-                                    name='text'
-                                    autoComplete='text'
+                                    name='name'
+                                    autoComplete='name'
                                     required
                                     placeholder='john doe'
                                     value={name}

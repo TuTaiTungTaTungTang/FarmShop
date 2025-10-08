@@ -81,7 +81,7 @@ const productSchema = new mongoose.Schema({
     type: String, // ID truy xuất nguồn gốc unique (base64 encoded)
     unique: true,
     sparse: true, // Cho phép null values, chỉ unique khi có giá trị
-    default: null
+    // default intentionally omitted so the field is absent until set
   },
   createdAt: {
     type: Date,

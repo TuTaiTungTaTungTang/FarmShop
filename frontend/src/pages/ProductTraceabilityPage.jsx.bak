@@ -6,7 +6,6 @@ import axios from 'axios';
 import { server, backend_url } from '../server';
 import styles from '../styles/styles';
 import getProductImage from "../utils/getProductImage";
-import currency from "../utils/currency";
 
 const ProductTraceabilityPage = () => {
   const [searchParams] = useSearchParams();
@@ -15,6 +14,7 @@ const ProductTraceabilityPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const pId = searchParams.get('pId'); // Product ID encoded
     const tId = searchParams.get('tId'); // Traceability ID
     
     if (tId) {
@@ -27,17 +27,17 @@ const ProductTraceabilityPage = () => {
 
   const fetchTraceabilityData = async (traceId) => {
     try {
-  // fetching traceability data for: traceId
+      console.log(`🔍 Fetching traceability data for: ${traceId}`);
       const response = await axios.get(`${server}/product/traceability/${traceId}`);
       
       if (response.data.success) {
         setTraceData(response.data.data);
-  // traceability data loaded
+        console.log('✅ Traceability data loaded:', response.data.data);
       } else {
         setError('Không thể tải thông tin traceability');
       }
     } catch (error) {
-      // traceability fetch error
+      console.error('❌ Traceability fetch error:', error);
       if (error.response?.status === 404) {
         setError('Không tìm thấy sản phẩm với mã traceability này');
       } else {
@@ -192,11 +192,11 @@ const ProductTraceabilityPage = () => {
                                 </tr>
                                 <tr>
                                   <td className="font-medium text-gray-600 py-1">Giá bán:</td>
-                                  <td className="text-green-700 font-bold">{currency.formatPriceFromUsd(product.discountPrice)}</td>
+                                  <td className="text-green-700 font-bold">${product.discountPrice}</td>
                                 </tr>
                                 <tr>
                                   <td className="font-medium text-gray-600 py-1">Giá gốc:</td>
-                                  <td>{currency.formatPriceFromUsd(product.originalPrice)}</td>
+                                  <td>${product.originalPrice}</td>
                                 </tr>
                                 <tr>
                                   <td className="font-medium text-gray-600 py-1">Tồn kho:</td>

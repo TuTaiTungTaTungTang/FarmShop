@@ -13,20 +13,15 @@ const ActivationPage = () => {
         if (activation_token) {
             const activationEmail = async () => {
                 try {
-                    const res = await axios
-                        .post(`${server}/user/activation`, {
-                            activation_token
-                        })
-                    console.log(res.data.message);
+                    await axios.post(`${server}/user/activation`, { activation_token });
                 } catch (err) {
-                    console.log(err.response.data.message);
                     setError(true);
                 }
-            }
+            };
             activationEmail();
         }
 
-    }, []);
+    }, [activation_token]);
 
     return (
         <div
@@ -39,7 +34,7 @@ const ActivationPage = () => {
             }}>
             {
                 error ? (
-                    <p className='text-red-800'>Your toke is expair </p>
+                    <p className='text-red-800'>Your token is expair </p>
                 ) : (
                     <p className='text-green-800'>Your Account has been created sucess fully!</p>
                 )
