@@ -1,6 +1,6 @@
 const Joi = require('joi');
-const logger = require('../utils/logger');
-
+// const logger = require('../utils/logger');
+const { logger } = require('../utils/logger');
 // User validation schemas
 const userSchemas = {
   register: Joi.object({
@@ -154,6 +154,11 @@ const validate = (schema) => {
         message: detail.message,
       }));
 
+      // logger.warn(`Validation error: ${JSON.stringify(errorMessages)}`, {
+      //   ip: req.ip,
+      //   userAgent: req.get('User-Agent'),
+      //   endpoint: req.originalUrl,
+      // });
       logger.warn(`Validation error: ${JSON.stringify(errorMessages)}`, {
         ip: req.ip,
         userAgent: req.get('User-Agent'),

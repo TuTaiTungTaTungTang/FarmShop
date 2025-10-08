@@ -3,16 +3,16 @@ const nodemailer = require("nodemailer");
 const sendMail = async (options) => {
   // Try to use configured SMTP first
   let transporter;
-  const hasSmtp = process.env.SMPT_HOST && process.env.SMPT_PORT && process.env.SMPT_MAIL && process.env.SMPT_PASSWORD;
+  const hasSmtp = process.env.SMTP_HOST && process.env.SMTP_PORT && process.env.SMTP_MAIL && process.env.SMTP_PASSWORD;
 
   if (hasSmtp) {
     transporter = nodemailer.createTransport({
-      host: process.env.SMPT_HOST,
-      port: Number(process.env.SMPT_PORT) || 587,
-      service: process.env.SMPT_SERVICE || undefined,
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT) || 587,
+  service: process.env.SMTP_SERVICE || undefined,
       auth: {
-        user: process.env.SMPT_MAIL,
-        pass: process.env.SMPT_PASSWORD,
+  user: process.env.SMTP_MAIL,
+  pass: process.env.SMTP_PASSWORD,
       },
       tls: {
         rejectUnauthorized: false,
@@ -47,7 +47,7 @@ const sendMail = async (options) => {
   }
 
   const mailOptions = {
-    from: process.env.SMPT_MAIL || 'no-reply@example.com',
+  from: process.env.SMTP_MAIL || 'no-reply@example.com',
     to: options.email,
     subject: options.subject,
     text: options.message,

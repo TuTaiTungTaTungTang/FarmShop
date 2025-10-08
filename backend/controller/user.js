@@ -10,7 +10,8 @@ const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const sendToken = require("../utils/jwtToken");
 const { isAuthenticated, isAdmin } = require("../middleware/auth");
 const { validate, schemas } = require("../middleware/validation");
-const logger = require("../utils/logger");
+// const logger = require("../utils/logger");
+const { logger } = require('../utils/logger');
 
 const router = express.Router();
 const crypto = require('crypto');

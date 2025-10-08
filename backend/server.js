@@ -4,6 +4,7 @@ const connectDatabase = require("./db/Database");
 // const logger = require("./utils/logger"); // Tạm comment để test QR system
 // const helmet = require("helmet"); // Tạm comment
 // const rateLimit = require("express-rate-limit"); // Tạm comment
+
 const app = express();
 
 const cookieParser = require("cookie-parser");
