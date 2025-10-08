@@ -13,6 +13,19 @@ const { validate, schemas } = require("../middleware/validation");
 const logger = require("../utils/logger");
 
 const router = express.Router();
+const crypto = require('crypto');
+
+// DEV: log incoming requests to this router for debugging
+if (process.env.NODE_ENV !== 'production') {
+  router.use((req, res, next) => {
+    try {
+      console.log(`USER ROUTER -> ${req.method} ${req.originalUrl}`);
+    } catch (e) {
+      // ignore logging errors
+    }
+    next();
+  });
+}
 
 /**
  * @swagger
@@ -217,6 +230,89 @@ router.get(
         success: true,
         message: "Log out successful!",
       });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// Forgot password - send reset link
+router.post(
+  "/forgot-password",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { email } = req.body;
+      if (!email) return next(new ErrorHandler("Please provide email", 400));
+
+      const user = await User.findOne({ email });
+      if (!user) return next(new ErrorHandler("User not found with this email", 404));
+
+      // create reset token
+      const resetToken = crypto.randomBytes(20).toString('hex');
+      const resetTokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+      user.resetPasswordToken = resetTokenHash;
+      user.resetPasswordTime = Date.now() + 15 * 60 * 1000; // 15 minutes
+
+      await user.save({ validateBeforeSave: false });
+
+      const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+
+      const message = `Your password reset link: \n\n ${resetUrl} \n\n If you did not request this, please ignore.`;
+
+      // DEV: expose unhashed token in server logs to allow local testing when SMTP is not configured
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`DEV RESET TOKEN for ${user.email}: ${resetToken}`);
+        console.log(`DEV RESET URL: ${resetUrl}`);
+      }
+
+      try {
+        await sendMail({ email: user.email, subject: 'Password Recovery', message });
+        res.status(200).json({ success: true, message: `Email sent to ${user.email}` });
+      } catch (err) {
+        // Log the email error for debugging
+        console.error('sendMail error:', err && err.message ? err.message : err);
+
+        // clear token on failure
+        user.resetPasswordToken = undefined;
+        user.resetPasswordTime = undefined;
+        await user.save({ validateBeforeSave: false });
+
+        // In dev mode, allow testing without SMTP by returning the resetUrl
+        if (process.env.NODE_ENV !== 'production') {
+          return res.status(200).json({ success: true, message: 'Dev: email not sent, returning reset URL', resetUrl });
+        }
+
+        return next(new ErrorHandler('Email could not be sent', 500));
+      }
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// Reset password
+router.post(
+  "/reset-password/:token",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const resetTokenHash = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+      const user = await User.findOne({ resetPasswordToken: resetTokenHash, resetPasswordTime: { $gt: Date.now() } });
+
+      if (!user) return next(new ErrorHandler('Reset token is invalid or has been expired', 400));
+
+      if (req.body.password !== req.body.confirmPassword) {
+        return next(new ErrorHandler("Passwords do not match", 400));
+      }
+
+      user.password = req.body.password;
+      user.resetPasswordToken = undefined;
+      user.resetPasswordTime = undefined;
+
+      await user.save();
+
+      res.status(200).json({ success: true, message: 'Password reset successful' });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }

@@ -40,10 +40,10 @@ const ProductDetailsPage = () => {
                     const res = await axios.get(`${server}/product/get-product/${id}`);
                     if (res?.data?.product) {
                         setData(res.data.product);
-                        if (process.env.NODE_ENV !== 'production') console.debug('Fetched product from API:', res.data.product);
+                        // fetched product from API
                     }
                 } catch (err) {
-                    console.debug('Could not fetch product by id:', err.message || err);
+                    // failed to fetch product by id
                 }
             }
         }

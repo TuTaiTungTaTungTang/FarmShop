@@ -27,17 +27,17 @@ const ProductTraceabilityPage = () => {
 
   const fetchTraceabilityData = async (traceId) => {
     try {
-      console.log(`🔍 Fetching traceability data for: ${traceId}`);
+  // fetching traceability data for: traceId
       const response = await axios.get(`${server}/product/traceability/${traceId}`);
       
       if (response.data.success) {
         setTraceData(response.data.data);
-        console.log('✅ Traceability data loaded:', response.data.data);
+  // traceability data loaded
       } else {
         setError('Không thể tải thông tin traceability');
       }
     } catch (error) {
-      console.error('❌ Traceability fetch error:', error);
+      // traceability fetch error
       if (error.response?.status === 404) {
         setError('Không tìm thấy sản phẩm với mã traceability này');
       } else {

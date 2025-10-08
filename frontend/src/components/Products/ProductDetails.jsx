@@ -82,11 +82,7 @@ const ProductDetails = ({ data }) => {
   // safe shop id: prefer the shop._id from the displayShop (embedded or fetched)
   const shopId = displayShopNormalized?._id || data?.shopId || null;
 
-  // debug: log product data and shopId to help diagnose undefined link issues
-  if (process.env.NODE_ENV !== "production") {
-    console.debug("ProductDetails render - product id:", data?._id, "shopId:", shopId, "shop object:", displayShop);
-    console.debug("displayShopNormalized:", displayShopNormalized);
-  }
+    // removed development debug logs
 
   useEffect(() => {
     dispatch(getAllProductsShop(shopId));

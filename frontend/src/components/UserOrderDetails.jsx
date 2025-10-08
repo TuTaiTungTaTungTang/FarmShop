@@ -54,8 +54,8 @@ const UserOrderDetails = () => {
       setRating(null);
       setOpen(false);
     } catch (error) {
-      console.error(error); // Log the error to the console for debugging
       toast.error("An error occurred. Please try again."); // Display a generic error message
+        // error fetching order details
     }
   };
 

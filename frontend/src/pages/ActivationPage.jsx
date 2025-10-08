@@ -13,20 +13,15 @@ const ActivationPage = () => {
         if (activation_token) {
             const activationEmail = async () => {
                 try {
-                    const res = await axios
-                        .post(`${server}/user/activation`, {
-                            activation_token
-                        })
-                    console.log(res.data.message);
+                    await axios.post(`${server}/user/activation`, { activation_token });
                 } catch (err) {
-                    console.log(err.response.data.message);
                     setError(true);
                 }
-            }
+            };
             activationEmail();
         }
 
-    }, []);
+    }, [activation_token]);
 
     return (
         <div
