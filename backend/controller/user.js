@@ -99,7 +99,7 @@ router.post("/create-user", upload.single("file"), validate(schemas.user.registe
 
     const activationToken = createActivationToken(user);
 
-    const activationUrl = `http://localhost:3000/activation/${activationToken}`;
+    const activationUrl = `https://agritechsolution.vercel.app/activation/${activationToken}`;
 
     // send email to user
     try {
@@ -267,7 +267,7 @@ router.post(
 
       await user.save({ validateBeforeSave: false });
 
-      const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+      const resetUrl = `https://agritechsolution.vercel.app/reset-password/${resetToken}`;
 
       const message = `Your password reset link: \n\n ${resetUrl} \n\n If you did not request this, please ignore.`;
 

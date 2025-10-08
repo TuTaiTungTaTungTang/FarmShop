@@ -38,7 +38,7 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
 
     const activationToken = createActivationToken(seller);
 
-    const activationUrl = `http://localhost:3000/seller/activation/${activationToken}`;
+    const activationUrl = `https://agritechsolution.vercel.app/seller/activation/${activationToken}`;
 
     try {
       await sendMail({
@@ -333,7 +333,7 @@ router.delete(
   isSeller,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const seller = await Shop.findById(req.seller._id);
+        const activationUrl = `https://agritechsolution.vercel.app/seller/activation/${activationToken}`;
 
       if (!seller) {
         return next(new ErrorHandler("Seller not found with this id", 400));

@@ -125,7 +125,7 @@ const generateProductQRBase64 = async (productId, productData) => {
     const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
     const traceabilityId = Buffer.from(`PROD_${productId}_${timestamp}_${randomStr}`).toString('base64');
     
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const frontendUrl = process.env.FRONTEND_URL || 'https://agritechsolution.vercel.app';
     const encodedProductId = Buffer.from(productId.toString()).toString('base64');
     const traceabilityUrl = `${frontendUrl}/production/detail?pId=${encodedProductId}&tId=${traceabilityId}`;
     
