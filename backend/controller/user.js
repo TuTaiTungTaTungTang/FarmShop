@@ -78,7 +78,7 @@ if (process.env.NODE_ENV !== 'production') {
  *       500:
  *         description: Server error
  */
-router.post("/create-user", validate(schemas.user.register), upload.single("file"), async (req, res, next) => {
+router.post("/create-user", upload.single("file"), validate(schemas.user.register), async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
     const userEmail = await User.findOne({ email });
