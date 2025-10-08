@@ -18,7 +18,7 @@ import currency from "../../utils/currency";
 
 
 const Payment = () => {
-    const [orderData, setOrderData] = useState([]);
+    const [orderData, setOrderData] = useState(null);
     const [open, setOpen] = useState(false);
     const { user } = useSelector((state) => state.user);
     const navigate = useNavigate();
@@ -26,31 +26,36 @@ const Payment = () => {
     const elements = useElements();
 
     useEffect(() => {
-        const orderData = JSON.parse(localStorage.getItem("latestOrder"));
-        setOrderData(orderData);
+        try {
+            const stored = localStorage.getItem("latestOrder");
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                setOrderData(parsed);
+            } else {
+                setOrderData(null);
+            }
+        } catch (err) {
+            console.error("Failed to parse latestOrder from localStorage", err);
+            setOrderData(null);
+        }
     }, []);
 
     // Pay-pal
     const createOrder = (data, actions) => {
-        return actions.order
-            .create({
-                purchase_units: [
-                    {
-                        description: "Sunflower",
-                        amount: {
-                            currency_code: "USD",
-                            value: orderData?.totalPrice,
-                        },
+        return actions.order.create({
+            purchase_units: [
+                {
+                    description: "Sunflower",
+                    amount: {
+                        currency_code: "USD",
+                        value: orderData?.totalPrice || 0,
                     },
-                ],
-                // not needed if a shipping address is actually needed
-                application_context: {
-                    shipping_preference: "NO_SHIPPING",
                 },
-            })
-            .then((orderID) => {
-                return orderID;
-            });
+            ],
+            application_context: {
+                shipping_preference: "NO_SHIPPING",
+            },
+        }).then((orderID) => orderID);
     };
 
     const order = {
@@ -79,14 +84,13 @@ const Payment = () => {
             },
         };
         order.paymentInfo = {
-            id: paymentInfo.payer_id,
+            id: paymentInfo?.payer_id || paymentInfo?.payerID || null,
             status: "succeeded",
             type: "Paypal",
         };
 
-        await axios
-            .post(`${server}/order/create-order`, order, config)
-            .then((res) => {
+        try {
+            await axios.post(`${server}/order/create-order`, order, config).then((res) => {
                 setOpen(false);
                 navigate("/order/success");
                 toast.success("Order successful!");
@@ -94,17 +98,26 @@ const Payment = () => {
                 localStorage.setItem("latestOrder", JSON.stringify([]));
                 window.location.reload();
             });
-
-    }
-
-    const paymentData = {
-        amount: Math.round(orderData?.totalPrice * 100),
+        } catch (err) {
+            console.error('Paypal order error:', err?.response?.data || err.message || err);
+            toast.error('Paypal payment failed.');
+        }
     }
 
 
 
     const paymentHandler = async (e) => {
         e.preventDefault();
+
+        const total = Number(orderData?.totalPrice);
+        const amount = Number.isFinite(total) ? Math.round(total * 100) : NaN;
+
+        if (isNaN(amount) || amount <= 0) {
+            console.error("Invalid payment amount:", { total, amount, orderData });
+            toast.error("Invalid payment amount. Please kiểm tra đơn hàng trước khi thanh toán.");
+            return;
+        }
+
         try {
             const config = {
                 headers: {
@@ -112,11 +125,7 @@ const Payment = () => {
                 },
             };
 
-            const { data } = await axios.post(
-                `${server}/payment/process`,
-                paymentData,
-                config
-            );
+            const { data } = await axios.post(`${server}/payment/process`, { amount }, config);
 
             const client_secret = data.client_secret;
 
@@ -137,22 +146,26 @@ const Payment = () => {
                         type: "Credit Card",
                     };
 
-                    await axios
-                        .post(`${server}/order/create-order`, order, config)
-                        .then((res) => {
-                            setOpen(false);
-                            navigate("/order/success");
-                            toast.success("Order successful!");
-                            localStorage.setItem("cartItems", JSON.stringify([]));
-                            localStorage.setItem("latestOrder", JSON.stringify([]));
-                            window.location.reload();
-                        });
+                    await axios.post(`${server}/order/create-order`, order, config).then((res) => {
+                        setOpen(false);
+                        navigate("/order/success");
+                        toast.success("Order successful!");
+                        localStorage.setItem("cartItems", JSON.stringify([]));
+                        localStorage.setItem("latestOrder", JSON.stringify([]));
+                        window.location.reload();
+                    });
                 }
             }
         } catch (error) {
-            toast.error(error);
+            console.error('Payment error:', error?.response?.data || error.message || error);
+            toast.error(error?.response?.data?.message || "Payment failed. Please try again.");
         }
     };
+
+    // compute amount in cents and whether payment is allowed (Stripe minimum 50 cents)
+    const total = Number(orderData?.totalPrice) || 0;
+    const amountCents = Number.isFinite(total) ? Math.round(total * 100) : 0;
+    const canPay = amountCents >= 50;
 
 
     //  Cash on Delevery Handler (COD)
@@ -194,7 +207,8 @@ const Payment = () => {
                         createOrder={createOrder}
                         paymentHandler={paymentHandler}
                         cashOnDeliveryHandler={cashOnDeliveryHandler}
-
+                        canPay={canPay}
+                        amountCents={amountCents}
                     />
                 </div>
                 <div className="w-full 800px:w-[35%] 800px:mt-0 mt-8">
@@ -215,6 +229,8 @@ const PaymentInfo = ({
     createOrder,
     paymentHandler,
     cashOnDeliveryHandler,
+    canPay,
+    amountCents,
 }) => {
     const [select, setSelect] = useState(1);
 
@@ -321,9 +337,13 @@ const PaymentInfo = ({
                             </div>
                             <input
                                 type="submit"
-                                value="Submit"
-                                className={`${styles.button} !bg-[#f63b60] text-[#fff] h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
+                                value={canPay ? "Submit" : "Amount too small"}
+                                disabled={!canPay}
+                                className={`${styles.button} !bg-[#f63b60] text-[#fff] h-[45px] rounded-[5px] ${canPay ? 'cursor-pointer' : 'opacity-50 cursor-not-allowed'} text-[18px] font-[600]`}
                             />
+                            {!canPay && (
+                                <p className="text-sm text-red-500 mt-2">Minimum payment amount is $0.50. Current: ${(amountCents/100).toFixed(2)}</p>
+                            )}
                         </form>
                     </div>
                 ) : null}
