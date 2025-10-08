@@ -13,9 +13,9 @@ const ShopCreate = () => {
     const navigate = useNavigate()
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState();
+        const [phoneNumber, setPhoneNumber] = useState("");
     const [address, setAddress] = useState("");
-    const [zipCode, setZipCode] = useState();
+        const [zipCode, setZipCode] = useState("");
     const [avatar, setAvatar] = useState();
     const [password, setPassword] = useState("");
     const [visible, setVisible] = useState(false);
@@ -27,35 +27,28 @@ const ShopCreate = () => {
         // meaning of uper line is that we are creating a new object with the name of config and the value of config is {headers:{'Content-Type':'multipart/form-data'}}  
 
         const newForm = new FormData();
-        // meaning of uper line is that we are creating a new form data object and we are sending it to the backend with the name of newForm and the value of newForm is new FormData()
         newForm.append("file", avatar);
-        // meanin of newForm.append("file",avatar) is that we are sending a file to the backend with the name of file and the value of the file is avatar
         newForm.append("name", name);
         newForm.append("email", email);
         newForm.append("password", password);
-        newForm.append("zipCode", zipCode);
+        newForm.append("zipCode", zipCode.toString());
         newForm.append("address", address);
-        newForm.append("phoneNumber", phoneNumber);
+        newForm.append("phoneNumber", phoneNumber.toString());
 
-        axios
-            .post(`${server}/shop/create-shop`, newForm, config)
-            .then((res) => {
-                toast.success(res.data.message);
-                setName("");
-                setEmail("");
-                setPassword("");
-                setAvatar();
-                setZipCode();
-                setAddress("");
-                setPhoneNumber();
-
-            })
-
-            .catch((error) => {
-                toast.error(error.response.data.message);
-            });
-        navigate("/shop-login")
-        window.location.reload();
+        try {
+            const res = await axios.post(`${server}/shop/create-shop`, newForm, config);
+            toast.success(res.data.message);
+            setName("");
+            setEmail("");
+            setPassword("");
+            setAvatar();
+            setZipCode("");
+            setAddress("");
+            setPhoneNumber("");
+            navigate("/shop-login");
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Đăng ký shop thất bại");
+        }
 
 
 
@@ -103,12 +96,12 @@ const ShopCreate = () => {
                             </label>
                             <div className='mt-1 relative'>
                                 <input
-                                    type="number"
-                                    name='phone-number'
-                                    autoComplete='password'
+                                    type="text"
+                                    name='phoneNumber'
                                     required
                                     value={phoneNumber}
                                     onChange={(e) => setPhoneNumber(e.target.value)}
+                                    placeholder="Ví dụ: +84901234567"
                                     className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
                                 />
                             </div>
@@ -167,8 +160,8 @@ const ShopCreate = () => {
                             </label>
                             <div className="mt-1">
                                 <input
-                                    type="number"
-                                    name="zipcode"
+                                    type="text"
+                                    name="zipCode"
                                     required
                                     value={zipCode}
                                     onChange={(e) => setZipCode(e.target.value)}
