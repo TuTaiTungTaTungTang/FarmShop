@@ -289,11 +289,11 @@ const ProductTraceabilityPage = () => {
                                 <p className="text-gray-600">{shop.email}</p>
                               </div>
                             </div>
-                            <table className="w-full text-sm mb-4">
+                            {/* <table className="w-full text-sm mb-4">
                               <tbody>
                                 <tr>
                                   <td className="font-medium text-gray-600 py-1">Điện thoại:</td>
-                                  <td>
+                                  <td> */}
                                     {/* {shop.phoneNumber && Array.isArray(shop.phoneNumber) ? (
                                       shop.phoneNumber.map((contact, idx) => (
                                         <div key={idx} className="mb-1">
@@ -305,7 +305,7 @@ const ProductTraceabilityPage = () => {
                                     ) : (
                                       'Chưa cập nhật'
                                     )} */}
-                                     {shop.phoneNumber && Array.isArray(shop.phoneNumber) ? (
+                                     {/* {shop.phoneNumber && Array.isArray(shop.phoneNumber) ? (
     <span className="space-x-2">
       {shop.phoneNumber.map((contact, idx) => (
         <span key={idx} className="inline">
@@ -335,7 +335,35 @@ const ProductTraceabilityPage = () => {
                                   <td>{shop.description || 'Chưa cập nhật'}</td>
                                 </tr>
                               </tbody>
-                            </table>
+                            </table> */}
+                            <div className="space-y-2 text-sm">
+  <div className="flex">
+    <span className="w-32 font-medium text-gray-600">Điện thoại:</span>
+    <span>
+      {shop.phoneNumber?.map((c, i) => (
+        <span key={i}>
+          {c.phone} ({c.name})
+          {i < shop.phoneNumber.length - 1 && " • "}
+        </span>
+      ))}
+    </span>
+  </div>
+
+  <div className="flex">
+    <span className="w-32 font-medium text-gray-600">Địa chỉ:</span>
+    <span>{shop.address}</span>
+  </div>
+
+  <div className="flex">
+    <span className="w-32 font-medium text-gray-600">Tham gia:</span>
+    <span>{new Date(shop.createdAt).toLocaleDateString("vi-VN")}</span>
+  </div>
+
+  <div className="flex">
+    <span className="w-32 font-medium text-gray-600">Mô tả:</span>
+    <span className="flex-1">{shop.description}</span>
+  </div>
+</div>
                             <div className="text-xs text-gray-500">
                               Đánh giá cửa hàng: ⭐ {shop.ratings || 0}/5
                             </div>
