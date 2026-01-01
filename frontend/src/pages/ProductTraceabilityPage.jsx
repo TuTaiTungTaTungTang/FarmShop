@@ -294,7 +294,7 @@ const ProductTraceabilityPage = () => {
                                 <tr>
                                   <td className="font-medium text-gray-600 py-1">Điện thoại:</td>
                                   <td>
-                                    {shop.phoneNumber && Array.isArray(shop.phoneNumber) ? (
+                                    {/* {shop.phoneNumber && Array.isArray(shop.phoneNumber) ? (
                                       shop.phoneNumber.map((contact, idx) => (
                                         <div key={idx} className="mb-1">
                                           {contact.phone} {contact.name && `(${contact.name})`}
@@ -304,7 +304,22 @@ const ProductTraceabilityPage = () => {
                                       shop.phoneNumber
                                     ) : (
                                       'Chưa cập nhật'
-                                    )}
+                                    )} */}
+                                     {shop.phoneNumber && Array.isArray(shop.phoneNumber) ? (
+    <span className="space-x-2">
+      {shop.phoneNumber.map((contact, idx) => (
+        <span key={idx} className="inline">
+          {contact.phone}
+          {contact.name && ` (${contact.name})`}
+          {idx < shop.phoneNumber.length - 1 && " • "}
+        </span>
+      ))}
+    </span>
+  ) : shop.phoneNumber ? (
+    shop.phoneNumber
+  ) : (
+    'Chưa cập nhật'
+  )}
                                   </td>
                                 </tr>
                                 <tr>
