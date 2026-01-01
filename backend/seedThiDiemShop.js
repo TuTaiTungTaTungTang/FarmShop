@@ -32,7 +32,16 @@ const seedShops = async () => {
         password: hashedPassword,
         description: "Vựa trái cây Thi Diễm chuyên cung cấp trái cây tươi, trái cây theo mùa, nguồn gốc rõ ràng, giá sỉ và lẻ.",
         address: "Việt Nam",
-        phoneNumber: 966664887,
+        phoneNumber: [
+          {
+            name: "Anh Thi",
+            phone: "0966664887"
+          },
+          {
+            name: "Anh Quí",
+            phone: "0375321185"
+          }
+        ],
         role: "Seller",
         avatar: "https://picsum.photos/seed/thidiemfruit/200",
         zipCode: 70000,

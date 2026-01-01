@@ -26,7 +26,16 @@ const shopSchema = new mongoose.Schema({
     required: true,
   },
   phoneNumber: {
-    type: Number,
+    type: [
+      {
+        name: {
+          type: String,
+        },
+        phone: {
+          type: String,
+        }
+      }
+    ],
     required: true,
   },
   role: {

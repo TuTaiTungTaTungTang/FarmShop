@@ -26,13 +26,23 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
     // Lấy URL ảnh từ Cloudinary
     const avatarUrl = req.file && req.file.path ? req.file.path : "";
 
+    // Parse phoneNumber nếu là JSON string
+    let phoneNumber = req.body.phoneNumber;
+    if (typeof phoneNumber === 'string') {
+      try {
+        phoneNumber = JSON.parse(phoneNumber);
+      } catch (e) {
+        phoneNumber = req.body.phoneNumber;
+      }
+    }
+
     const seller = {
       name: req.body.name,
       email: email,
       password: req.body.password,
       avatar: avatarUrl,
       address: req.body.address,
-      phoneNumber: req.body.phoneNumber,
+      phoneNumber: phoneNumber,
       zipCode: req.body.zipCode,
     };
 

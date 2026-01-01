@@ -13,9 +13,11 @@ const ShopCreate = () => {
     const navigate = useNavigate()
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
-        const [phoneNumber, setPhoneNumber] = useState("");
+    const [phoneNumbers, setPhoneNumbers] = useState([
+        { name: "", phone: "" }
+    ]);
     const [address, setAddress] = useState("");
-        const [zipCode, setZipCode] = useState("");
+    const [zipCode, setZipCode] = useState("");
     const [avatar, setAvatar] = useState();
     const [password, setPassword] = useState("");
     const [visible, setVisible] = useState(false);
@@ -24,7 +26,6 @@ const ShopCreate = () => {
         e.preventDefault();
 
         const config = { headers: { "Content-Type": "multipart/form-data" } };
-        // meaning of uper line is that we are creating a new object with the name of config and the value of config is {headers:{'Content-Type':'multipart/form-data'}}  
 
         const newForm = new FormData();
         newForm.append("file", avatar);
@@ -33,7 +34,7 @@ const ShopCreate = () => {
         newForm.append("password", password);
         newForm.append("zipCode", zipCode.toString());
         newForm.append("address", address);
-        newForm.append("phoneNumber", phoneNumber.toString());
+        newForm.append("phoneNumber", JSON.stringify(phoneNumbers));
 
         try {
             const res = await axios.post(`${server}/shop/create-shop`, newForm, config);
@@ -44,15 +45,27 @@ const ShopCreate = () => {
             setAvatar();
             setZipCode("");
             setAddress("");
-            setPhoneNumber("");
+            setPhoneNumbers([{ name: "", phone: "" }]);
             navigate("/shop-login");
         } catch (error) {
             toast.error(error.response?.data?.message || "Đăng ký shop thất bại");
         }
-
-
-
     }
+
+    const handlePhoneChange = (index, field, value) => {
+        const newPhoneNumbers = [...phoneNumbers];
+        newPhoneNumbers[index][field] = value;
+        setPhoneNumbers(newPhoneNumbers);
+    };
+
+    const addPhoneNumber = () => {
+        setPhoneNumbers([...phoneNumbers, { name: "", phone: "" }]);
+    };
+
+    const removePhoneNumber = (index) => {
+        const newPhoneNumbers = phoneNumbers.filter((_, i) => i !== index);
+        setPhoneNumbers(newPhoneNumbers);
+    };
     // File upload
     const handleFileInputChange = (e) => {
         const file = e.target.files[0];
@@ -87,25 +100,48 @@ const ShopCreate = () => {
                                 />
                             </div>
                         </div>
-                        {/* Phone number */}
+                        {/* Phone numbers */}
                         <div>
-                            <label htmlFor="phoneNumber"
-                                className='block text-sm font-medium text-gray-700'
-                            >
-                                Phone Number
+                            <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                Phone Numbers (Add Contact Names)
                             </label>
-                            <div className='mt-1 relative'>
-                                <input
-                                    type="tel"
-                                    name='phoneNumber'
-                                    required
-                                    autoComplete="tel"
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                    placeholder="Ví dụ: +84901234567"
-                                    className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
-                                />
-                            </div>
+                            {phoneNumbers.map((phone, index) => (
+                                <div key={index} className='mb-3 p-3 border border-gray-300 rounded-md'>
+                                    <div className='grid grid-cols-2 gap-2 mb-2'>
+                                        <input
+                                            type="text"
+                                            placeholder="Tên liên hệ (vd: Anh Thi)"
+                                            value={phone.name}
+                                            onChange={(e) => handlePhoneChange(index, "name", e.target.value)}
+                                            className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                                        />
+                                        <input
+                                            type="tel"
+                                            placeholder="Số điện thoại"
+                                            value={phone.phone}
+                                            onChange={(e) => handlePhoneChange(index, "phone", e.target.value)}
+                                            className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                                            required
+                                        />
+                                    </div>
+                                    {phoneNumbers.length > 1 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => removePhoneNumber(index)}
+                                            className='text-red-600 text-sm hover:text-red-800 font-medium'
+                                        >
+                                            Xóa số điện thoại này
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                            <button
+                                type="button"
+                                onClick={addPhoneNumber}
+                                className='mt-2 px-3 py-1 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600'
+                            >
+                                + Thêm số điện thoại
+                            </button>
                         </div>
                         {/* Phone number end */}
 
