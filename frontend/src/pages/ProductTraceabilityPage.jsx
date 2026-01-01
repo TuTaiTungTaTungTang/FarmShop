@@ -180,7 +180,7 @@ const ProductTraceabilityPage = () => {
                               alt={product.name}
                               className="w-full h-56 object-cover rounded-lg mb-4 border"
                             />
-                            <table className="w-full text-sm mb-4">
+                            {/* <table className="w-full text-sm mb-4">
                               <tbody>
                                 <tr>
                                   <td className="font-medium text-gray-600 py-1">Tên sản phẩm:</td>
@@ -219,7 +219,55 @@ const ProductTraceabilityPage = () => {
                                   <td>{product.description}</td>
                                 </tr>
                               </tbody>
-                            </table>
+                            </table> */}
+                            <div className="space-y-2 text-sm">
+  <div className="flex">
+    <span className="w-32 font-medium text-gray-600">Tên sản phẩm:</span>
+    <span className="font-semibold">{product.name}</span>
+  </div>
+
+  <div className="flex">
+    <span className="w-32 font-medium text-gray-600">Danh mục:</span>
+    <span>{product.category}</span>
+  </div>
+
+  <div className="flex">
+    <span className="w-32 font-medium text-gray-600">Giá bán:</span>
+    <span className="text-green-700 font-bold">
+      {currency.formatPriceFromUsd(product.discountPrice)}
+    </span>
+  </div>
+
+  <div className="flex">
+    <span className="w-32 font-medium text-gray-600">Giá gốc:</span>
+    <span>{currency.formatPriceFromUsd(product.originalPrice)}</span>
+  </div>
+
+  <div className="flex">
+    <span className="w-32 font-medium text-gray-600">Tồn kho:</span>
+    <span>{product.stock} sản phẩm</span>
+  </div>
+
+  <div className="flex">
+    <span className="w-32 font-medium text-gray-600">Đã bán:</span>
+    <span>{product.sold_out} sản phẩm</span>
+  </div>
+
+  <div className="flex">
+    <span className="w-32 font-medium text-gray-600">Tags:</span>
+    <span>{product.tags || "Không có"}</span>
+  </div>
+
+  <div className="flex">
+    <span className="w-32 font-medium text-gray-600">Đánh giá:</span>
+    <span>⭐ {product.ratings || 0}/5</span>
+  </div>
+
+  <div className="flex">
+    <span className="w-32 font-medium text-gray-600">Mô tả:</span>
+    <span className="flex-1">{product.description}</span>
+  </div>
+</div>
                             <div className="text-xs text-gray-500">
                               Ngày sản xuất: {new Date(product.createdAt).toLocaleDateString('vi-VN')}
                               <br />
@@ -246,21 +294,17 @@ const ProductTraceabilityPage = () => {
                                 <tr>
                                   <td className="font-medium text-gray-600 py-1">Điện thoại:</td>
                                   <td>
-                                      {shop.phoneNumber && Array.isArray(shop.phoneNumber) ? (
-    <span className="space-x-2">
-      {shop.phoneNumber.map((contact, idx) => (
-        <span key={idx} className="inline">
-          {contact.phone}
-          {contact.name && ` (${contact.name})`}
-          {idx < shop.phoneNumber.length - 1 && " • "}
-        </span>
-      ))}
-    </span>
-  ) : shop.phoneNumber ? (
-    shop.phoneNumber
-  ) : (
-    'Chưa cập nhật'
-  )}
+                                    {shop.phoneNumber && Array.isArray(shop.phoneNumber) ? (
+                                      shop.phoneNumber.map((contact, idx) => (
+                                        <div key={idx} className="mb-1">
+                                          {contact.phone} {contact.name && `(${contact.name})`}
+                                        </div>
+                                      ))
+                                    ) : shop.phoneNumber ? (
+                                      shop.phoneNumber
+                                    ) : (
+                                      'Chưa cập nhật'
+                                    )}
                                   </td>
                                 </tr>
                                 <tr>
