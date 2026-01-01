@@ -77,28 +77,29 @@ const ShopCreate = () => {
                                 shop name
                             </label>
                             <div className='mt-1'>
-                                <input type="name"
+                                <input type="text"
                                     name='name'
                                     required
-
+                                    autoComplete="organization"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
                                 />
                             </div>
                         </div>
-                        {/* Phon number */}
+                        {/* Phone number */}
                         <div>
-                            <label htmlFor="password"
+                            <label htmlFor="phoneNumber"
                                 className='block text-sm font-medium text-gray-700'
                             >
                                 Phone Number
                             </label>
                             <div className='mt-1 relative'>
                                 <input
-                                    type="text"
+                                    type="tel"
                                     name='phoneNumber'
                                     required
+                                    autoComplete="tel"
                                     value={phoneNumber}
                                     onChange={(e) => setPhoneNumber(e.target.value)}
                                     placeholder="Ví dụ: +84901234567"
@@ -132,16 +133,17 @@ const ShopCreate = () => {
                         {/* Address */}
                         <div>
                             <label
-                                htmlFor="email"
+                                htmlFor="address"
                                 className="block text-sm font-medium text-gray-700"
                             >
                                 Address
                             </label>
                             <div className="mt-1">
                                 <input
-                                    type="address"
+                                    type="text"
                                     name="address"
                                     required
+                                    autoComplete="street-address"
                                     value={address}
                                     onChange={(e) => setAddress(e.target.value)}
                                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
