@@ -623,7 +623,15 @@ const ProductDetailsInfo = ({
                       <div className="flex-1">
                         <p className="font-medium text-lg">{traceabilityData.shop.name}</p>
                         <p className="text-sm text-gray-600">{traceabilityData.shop.email}</p>
-                        <p className="text-sm text-gray-600">{traceabilityData.shop.phoneNumber}</p>
+                        {traceabilityData.shop.phoneNumber && Array.isArray(traceabilityData.shop.phoneNumber) ? (
+                          traceabilityData.shop.phoneNumber.map((contact, idx) => (
+                            <p key={idx} className="text-sm text-gray-600">
+                              📞 {contact.phone} {contact.name && `(${contact.name})`}
+                            </p>
+                          ))
+                        ) : traceabilityData.shop.phoneNumber ? (
+                          <p className="text-sm text-gray-600">📞 {traceabilityData.shop.phoneNumber}</p>
+                        ) : null}
                         <p className="text-sm text-gray-600">{traceabilityData.shop.address}</p>
                         <p className="text-xs text-gray-500 mt-1">
                           Tham gia: {new Date(traceabilityData.shop.createdAt).toLocaleDateString('vi-VN')}

@@ -245,7 +245,19 @@ const ProductTraceabilityPage = () => {
                               <tbody>
                                 <tr>
                                   <td className="font-medium text-gray-600 py-1">Điện thoại:</td>
-                                  <td>{shop.phoneNumber || 'Chưa cập nhật'}</td>
+                                  <td>
+                                    {shop.phoneNumber && Array.isArray(shop.phoneNumber) ? (
+                                      shop.phoneNumber.map((contact, idx) => (
+                                        <div key={idx} className="mb-1">
+                                          {contact.phone} {contact.name && `(${contact.name})`}
+                                        </div>
+                                      ))
+                                    ) : shop.phoneNumber ? (
+                                      shop.phoneNumber
+                                    ) : (
+                                      'Chưa cập nhật'
+                                    )}
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td className="font-medium text-gray-600 py-1">Địa chỉ:</td>
