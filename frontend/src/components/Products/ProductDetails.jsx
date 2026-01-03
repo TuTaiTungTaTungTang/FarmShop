@@ -511,6 +511,32 @@ const ProductDetailsInfo = ({
               </div>
 
               <p className="pt-2">{shop?.description}</p>
+
+              {/* Shop Address */}
+              {shop?.address && (
+                <div className="pt-3">
+                  <h5 className="font-[600] text-[15px]">Địa chỉ:</h5>
+                  <p className="text-[#000000a6] whitespace-pre-line text-[14px]">{shop.address}</p>
+                </div>
+              )}
+
+              {/* Shop Phone Number */}
+              {shop?.phoneNumber && (
+                <div className="pt-3">
+                  <h5 className="font-[600] text-[15px]">Số điện thoại:</h5>
+                  <div className="text-[#000000a6] text-[14px]">
+                    {Array.isArray(shop.phoneNumber) ? (
+                      shop.phoneNumber.map((contact, idx) => (
+                        <div key={idx}>
+                          {contact.phone} {contact.name && `(${contact.name})`}
+                        </div>
+                      ))
+                    ) : (
+                      shop.phoneNumber
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="w-full 800px:w-[50%] mt-5 800px:mt-0 800px:flex flex-col items-end">
