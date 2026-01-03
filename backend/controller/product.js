@@ -79,7 +79,7 @@ router.get(
   "/get-all-products-shop/:id",
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const products = await Product.find({ shopId: req.params.id });
+      const products = await Product.find({ shopId: req.params.id }).populate("shop");
 
       res.status(201).json({
         success: true,
@@ -133,7 +133,7 @@ router.get(
   "/get-all-products",
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const products = await Product.find().sort({ createdAt: -1 });
+      const products = await Product.find().populate("shop").sort({ createdAt: -1 });
 
       res.status(201).json({
         success: true,
@@ -209,7 +209,7 @@ router.get(
   isAdmin("Admin"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const products = await Product.find().sort({
+      const products = await Product.find().populate("shop").sort({
         createdAt: -1,
       });
       res.status(201).json({
