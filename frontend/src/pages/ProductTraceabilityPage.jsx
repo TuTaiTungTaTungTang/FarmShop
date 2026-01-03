@@ -351,7 +351,14 @@ const ProductTraceabilityPage = () => {
 
   <div className="flex">
     <span className="w-32 font-medium text-gray-600">Địa chỉ:</span>
-    <span>{shop.address}</span>
+    <div className="flex-1">
+      {shop.address?.split(/\d+\/\s*/).filter(Boolean).map((addr, i) => (
+        <div key={i} className="mb-1">
+          <span className="font-semibold text-blue-600">{i + 1}. </span>
+          {addr.trim()}
+        </div>
+      ))}
+    </div>
   </div>
 
   <div className="flex">

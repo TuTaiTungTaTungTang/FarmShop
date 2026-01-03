@@ -31,7 +31,7 @@ const seedShops = async () => {
         email: "thidiem.fruit@gmail.com",
         password: hashedPassword,
         description: "Vựa trái cây Thi Diễm chuyên cung cấp trái cây tươi, trái cây theo mùa, nguồn gốc rõ ràng, giá sỉ và lẻ.",
-        address: "Việt Nam",
+        address: "1/ Cơ sở 1: Cao Lãnh - Đồng Tháp\n2/ Cơ sở 2: Long Xuyên - An Giang\n3/ Cơ sở 3: Châu Đốc - An Giang\n4/ Cơ sở 4: Vĩnh Long - Vĩnh Long\n5/ Cơ sở 5: Sa Đéc - Đồng Tháp\n6/ Cơ sở 6: Cần Thơ - Cần Thơ\n7/ Cơ sở 7: Rạch Giá - Kiên Giang",
         phoneNumber: [
           {
             name: "Anh Thi",
