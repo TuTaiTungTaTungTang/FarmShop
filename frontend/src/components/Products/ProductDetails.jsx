@@ -112,7 +112,7 @@ const ProductDetails = ({ data }) => {
     if (isItemExists) {
       toast.error("item already in cart!");
     } else {
-      if (data.stock < 1) {
+      if (data.stock === null || data.stock < 1) {
         toast.error("Product stock limited!");
       } else {
         const cartData = { ...data, qty: count };
@@ -220,10 +220,10 @@ const ProductDetails = ({ data }) => {
 
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
-                    {currency.formatPriceFromUsd(data.discountPrice)}
+                    {data.discountPrice ? currency.formatPriceFromUsd(data.discountPrice) : ""}
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {data.originalPrice ? currency.formatPriceFromUsd(data.originalPrice) : null}
+                    {data.originalPrice ? currency.formatPriceFromUsd(data.originalPrice) : ""}
                   </h3>
                 </div>
 
@@ -614,9 +614,9 @@ const ProductDetailsInfo = ({
                     <h4 className="font-semibold mb-2">📊 Thông Tin Cơ Bản</h4>
                     <div className="space-y-1 text-sm">
                       <p><span className="font-medium">Danh mục:</span> {traceabilityData.product.category}</p>
-                      <p><span className="font-medium">Giá gốc:</span> {currency.formatPriceFromUsd(traceabilityData.product.originalPrice)}</p>
-                      <p><span className="font-medium">Giá bán:</span> {currency.formatPriceFromUsd(traceabilityData.product.discountPrice)}</p>
-                      <p><span className="font-medium">Tồn kho:</span> {traceabilityData.product.stock} sản phẩm</p>
+                      <p><span className="font-medium">Giá gốc:</span> {traceabilityData.product.originalPrice ? currency.formatPriceFromUsd(traceabilityData.product.originalPrice) : ""}</p>
+                      <p><span className="font-medium">Giá bán:</span> {traceabilityData.product.discountPrice ? currency.formatPriceFromUsd(traceabilityData.product.discountPrice) : ""}</p>
+                      <p><span className="font-medium">Tồn kho:</span> {traceabilityData.product.stock ? (traceabilityData.product.stock + " sản phẩm") : ""}</p>
                       <p><span className="font-medium">Đã bán:</span> {traceabilityData.product.sold_out} sản phẩm</p>
                     </div>
                   </div>

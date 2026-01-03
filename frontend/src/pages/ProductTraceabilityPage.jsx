@@ -234,18 +234,18 @@ const ProductTraceabilityPage = () => {
   <div className="flex">
     <span className="w-32 font-medium text-gray-600">Giá bán:</span>
     <span className="text-green-700 font-bold">
-      {currency.formatPriceFromUsd(product.discountPrice)}
+      {product.discountPrice ? currency.formatPriceFromUsd(product.discountPrice) : ""}
     </span>
   </div>
 
   <div className="flex">
     <span className="w-32 font-medium text-gray-600">Giá gốc:</span>
-    <span>{currency.formatPriceFromUsd(product.originalPrice)}</span>
+    <span>{product.originalPrice ? currency.formatPriceFromUsd(product.originalPrice) : ""}</span>
   </div>
 
   <div className="flex">
     <span className="w-32 font-medium text-gray-600">Tồn kho:</span>
-    <span>{product.stock} sản phẩm</span>
+    <span>{product.stock ? (product.stock + " sản phẩm") : ""}</span>
   </div>
 
   <div className="flex">
