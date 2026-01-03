@@ -75,11 +75,21 @@ const ShopInfo = ({ isOwner }) => {
                             </div>
                             <div className="p-3">
                                 <h5 className="font-[600]">Address</h5>
-                                <h4 className="text-[#000000a6]">{data.address}</h4>
+                                <div className="text-[#000000a6] whitespace-pre-line">{data.address}</div>
                             </div>
                             <div className="p-3">
                                 <h5 className="font-[600]">Phone Number</h5>
-                                <h4 className="text-[#000000a6]">{data.phoneNumber}</h4>
+                                <div className="text-[#000000a6]">
+                                    {data.phoneNumber && Array.isArray(data.phoneNumber) ? (
+                                        data.phoneNumber.map((contact, idx) => (
+                                            <div key={idx}>
+                                                {contact.phone} {contact.name && `(${contact.name})`}
+                                            </div>
+                                        ))
+                                    ) : (
+                                        data.phoneNumber
+                                    )}
+                                </div>
                             </div>
                             <div className="p-3">
                                 <h5 className="font-[600]">Total Products</h5>

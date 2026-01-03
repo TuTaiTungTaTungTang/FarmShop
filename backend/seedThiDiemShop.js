@@ -51,16 +51,19 @@ const seedShops = async () => {
       },
     ];
 
-    // Xóa các shop cũ nếu cần (tùy chọn)
-    // await Shop.deleteMany({ email: { $in: shops.map(s => s.email) } });
-
-    const result = await Shop.insertMany(shops);
-    console.log("✅ Shops created successfully:");
-    result.forEach((shop) => {
-      console.log(`   📦 ${shop.name} (${shop.email})`);
-      console.log(`      Phone: ${shop.phoneNumber}`);
-      console.log(`      ID: ${shop._id}`);
-    });
+    // Cập nhật hoặc tạo mới shop
+    for (const shopData of shops) {
+      const result = await Shop.findOneAndUpdate(
+        { email: shopData.email },
+        shopData,
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      );
+      console.log("✅ Shop updated/created successfully:");
+      console.log(`   📦 ${result.name} (${result.email})`);
+      console.log(`      Address: ${result.address}`);
+      console.log(`      Phone: ${JSON.stringify(result.phoneNumber, null, 2)}`);
+      console.log(`      ID: ${result._id}`);
+    }
 
     process.exit(0);
   } catch (error) {
