@@ -235,6 +235,16 @@ router.get(
         return next(new ErrorHandler("Không tìm thấy sản phẩm với mã traceability này!", 404));
       }
 
+      // If populate failed or shop doesn't exist, try to fetch shop separately
+      let shopData = product.shop;
+      if (!shopData && product.shopId) {
+        shopData = await Shop.findById(product.shopId);
+      }
+
+      if (!shopData) {
+        return next(new ErrorHandler("Không tìm thấy thông tin cửa hàng!", 404));
+      }
+
       // Trả về thông tin traceability chi tiết (như FaceFarm)
       const traceabilityInfo = {
         product: {
@@ -255,14 +265,14 @@ router.get(
           qrCodeUrl: product.qrCodeUrl
         },
         shop: {
-          _id: product.shop._id,
-          name: product.shop.name,
-          email: product.shop.email,
-          phoneNumber: product.shop.phoneNumber,
-          address: product.shop.address,
-          description: product.shop.description,
-          avatar: product.shop.avatar,
-          createdAt: product.shop.createdAt
+          _id: shopData._id,
+          name: shopData.name,
+          email: shopData.email,
+          phoneNumber: shopData.phoneNumber,
+          address: shopData.address,
+          description: shopData.description,
+          avatar: shopData.avatar,
+          createdAt: shopData.createdAt
         },
         traceability: {
           traceabilityId: product.traceabilityId,
