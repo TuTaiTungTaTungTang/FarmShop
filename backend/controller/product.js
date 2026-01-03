@@ -31,26 +31,38 @@ router.post(
   productData.images = imageUrls;
   productData.shop = shopId;
   
-  // Xử lý các trường có thể null/undefined
-  if (!productData.originalPrice || productData.originalPrice === '' || productData.originalPrice === 'undefined') {
-    delete productData.originalPrice;
+  // Xử lý các trường có thể null/undefined - set null thay vì delete
+  if (!productData.originalPrice || productData.originalPrice === '' || productData.originalPrice === 'undefined' || productData.originalPrice === 'null') {
+    productData.originalPrice = null;
   } else {
     const price = Number(productData.originalPrice);
-    productData.originalPrice = isNaN(price) ? null : price;
+    if (isNaN(price)) {
+      productData.originalPrice = null;
+    } else {
+      productData.originalPrice = price;
+    }
   }
   
-  if (!productData.discountPrice || productData.discountPrice === '' || productData.discountPrice === 'undefined') {
-    delete productData.discountPrice;
+  if (!productData.discountPrice || productData.discountPrice === '' || productData.discountPrice === 'undefined' || productData.discountPrice === 'null') {
+    productData.discountPrice = null;
   } else {
     const price = Number(productData.discountPrice);
-    productData.discountPrice = isNaN(price) ? null : price;
+    if (isNaN(price)) {
+      productData.discountPrice = null;
+    } else {
+      productData.discountPrice = price;
+    }
   }
   
-  if (!productData.stock || productData.stock === '' || productData.stock === 'undefined') {
-    delete productData.stock;
+  if (!productData.stock || productData.stock === '' || productData.stock === 'undefined' || productData.stock === 'null') {
+    productData.stock = null;
   } else {
     const stockNum = Number(productData.stock);
-    productData.stock = isNaN(stockNum) ? null : stockNum;
+    if (isNaN(stockNum)) {
+      productData.stock = null;
+    } else {
+      productData.stock = stockNum;
+    }
   }
 
   const product = await Product.create(productData);

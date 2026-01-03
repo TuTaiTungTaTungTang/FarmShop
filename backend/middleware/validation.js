@@ -57,21 +57,41 @@ const productSchemas = {
     name: Joi.string().min(2).max(200).required(),
     description: Joi.string().min(10).max(2000).required(),
     category: Joi.string().required(),
-    tags: Joi.string().optional(),
-    originalPrice: Joi.number().min(0).optional().allow('', null),
-    discountPrice: Joi.number().min(0).optional().allow('', null),
-    stock: Joi.number().integer().min(0).optional().allow('', null),
+    tags: Joi.string().optional().allow(''),
+    originalPrice: Joi.alternatives().try(
+      Joi.number().min(0),
+      Joi.string().valid('', 'undefined', 'null').allow(null)
+    ).optional(),
+    discountPrice: Joi.alternatives().try(
+      Joi.number().min(0),
+      Joi.string().valid('', 'undefined', 'null').allow(null)
+    ).optional(),
+    stock: Joi.alternatives().try(
+      Joi.number().integer().min(0),
+      Joi.string().valid('', 'undefined', 'null').allow(null)
+    ).optional(),
     images: Joi.array().min(1).required(),
+    shopId: Joi.string().optional(),
+    shop: Joi.alternatives().try(Joi.string(), Joi.object()).optional(),
   }),
 
   update: Joi.object({
     name: Joi.string().min(2).max(200).optional(),
     description: Joi.string().min(10).max(2000).optional(),
     category: Joi.string().optional(),
-    tags: Joi.string().optional(),
-    originalPrice: Joi.number().min(0).optional().allow('', null),
-    discountPrice: Joi.number().min(0).optional().allow('', null),
-    stock: Joi.number().integer().min(0).optional().allow('', null),
+    tags: Joi.string().optional().allow(''),
+    originalPrice: Joi.alternatives().try(
+      Joi.number().min(0),
+      Joi.string().valid('', 'undefined', 'null').allow(null)
+    ).optional(),
+    discountPrice: Joi.alternatives().try(
+      Joi.number().min(0),
+      Joi.string().valid('', 'undefined', 'null').allow(null)
+    ).optional(),
+    stock: Joi.alternatives().try(
+      Joi.number().integer().min(0),
+      Joi.string().valid('', 'undefined', 'null').allow(null)
+    ).optional(),
   }),
 };
 
