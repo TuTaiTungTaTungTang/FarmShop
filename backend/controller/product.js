@@ -29,7 +29,7 @@ router.post(
 
   const productData = req.body;
   productData.images = imageUrls;
-  productData.shop = shop;
+  productData.shop = shopId;
 
   const product = await Product.create(productData);
         // 🚀 Tự động tạo QR code cho sản phẩm mới (như FaceFarm)

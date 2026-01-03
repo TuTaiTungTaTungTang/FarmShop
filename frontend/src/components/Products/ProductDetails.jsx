@@ -354,7 +354,7 @@ const ProductDetailsInfo = ({
 
   // local shop id for nested component
   const localShopId = shopForInfo?._id || data?.shopId || null;
-  const shop = shopForInfo || data?.shop || null;
+  const shop = shopForInfo && Object.keys(shopForInfo).length > 0 ? shopForInfo : (data?.shop || null);
   const shopRating = shop?.ratings ?? data?.ratings ?? 0;
 
   return (
