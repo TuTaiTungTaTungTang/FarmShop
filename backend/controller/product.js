@@ -32,22 +32,25 @@ router.post(
   productData.shop = shopId;
   
   // Xử lý các trường có thể null/undefined
-  if (productData.originalPrice === '' || productData.originalPrice === undefined) {
-    productData.originalPrice = null;
+  if (!productData.originalPrice || productData.originalPrice === '' || productData.originalPrice === 'undefined') {
+    delete productData.originalPrice;
   } else {
-    productData.originalPrice = Number(productData.originalPrice);
+    const price = Number(productData.originalPrice);
+    productData.originalPrice = isNaN(price) ? null : price;
   }
   
-  if (productData.discountPrice === '' || productData.discountPrice === undefined) {
-    productData.discountPrice = null;
+  if (!productData.discountPrice || productData.discountPrice === '' || productData.discountPrice === 'undefined') {
+    delete productData.discountPrice;
   } else {
-    productData.discountPrice = Number(productData.discountPrice);
+    const price = Number(productData.discountPrice);
+    productData.discountPrice = isNaN(price) ? null : price;
   }
   
-  if (productData.stock === '' || productData.stock === undefined) {
-    productData.stock = null;
+  if (!productData.stock || productData.stock === '' || productData.stock === 'undefined') {
+    delete productData.stock;
   } else {
-    productData.stock = Number(productData.stock);
+    const stockNum = Number(productData.stock);
+    productData.stock = isNaN(stockNum) ? null : stockNum;
   }
 
   const product = await Product.create(productData);
