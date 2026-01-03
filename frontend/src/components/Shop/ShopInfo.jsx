@@ -12,14 +12,13 @@ const ShopInfo = ({ isOwner }) => {
     const [data, setData] = useState({});
     const productsState = useSelector((state) => state.product) || {};
     const { products = [] } = productsState;
+    const { seller } = useSelector((state) => state.seller);
     const [isLoading, setIsLoading] = useState(false);
 
     const { id } = useParams();
     const dispatch = useDispatch();
 
-
-    useEffect(() => {
-        dispatch(getAllProductsShop(id));
+    const fetchShopInfo = () => {
         setIsLoading(true);
         axios.get(`${server}/shop/get-shop-info/${id}`).then((res) => {
             setData(res.data.shop);
@@ -28,7 +27,20 @@ const ShopInfo = ({ isOwner }) => {
             // error fetching shop info
             setIsLoading(false);
         })
+    };
+
+    useEffect(() => {
+        dispatch(getAllProductsShop(id));
+        fetchShopInfo();
     }, [dispatch, id])
+
+    // Refresh shop info when seller data changes (after update)
+    useEffect(() => {
+        if (seller && seller._id === id) {
+            fetchShopInfo();
+        }
+    }, [seller])
+
 
 
     const logoutHandler = async () => {
