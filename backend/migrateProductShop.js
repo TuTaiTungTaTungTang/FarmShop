@@ -22,30 +22,57 @@ const migrateProducts = async () => {
   try {
     await connectDB();
 
-    // Find all products
-    const products = await Product.find();
-    console.log(`📦 Found ${products.length} products to migrate...`);
+    // Get the Product collection directly (bypass Mongoose validation)
+    const collection = mongoose.connection.collection("products");
+
+    // Step 1: Find products with shop as object, convert to shopId
+    const productsWithObjectShop = await Product.find();
+    console.log(`📦 Found ${productsWithObjectShop.length} products...`);
 
     let updated = 0;
     let failed = 0;
 
-    for (const product of products) {
+    for (const product of productsWithObjectShop) {
       try {
-        // If shop is an Object (not ObjectId), we need to fix it
+        // If shop is an object with _id, extract the _id
         if (product.shop && typeof product.shop === 'object' && product.shop._id) {
-          // Shop is already populated as object, set it correctly
-          product.shop = product.shop._id;
-          await product.save();
+          const shopId = product.shop._id;
+          
+          // Use raw MongoDB update to avoid schema validation
+          await collection.updateOne(
+            { _id: product._id },
+            { $set: { shop: new mongoose.Types.ObjectId(shopId) } }
+          );
           updated++;
           console.log(`✅ Updated product: ${product.name}`);
         } else if (!product.shop && product.shopId) {
-          // Shop field is missing, try to find the shop by shopId
-          const shop = await Shop.findById(product.shopId);
-          if (shop) {
-            product.shop = shop._id;
-            await product.save();
+          // If shop is missing, set it from shopId
+          const shopId = typeof product.shopId === 'string' 
+            ? new mongoose.Types.ObjectId(product.shopId)
+            : product.shopId;
+            
+          await collection.updateOne(
+            { _id: product._id },
+            { $set: { shop: shopId } }
+          );
+          updated++;
+          console.log(`✅ Fixed product: ${product.name}`);
+        } else if (product.shop && typeof product.shop === 'object' && !product.shop._id) {
+          // shop is an object but doesn't have _id, try to use shopId
+          if (product.shopId) {
+            const shopId = typeof product.shopId === 'string' 
+              ? new mongoose.Types.ObjectId(product.shopId)
+              : product.shopId;
+              
+            await collection.updateOne(
+              { _id: product._id },
+              { $set: { shop: shopId } }
+            );
             updated++;
-            console.log(`✅ Fixed product: ${product.name}`);
+            console.log(`✅ Fixed product (used shopId): ${product.name}`);
+          } else {
+            failed++;
+            console.warn(`⚠️ Product ${product._id} has invalid shop and no shopId`);
           }
         }
       } catch (err) {
