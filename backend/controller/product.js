@@ -30,6 +30,25 @@ router.post(
   const productData = req.body;
   productData.images = imageUrls;
   productData.shop = shopId;
+  
+  // Xử lý các trường có thể null/undefined
+  if (productData.originalPrice === '' || productData.originalPrice === undefined) {
+    productData.originalPrice = null;
+  } else {
+    productData.originalPrice = Number(productData.originalPrice);
+  }
+  
+  if (productData.discountPrice === '' || productData.discountPrice === undefined) {
+    productData.discountPrice = null;
+  } else {
+    productData.discountPrice = Number(productData.discountPrice);
+  }
+  
+  if (productData.stock === '' || productData.stock === undefined) {
+    productData.stock = null;
+  } else {
+    productData.stock = Number(productData.stock);
+  }
 
   const product = await Product.create(productData);
         // 🚀 Tự động tạo QR code cho sản phẩm mới (như FaceFarm)

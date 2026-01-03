@@ -58,9 +58,9 @@ const productSchemas = {
     description: Joi.string().min(10).max(2000).required(),
     category: Joi.string().required(),
     tags: Joi.string().optional(),
-    originalPrice: Joi.number().min(0).required(),
-    discountPrice: Joi.number().min(0).optional(),
-    stock: Joi.number().integer().min(0).required(),
+    originalPrice: Joi.number().min(0).optional().allow('', null),
+    discountPrice: Joi.number().min(0).optional().allow('', null),
+    stock: Joi.number().integer().min(0).optional().allow('', null),
     images: Joi.array().min(1).required(),
   }),
 
@@ -69,9 +69,9 @@ const productSchemas = {
     description: Joi.string().min(10).max(2000).optional(),
     category: Joi.string().optional(),
     tags: Joi.string().optional(),
-    originalPrice: Joi.number().min(0).optional(),
-    discountPrice: Joi.number().min(0).optional(),
-    stock: Joi.number().integer().min(0).optional(),
+    originalPrice: Joi.number().min(0).optional().allow('', null),
+    discountPrice: Joi.number().min(0).optional().allow('', null),
+    stock: Joi.number().integer().min(0).optional().allow('', null),
   }),
 };
 

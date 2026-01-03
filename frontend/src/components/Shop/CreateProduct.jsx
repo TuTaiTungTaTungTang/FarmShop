@@ -130,7 +130,7 @@ const CreateProduct = () => {
                 </div>
                 <br />
                 <div>
-                    <label className="pb-2">Original Price</label>
+                    <label className="pb-2">Original Price (Optional)</label>
                     <input
                         type="number"
                         name="price"
@@ -143,7 +143,7 @@ const CreateProduct = () => {
                 <br />
                 <div>
                     <label className="pb-2">
-                        Price (With Discount) <span className="text-red-500">*</span>
+                        Price (With Discount) (Optional)
                     </label>
                     <input
                         type="number"
@@ -157,7 +157,7 @@ const CreateProduct = () => {
                 <br />
                 <div>
                     <label className="pb-2">
-                        Product Stock <span className="text-red-500">*</span>
+                        Product Stock (Optional)
                     </label>
                     <input
                         type="number"
