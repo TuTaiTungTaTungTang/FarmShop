@@ -18,8 +18,10 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
     path: "config/.env",
   });
 }
-// connect db
-connectDatabase();
+// connect db (skip when running tests so Jest can control lifecycle)
+if (process.env.NODE_ENV !== "test") {
+  connectDatabase();
+}
 
 // Security headers
 app.use(
@@ -54,13 +56,17 @@ app.use("/api/v2/user/forgot-password", authLimiter);
 app.use("/api/v2/shop/login-shop", authLimiter);
 app.use("/api/v2/shop/create-shop", authLimiter);
 
-// create server
-const server = app.listen(process.env.PORT, () => {
-  console.log(`✅ Server is running on http://localhost:${process.env.PORT}`);
-});
+let server;
+
+// create server (avoid opening a real port in test mode)
+if (process.env.NODE_ENV !== "test") {
+  server = app.listen(process.env.PORT, () => {
+    console.log(`✅ Server is running on http://localhost:${process.env.PORT}`);
+  });
+}
 
 // DEV: print mounted routes for debugging
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
   const listRoutes = () => {
     const routes = [];
     app._router.stack.forEach((middleware) => {
@@ -202,7 +208,11 @@ process.on("unhandledRejection", (err) => {
   console.log(`Shutting down the server for ${err.message}`);
   console.log(`shutting down the server for unhandle promise rejection`);
 
-  server.close(() => {
-    process.exit(1);
-  });
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  }
 });
+
+module.exports = app;

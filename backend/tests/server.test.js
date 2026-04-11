@@ -1,18 +1,25 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 const app = require('../server');
 
-// Mock database for testing
+let mongoServer;
+
+// Use in-memory MongoDB so tests run without local Mongo service
 beforeAll(async () => {
-  // Connect to test database
-  const MONGO_URI = process.env.TEST_DB_URL || 'mongodb://localhost:27017/ecommerce_test';
+  mongoServer = await MongoMemoryServer.create();
+  const MONGO_URI = mongoServer.getUri();
   await mongoose.connect(MONGO_URI);
 });
 
 afterAll(async () => {
-  // Clean up and close database connection
-  await mongoose.connection.dropDatabase();
-  await mongoose.connection.close();
+  if (mongoose.connection.readyState !== 0) {
+    await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
+  }
+  if (mongoServer) {
+    await mongoServer.stop();
+  }
 });
 
 describe('Server Health', () => {
@@ -39,27 +46,6 @@ describe('Server Health', () => {
     
     expect(response.text).toContain('swagger-ui');
   });
-});
-
-describe('API Rate Limiting', () => {
-  test('Should allow normal requests', async () => {
-    const response = await request(app)
-      .get('/api/v2/user/test')
-      .expect(404); // 404 is expected since route doesn't exist, but rate limit should pass
-  });
-
-  test('Should block excessive requests', async () => {
-    // Make 101 requests quickly to trigger rate limit
-    const requests = Array(101).fill().map(() => 
-      request(app).get('/api/v2/user/test')
-    );
-
-    const responses = await Promise.all(requests);
-    
-    // Last requests should be rate limited
-    const rateLimitedResponses = responses.filter(res => res.status === 429);
-    expect(rateLimitedResponses.length).toBeGreaterThan(0);
-  }, 10000); // Increase timeout for this test
 });
 
 describe('Input Validation', () => {
@@ -127,4 +113,25 @@ describe('Error Handling', () => {
       .send('invalid json')
       .expect(400);
   });
+});
+
+describe('API Rate Limiting', () => {
+  test('Should allow normal requests', async () => {
+    const response = await request(app)
+      .get('/api/v2/user/test')
+      .expect(404); // 404 is expected since route doesn't exist, but rate limit should pass
+  });
+
+  test('Should block excessive requests', async () => {
+    // Make 101 requests quickly to trigger rate limit
+    const requests = Array(101).fill().map(() =>
+      request(app).get('/api/v2/user/test')
+    );
+
+    const responses = await Promise.all(requests);
+
+    // Last requests should be rate limited
+    const rateLimitedResponses = responses.filter(res => res.status === 429);
+    expect(rateLimitedResponses.length).toBeGreaterThan(0);
+  }, 10000); // Increase timeout for this test
 });
