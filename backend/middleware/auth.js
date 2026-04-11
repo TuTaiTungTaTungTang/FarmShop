@@ -29,6 +29,31 @@ exports.isSeller = catchAsyncErrors(async (req, res, next) => {
   next();
 });
 
+exports.isAuthenticatedOrSeller = catchAsyncErrors(async (req, res, next) => {
+  const { token, seller_token } = req.cookies;
+
+  if (!token && !seller_token) {
+    return next(new ErrorHandler("Please login to continue", 401));
+  }
+
+  if (token) {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    req.user = await User.findById(decoded.id);
+    if (!req.user) {
+      return next(new ErrorHandler("User not found", 401));
+    }
+    return next();
+  }
+
+  const decodedSeller = jwt.verify(seller_token, process.env.JWT_SECRET_KEY);
+  req.seller = await Shop.findById(decodedSeller.id);
+  if (!req.seller) {
+    return next(new ErrorHandler("Seller not found", 401));
+  }
+
+  next();
+});
+
 exports.isAdmin = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {

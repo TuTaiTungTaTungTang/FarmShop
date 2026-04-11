@@ -6,6 +6,7 @@ const Event = require("../model/event");
 const Order = require("../model/order");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { isSeller, isAdmin, isAuthenticated } = require("../middleware/auth");
+const { validateObjectIdParam } = require("../middleware/validation");
 const router = express.Router();
 const fs = require("fs");
 
@@ -42,10 +43,15 @@ const fs = require("fs");
 // );
 router.post(
   "/create-event",
+  isSeller,
   upload.array("images"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const shopId = req.body.shopId;
+      if (req.seller._id.toString() !== shopId) {
+        return next(new ErrorHandler("You can only create events for your own shop", 403));
+      }
+
       const shop = await Shop.findById(shopId);
       if (!shop) {
         return next(new ErrorHandler("Shop Id is invalid!", 400));
@@ -85,6 +91,7 @@ router.get("/get-all-events", async (req, res, next) => {
 // get all events of a shop
 router.get(
   "/get-all-events/:id",
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const events = await Event.find({ shopId: req.params.id });
@@ -103,11 +110,19 @@ router.get(
 router.delete(
   "/delete-shop-event/:id",
   isSeller,
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const productId = req.params.id;
 
       const eventData = await Event.findById(productId);
+      if (!eventData) {
+        return next(new ErrorHandler("Event not found with this id!", 404));
+      }
+
+      if (!eventData.shopId || eventData.shopId.toString() !== req.seller._id.toString()) {
+        return next(new ErrorHandler("You can only delete your own events", 403));
+      }
 
       eventData.images.forEach((imageUrl) => {
         const filename = imageUrl;
@@ -162,25 +177,52 @@ router.put(
   isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { user, rating, comment, productId, orderId } = req.body;
+      const { rating, comment, productId, orderId } = req.body;
 
       const event = await Event.findById(productId);
+      if (!event) {
+        return next(new ErrorHandler("Event not found", 404));
+      }
+
+      const order = await Order.findById(orderId);
+      if (!order) {
+        return next(new ErrorHandler("Order not found", 404));
+      }
+
+      if (order.user._id.toString() !== req.user._id.toString()) {
+        return next(new ErrorHandler("You can only review events from your own orders", 403));
+      }
+
+      const hasEventInOrder = order.cart.some(
+        (item) => item._id && item._id.toString() === productId
+      );
+      if (!hasEventInOrder) {
+        return next(new ErrorHandler("Event is not in this order", 400));
+      }
+
+      const reviewUser = {
+        _id: req.user._id,
+        name: req.user.name,
+        avatar: req.user.avatar,
+      };
 
       const review = {
-        user,
+        user: reviewUser,
         rating,
         comment,
         productId,
       };
 
       const isReviewed = event.reviews.find(
-        (rev) => rev.user._id === req.user._id
+        (rev) => rev.user && rev.user._id && rev.user._id.toString() === req.user._id.toString()
       );
 
       if (isReviewed) {
         event.reviews.forEach((rev) => {
-          if (rev.user._id === req.user._id) {
-            (rev.rating = rating), (rev.comment = comment), (rev.user = user);
+          if (rev.user && rev.user._id && rev.user._id.toString() === req.user._id.toString()) {
+            rev.rating = rating;
+            rev.comment = comment;
+            rev.user = reviewUser;
           }
         });
       } else {
@@ -198,7 +240,7 @@ router.put(
       await event.save({ validateBeforeSave: false });
 
       await Order.findByIdAndUpdate(
-        orderId,
+        order._id,
         { $set: { "cart.$[elem].isReviewed": true } },
         { arrayFilters: [{ "elem._id": productId }], new: true }
       );

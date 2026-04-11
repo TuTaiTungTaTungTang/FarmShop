@@ -9,7 +9,7 @@ const sendMail = require("../utils/sendMail");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const sendToken = require("../utils/jwtToken");
 const { isAuthenticated, isAdmin } = require("../middleware/auth");
-const { validate, schemas } = require("../middleware/validation");
+const { validate, schemas, validateObjectIdParam } = require("../middleware/validation");
 // const logger = require("../utils/logger");
 const { logger } = require('../utils/logger');
 
@@ -271,12 +271,6 @@ router.post(
 
       const message = `Your password reset link: \n\n ${resetUrl} \n\n If you did not request this, please ignore.`;
 
-      // DEV: expose unhashed token in server logs to allow local testing when SMTP is not configured
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`DEV RESET TOKEN for ${user.email}: ${resetToken}`);
-        console.log(`DEV RESET URL: ${resetUrl}`);
-      }
-
       try {
         await sendMail({ email: user.email, subject: 'Password Recovery', message });
         res.status(200).json({ success: true, message: `Email sent to ${user.email}` });
@@ -288,11 +282,6 @@ router.post(
         user.resetPasswordToken = undefined;
         user.resetPasswordTime = undefined;
         await user.save({ validateBeforeSave: false });
-
-        // In dev mode, allow testing without SMTP by returning the resetUrl
-        if (process.env.NODE_ENV !== 'production') {
-          return res.status(200).json({ success: true, message: 'Dev: email not sent, returning reset URL', resetUrl });
-        }
 
         return next(new ErrorHandler('Email could not be sent', 500));
       }
@@ -343,10 +332,17 @@ to find a user with the specified email address. The `select("+password")` part 
 the password field in the returned user object. By default, the password field is not selected when
 querying the database for security reasons. However, in this case, the password field is needed to
 compare the provided password with the stored password for authentication purposes. */
-      const user = await User.findOne({ email }).select("+password");
+      const user = await User.findById(req.user.id).select("+password");
 
       if (!user) {
         return next(new ErrorHandler("User not found", 400));
+      }
+
+      if (email && email !== user.email) {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+          return next(new ErrorHandler("Email already in use", 400));
+        }
       }
 
       const isPasswordValid = await user.comparePassword(password);
@@ -358,7 +354,7 @@ compare the provided password with the stored password for authentication purpos
       }
 
       user.name = name;
-      user.email = email;
+      user.email = email || user.email;
       user.phoneNumber = phoneNumber;
 
       await user.save();
@@ -446,6 +442,7 @@ router.put(
 router.delete(
   "/delete-user-address/:id",
   isAuthenticated,
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const userId = req.user._id;
@@ -512,8 +509,17 @@ router.put(
 // find user infoormation with the userId
 router.get(
   "/user-info/:id",
+  isAuthenticated,
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
+      if (
+        req.user._id.toString() !== req.params.id &&
+        req.user.role !== "Admin"
+      ) {
+        return next(new ErrorHandler("Unauthorized access to user info", 403));
+      }
+
       const user = await User.findById(req.params.id);
 
       res.status(201).json({
@@ -551,6 +557,7 @@ router.delete(
   "/delete-user/:id",
   isAuthenticated,
   isAdmin("Admin"),
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const user = await User.findById(req.params.id);

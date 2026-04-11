@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const Shop = require("../model/shop");
 const { isAuthenticated, isSeller, isAdmin } = require("../middleware/auth");
+const { validateObjectIdParam } = require("../middleware/validation");
 const { upload } = require("../multer");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
@@ -123,21 +124,17 @@ router.post(
     try {
       const { email, password } = req.body;
 
-      console.log("🏪 Shop login attempt:", { email, password }); // Debug log
-
       if (!email || !password) {
         return next(new ErrorHandler("Please provide the all fields!", 400));
       }
 
       const user = await Shop.findOne({ email }).select("+password");
-      console.log("🔍 Shop found:", user ? "Yes" : "No"); // Debug log
 
       if (!user) {
         return next(new ErrorHandler("Shop doesn't exist!", 400));
       }
 
       const isPasswordValid = await user.comparePassword(password);
-      console.log("🔐 Shop password valid:", isPasswordValid); // Debug log
 
       if (!isPasswordValid) {
         return next(
@@ -198,12 +195,29 @@ router.get(
 // get shop info
 router.get(
   "/get-shop-info/:id",
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const shop = await Shop.findById(req.params.id);
+
+      if (!shop) {
+        return next(new ErrorHandler("Shop not found", 404));
+      }
+
+      const publicShop = {
+        _id: shop._id,
+        name: shop.name,
+        description: shop.description,
+        address: shop.address,
+        phoneNumber: shop.phoneNumber,
+        avatar: shop.avatar,
+        zipCode: shop.zipCode,
+        createdAt: shop.createdAt,
+      };
+
       res.status(201).json({
         success: true,
-        shop,
+        shop: publicShop,
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
@@ -293,6 +307,7 @@ router.delete(
   "/delete-seller/:id",
   isAuthenticated,
   isAdmin("Admin"),
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const seller = await Shop.findById(req.params.id);
@@ -343,7 +358,7 @@ router.delete(
   isSeller,
   catchAsyncErrors(async (req, res, next) => {
     try {
-        const activationUrl = `https://agritechsolution.vercel.app/seller/activation/${activationToken}`;
+      const seller = await Shop.findById(req.seller._id);
 
       if (!seller) {
         return next(new ErrorHandler("Seller not found with this id", 400));

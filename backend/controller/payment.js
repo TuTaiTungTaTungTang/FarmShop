@@ -1,12 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+const { isAuthenticated } = require("../middleware/auth");
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Create a PaymentIntent
 router.post(
   "/process",
+  isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     // Expect amount in smallest currency unit (cents for USD)
     const amount = req.body?.amount;
@@ -40,6 +42,7 @@ router.post(
 // Return publishable stripe key for client
 router.get(
   "/stripeapikey",
+  isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     res.status(200).json({ stripeApikey: process.env.STRIPE_API_KEY });
   })

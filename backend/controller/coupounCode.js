@@ -3,6 +3,7 @@ const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Shop = require("../model/shop");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { isSeller } = require("../middleware/auth");
+const { validateObjectIdParam } = require("../middleware/validation");
 const CoupounCode = require("../model/coupounCode");
 const router = express.Router();
 
@@ -20,7 +21,12 @@ router.post(
         return next(new ErrorHandler("Coupoun code already exists!", 400));
       }
 
-      const coupounCode = await CoupounCode.create(req.body);
+      const payload = {
+        ...req.body,
+        shopId: req.seller._id,
+      };
+
+      const coupounCode = await CoupounCode.create(payload);
 
       res.status(201).json({
         success: true,
@@ -36,6 +42,7 @@ router.post(
 router.get(
   "/get-coupon/:id",
   isSeller,
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const couponCodes = await CoupounCode.find({ shopId: req.seller.id });
@@ -53,13 +60,21 @@ router.get(
 router.delete(
   "/delete-coupon/:id",
   isSeller,
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const couponCode = await CoupounCode.findByIdAndDelete(req.params.id);
+      const couponCode = await CoupounCode.findById(req.params.id);
 
       if (!couponCode) {
         return next(new ErrorHandler("Coupon code dosen't exists!", 400));
       }
+
+      if (couponCode.shopId.toString() !== req.seller._id.toString()) {
+        return next(new ErrorHandler("You can only delete your own coupon codes", 403));
+      }
+
+      await CoupounCode.findByIdAndDelete(req.params.id);
+
       res.status(201).json({
         success: true,
         message: "Coupon code deleted successfully!",

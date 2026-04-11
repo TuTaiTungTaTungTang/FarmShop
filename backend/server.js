@@ -65,8 +65,12 @@ if (process.env.NODE_ENV !== "test") {
   });
 }
 
-// DEV: print mounted routes for debugging
-if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
+// DEV: print mounted routes for debugging only when explicitly enabled
+if (
+  process.env.NODE_ENV !== 'production' &&
+  process.env.NODE_ENV !== 'test' &&
+  process.env.ENABLE_DEBUG_ROUTES === 'true'
+) {
   const listRoutes = () => {
     const routes = [];
     app._router.stack.forEach((middleware) => {
@@ -156,19 +160,23 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
 
 // Swagger Documentation
 const { specs, swaggerUi } = require('./config/swagger');
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
-  explorer: true,
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: "farm",
-}));
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
+    explorer: true,
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: "farm",
+  }));
+}
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/api-docs.json", (req, res) => {
-  res.json(specs);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.get("/api-docs.json", (req, res) => {
+    res.json(specs);
+  });
+}
 
 // routes
 const user = require("./controller/user");

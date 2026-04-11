@@ -9,14 +9,20 @@ const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
 const fs = require("fs");
 const { generateProductQR, deleteQRFile } = require("../utils/qrGenerator");
+const { validateObjectIdParam } = require("../middleware/validation");
 
 // create product
 router.post(
   "/create-product",
+  isSeller,
   upload.array("images"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const shopId = req.body.shopId;
+      if (req.seller._id.toString() !== shopId) {
+        return next(new ErrorHandler("You can only create products for your own shop", 403));
+      }
+
       const shop = await Shop.findById(shopId);
       if (!shop) {
         return next(new ErrorHandler("Shop Id is invalid!", 400));
@@ -111,6 +117,7 @@ router.post(
 // get all products of a shop
 router.get(
   "/get-all-products-shop/:id",
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const products = await Product.find({ shopId: req.params.id }).populate("shop");
@@ -129,11 +136,19 @@ router.get(
 router.delete(
   "/delete-shop-product/:id",
   isSeller,
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const productId = req.params.id;
 
       const productData = await Product.findById(productId);
+      if (!productData) {
+        return next(new ErrorHandler("Product not found with this id!", 404));
+      }
+
+      if (!productData.shopId || productData.shopId.toString() !== req.seller._id.toString()) {
+        return next(new ErrorHandler("You can only delete your own products", 403));
+      }
 
       productData.images.forEach((imageUrl) => {
         const filename = imageUrl;
@@ -185,25 +200,52 @@ router.put(
   isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { user, rating, comment, productId, orderId } = req.body;
+      const { rating, comment, productId, orderId } = req.body;
 
       const product = await Product.findById(productId);
+      if (!product) {
+        return next(new ErrorHandler("Product not found", 404));
+      }
+
+      const order = await Order.findById(orderId);
+      if (!order) {
+        return next(new ErrorHandler("Order not found", 404));
+      }
+
+      if (order.user._id.toString() !== req.user._id.toString()) {
+        return next(new ErrorHandler("You can only review products from your own orders", 403));
+      }
+
+      const hasProductInOrder = order.cart.some(
+        (item) => item._id && item._id.toString() === productId
+      );
+      if (!hasProductInOrder) {
+        return next(new ErrorHandler("Product is not in this order", 400));
+      }
+
+      const reviewUser = {
+        _id: req.user._id,
+        name: req.user.name,
+        avatar: req.user.avatar,
+      };
 
       const review = {
-        user,
+        user: reviewUser,
         rating,
         comment,
         productId,
       };
 
       const isReviewed = product.reviews.find(
-        (rev) => rev.user._id === req.user._id
+        (rev) => rev.user && rev.user._id && rev.user._id.toString() === req.user._id.toString()
       );
 
       if (isReviewed) {
         product.reviews.forEach((rev) => {
-          if (rev.user._id === req.user._id) {
-            (rev.rating = rating), (rev.comment = comment), (rev.user = user);
+          if (rev.user && rev.user._id && rev.user._id.toString() === req.user._id.toString()) {
+            rev.rating = rating;
+            rev.comment = comment;
+            rev.user = reviewUser;
           }
         });
       } else {
@@ -221,7 +263,7 @@ router.put(
       await product.save({ validateBeforeSave: false });
 
       await Order.findByIdAndUpdate(
-        orderId,
+        order._id,
         { $set: { "cart.$[elem].isReviewed": true } },
         { arrayFilters: [{ "elem._id": productId }], new: true }
       );
@@ -301,7 +343,6 @@ router.get(
         shop: {
           _id: shopData._id,
           name: shopData.name,
-          email: shopData.email,
           phoneNumber: shopData.phoneNumber,
           address: shopData.address,
           description: shopData.description,
@@ -332,6 +373,7 @@ router.get(
 // � Get single product by id (populated with shop) - used by frontend fallback
 router.get(
   "/get-product/:id",
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const product = await Product.findById(req.params.id).populate("shop");
@@ -354,14 +396,18 @@ router.get(
 // �🔄 Regenerate QR code for existing product (cho seller)
 router.put(
   "/regenerate-qr/:id",
-  isAuthenticated,
   isSeller,
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const product = await Product.findById(req.params.id).populate("shop");
       
       if (!product) {
         return next(new ErrorHandler("Không tìm thấy sản phẩm!", 404));
+      }
+
+      if (!product.shopId || product.shopId.toString() !== req.seller._id.toString()) {
+        return next(new ErrorHandler("Bạn chỉ có thể tạo lại QR cho sản phẩm của shop mình", 403));
       }
 
       // Xóa QR code cũ nếu có

@@ -3,6 +3,7 @@ const router = express.Router();
 const ErrorHandler = require("../utils/ErrorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const { isAuthenticated, isSeller, isAdmin } = require("../middleware/auth");
+const { validateObjectIdParam } = require("../middleware/validation");
 const Order = require("../model/order");
 const Shop = require("../model/shop");
 const Product = require("../model/product");
@@ -10,16 +11,17 @@ const Product = require("../model/product");
 // create new order
 router.post(
   "/create-order",
+  isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { cart, shippingAddress, user, totalPrice, paymentInfo } = req.body;
+      const { cart, shippingAddress, totalPrice, paymentInfo } = req.body;
 
       // Validate input
       if (!cart || !Array.isArray(cart) || cart.length === 0) {
         return next(new ErrorHandler("Cart is required and must not be empty", 400));
       }
-      if (!user || !user._id) {
-        return next(new ErrorHandler("User info is required", 400));
+      if (!req.user) {
+        return next(new ErrorHandler("Please login to continue", 401));
       }
       if (!shippingAddress) {
         return next(new ErrorHandler("Shipping address is required", 400));
@@ -41,7 +43,7 @@ router.post(
         const order = await Order.create({
           cart: items,
           shippingAddress,
-          user,
+          user: req.user,
           totalPrice,
           paymentInfo,
         });
@@ -61,8 +63,17 @@ router.post(
 // get all orders of user
 router.get(
   "/get-all-orders/:userId",
+  isAuthenticated,
+  validateObjectIdParam("userId"),
   catchAsyncErrors(async (req, res, next) => {
     try {
+      if (
+        req.user._id.toString() !== req.params.userId &&
+        req.user.role !== "Admin"
+      ) {
+        return next(new ErrorHandler("Unauthorized access to orders", 403));
+      }
+
       const orders = await Order.find({ "user._id": req.params.userId }).sort({
         createdAt: -1,
       });
@@ -80,8 +91,14 @@ router.get(
 // get all orders of seller
 router.get(
   "/get-seller-all-orders/:shopId",
+  isSeller,
+  validateObjectIdParam("shopId"),
   catchAsyncErrors(async (req, res, next) => {
     try {
+      if (req.seller._id.toString() !== req.params.shopId) {
+        return next(new ErrorHandler("Unauthorized access to seller orders", 403));
+      }
+
       const orders = await Order.find({
         "cart.shopId": req.params.shopId,
       }).sort({
@@ -102,12 +119,21 @@ router.get(
 router.put(
   "/update-order-status/:id",
   isSeller,
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const order = await Order.findById(req.params.id);
 
       if (!order) {
         return next(new ErrorHandler("Order not found with this id", 400));
+      }
+
+      const isSellerOrder = order.cart.some(
+        (item) => item.shopId && item.shopId.toString() === req.seller._id.toString()
+      );
+
+      if (!isSellerOrder) {
+        return next(new ErrorHandler("You can only update your own orders", 403));
       }
 
       if (req.body.status === "Transferred to delivery partner") {
@@ -159,12 +185,18 @@ router.put(
 // give a refund ----- user
 router.put(
   "/order-refund/:id",
+  isAuthenticated,
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const order = await Order.findById(req.params.id);
 
       if (!order) {
         return next(new ErrorHandler("Order not found with this id", 400));
+      }
+
+      if (order.user._id.toString() !== req.user._id.toString()) {
+        return next(new ErrorHandler("You can only refund your own orders", 403));
       }
 
       order.status = req.body.status;
@@ -186,12 +218,21 @@ router.put(
 router.put(
   "/order-refund-success/:id",
   isSeller,
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const order = await Order.findById(req.params.id);
 
       if (!order) {
         return next(new ErrorHandler("Order not found with this id", 400));
+      }
+
+      const isSellerOrder = order.cart.some(
+        (item) => item.shopId && item.shopId.toString() === req.seller._id.toString()
+      );
+
+      if (!isSellerOrder) {
+        return next(new ErrorHandler("You can only update your own orders", 403));
       }
 
       order.status = req.body.status;

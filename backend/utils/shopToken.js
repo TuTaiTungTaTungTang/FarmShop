@@ -2,6 +2,11 @@
 const sendShopToken = (user, statusCode, res) => {
   const token = user.getJwtToken();
 
+  const safeUser = user.toObject ? user.toObject() : { ...user };
+  delete safeUser.password;
+  delete safeUser.resetPasswordToken;
+  delete safeUser.resetPasswordTime;
+
   // Options for cookies
   const options = {
     expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
@@ -12,7 +17,7 @@ const sendShopToken = (user, statusCode, res) => {
 
   res.status(statusCode).cookie("seller_token", token, options).json({
     success: true,
-    user,
+    user: safeUser,
     token,
   });
 };

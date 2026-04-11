@@ -3,6 +3,7 @@ const ErrorHandler = require("../utils/ErrorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const express = require("express");
 const { isSeller, isAuthenticated, isAdmin } = require("../middleware/auth");
+const { validateObjectIdParam } = require("../middleware/validation");
 const Withdraw = require("../model/withdraw");
 const sendMail = require("../utils/sendMail");
 const router = express.Router();
@@ -76,6 +77,7 @@ router.put(
   "/update-withdraw-request/:id",
   isAuthenticated,
   isAdmin("Admin"),
+  validateObjectIdParam("id"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const { sellerId } = req.body;

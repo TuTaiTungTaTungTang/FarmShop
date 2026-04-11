@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const mongoose = require('mongoose');
 // const logger = require('../utils/logger');
 const { logger } = require('../utils/logger');
 // User validation schemas
@@ -198,9 +199,42 @@ const validate = (schema) => {
   };
 };
 
+const validateObjectIdParam = (paramName = 'id') => {
+  return (req, res, next) => {
+    const value = req.params[paramName];
+
+    if (!value || !mongoose.Types.ObjectId.isValid(value)) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid ${paramName}`,
+      });
+    }
+
+    next();
+  };
+};
+
+const validateObjectIdParams = (paramNames = []) => {
+  return (req, res, next) => {
+    for (const paramName of paramNames) {
+      const value = req.params[paramName];
+      if (!value || !mongoose.Types.ObjectId.isValid(value)) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid ${paramName}`,
+        });
+      }
+    }
+
+    next();
+  };
+};
+
 // Export schemas and middleware
 module.exports = {
   validate,
+  validateObjectIdParam,
+  validateObjectIdParams,
   schemas: {
     user: userSchemas,
     shop: shopSchemas,
