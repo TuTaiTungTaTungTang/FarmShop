@@ -10,6 +10,7 @@ const { validateObjectIdParam } = require("../middleware/validation");
 const { upload } = require("../multer");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
+const { logger } = require("../utils/logger");
 
 const sendShopToken = require("../utils/shopToken");
 
@@ -20,6 +21,26 @@ const withTimeout = (promise, ms, timeoutMessage) => {
       setTimeout(() => reject(new Error(timeoutMessage)), ms);
     }),
   ]);
+};
+
+const queueActivationEmail = (seller, activationToken) => {
+  const activationUrl = `https://agritechsolution.vercel.app/seller/activation/${activationToken}`;
+
+  void withTimeout(
+    sendMail({
+      email: seller.email,
+      subject: "Activate your Shop",
+      message: `Hello ${seller.name}, please click on the link to activate your shop: ${activationUrl}`,
+    }),
+    12000,
+    "Email service timeout"
+  ).catch((error) => {
+    logger.error(
+      `[shop-activation-email] Failed to send activation email to ${seller.email}: ${
+        error && error.message ? error.message : error
+      }`
+    );
+  });
 };
 
 // create shop
@@ -57,36 +78,55 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
     };
 
     const activationToken = createActivationToken(seller);
+    queueActivationEmail(seller, activationToken);
 
-    const activationUrl = `https://agritechsolution.vercel.app/seller/activation/${activationToken}`;
-
-    try {
-      await withTimeout(
-        sendMail({
-          email: seller.email,
-          subject: "Activate your Shop",
-          message: `Hello ${seller.name}, please click on the link to activate your shop: ${activationUrl}`,
-        }),
-        12000,
-        "Email service timeout"
-      );
-
-      res.status(201).json({
-        success: true,
-        message: `please check your email:- ${seller.email} to activate your shop!`,
-      });
-    } catch (error) {
-      return next(
-        new ErrorHandler(
-          "Email service is temporarily unavailable. Please try again in a few minutes.",
-          503
-        )
-      );
-    }
+    res.status(201).json({
+      success: true,
+      message: `Shop registration received. Please check your email:- ${seller.email} to activate your shop!`,
+    });
   } catch (error) {
     return next(new ErrorHandler(error.message, 400));
   }
 });
+
+// resend shop activation mail
+router.post(
+  "/resend-activation",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { name, email, password, avatar, zipCode, address, phoneNumber } = req.body;
+
+      if (!name || !email || !password || !zipCode || !address || !phoneNumber) {
+        return next(new ErrorHandler("Please provide all required seller fields", 400));
+      }
+
+      const sellerExists = await Shop.findOne({ email });
+      if (sellerExists) {
+        return next(new ErrorHandler("Shop already exists. Please login instead.", 400));
+      }
+
+      const seller = {
+        name,
+        email,
+        password,
+        avatar: avatar || "",
+        zipCode,
+        address,
+        phoneNumber,
+      };
+
+      const activationToken = createActivationToken(seller);
+      queueActivationEmail(seller, activationToken);
+
+      res.status(200).json({
+        success: true,
+        message: `Activation email has been queued for ${email}. Please check your inbox.`,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 
 // create activation token
 const createActivationToken = (seller) => {
