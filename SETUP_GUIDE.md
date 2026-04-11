@@ -1,4 +1,4 @@
-# Farm shop Setup Guide
+# AgritechSolution Setup Guide
 
 ## 📋 Prerequisites
 
@@ -12,7 +12,7 @@
 
 ```bash
 git clone <your-repo-url>
-cd farm shop
+cd agritechsolution
 ```
 
 ### 2. Backend Setup
@@ -236,7 +236,7 @@ After this, PRs cannot be merged when CI fails.
 ## 📱 Features Available
 
 - ✅ User registration/login
-- ✅farm shop management
+- ✅ Marketplace management
 - ✅ Product catalog with categories
 - ✅ Shopping cart & checkout
 - ✅ Order management

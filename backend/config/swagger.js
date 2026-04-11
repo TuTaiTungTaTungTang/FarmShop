@@ -5,9 +5,9 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Multi-Vendor E-Commerce API',
+      title: 'AgritechSolution API',
       version: '1.0.0',
-      description: 'A comprehensive multi-vendor e-commerce platform API with user management, shop management, products, orders, events, and real-time messaging.',
+      description: 'A comprehensive AgritechSolution platform API with user management, shop management, products, orders, events, and real-time messaging.',
       contact: {
         name: 'API Support',
         email: 'support@ecommerce.com',
