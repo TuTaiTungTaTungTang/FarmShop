@@ -13,6 +13,15 @@ const ErrorHandler = require("../utils/ErrorHandler");
 
 const sendShopToken = require("../utils/shopToken");
 
+const withTimeout = (promise, ms, timeoutMessage) => {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error(timeoutMessage)), ms);
+    }),
+  ]);
+};
+
 // create shop
 router.post("/create-shop", upload.single("file"), async (req, res, next) => {
   try {
@@ -52,17 +61,27 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
     const activationUrl = `https://agritechsolution.vercel.app/seller/activation/${activationToken}`;
 
     try {
-      await sendMail({
-        email: seller.email,
-        subject: "Activate your Shop",
-        message: `Hello ${seller.name}, please click on the link to activate your shop: ${activationUrl}`,
-      });
+      await withTimeout(
+        sendMail({
+          email: seller.email,
+          subject: "Activate your Shop",
+          message: `Hello ${seller.name}, please click on the link to activate your shop: ${activationUrl}`,
+        }),
+        12000,
+        "Email service timeout"
+      );
+
       res.status(201).json({
         success: true,
         message: `please check your email:- ${seller.email} to activate your shop!`,
       });
     } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
+      return next(
+        new ErrorHandler(
+          "Email service is temporarily unavailable. Please try again in a few minutes.",
+          503
+        )
+      );
     }
   } catch (error) {
     return next(new ErrorHandler(error.message, 400));

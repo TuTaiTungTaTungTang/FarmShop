@@ -29,7 +29,10 @@ const ShopCreate = () => {
         if (isSubmitting) return;
         setIsSubmitting(true);
 
-        const config = { headers: { "Content-Type": "multipart/form-data" } };
+        const config = {
+            headers: { "Content-Type": "multipart/form-data" },
+            timeout: 15000,
+        };
 
         const newForm = new FormData();
         newForm.append("file", avatar);
@@ -52,7 +55,15 @@ const ShopCreate = () => {
             setPhoneNumbers([{ name: "", phone: "" }]);
             navigate("/shop-login");
         } catch (error) {
-            toast.error(error.response?.data?.message || "Đăng ký shop thất bại");
+            if (error.code === "ECONNABORTED") {
+                toast.error("Server phản hồi chậm. Vui lòng thử lại sau ít phút.");
+            } else if (error.response?.status === 429) {
+                toast.error("Bạn thao tác quá nhanh. Vui lòng đợi một chút rồi thử lại.");
+            } else if (error.response?.status >= 500) {
+                toast.error("Server đang bận hoặc tạm lỗi. Vui lòng thử lại sau.");
+            } else {
+                toast.error(error.response?.data?.message || "Đăng ký shop thất bại");
+            }
         } finally {
             setIsSubmitting(false);
         }
