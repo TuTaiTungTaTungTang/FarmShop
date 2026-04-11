@@ -1,3 +1,5 @@
+import { formatPriceFromUsd } from "../utils/currency";
+
 // navigation Data
 export const navItems = [
   {
@@ -27,7 +29,7 @@ export const brandingData = [
   {
   id: 1,
   title: "Miễn phí vận chuyển",
-  Description: `Miễn phí cho đơn hàng từ ${require('../utils/currency').default.formatPriceFromUsd(100)}`,
+  Description: `Miễn phí cho đơn hàng từ ${formatPriceFromUsd(100)}`,
     icon: (
       <svg
         width="36"

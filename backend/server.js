@@ -2,8 +2,8 @@ const express = require("express");
 const ErrorHandler = require("./middleware/error");
 const connectDatabase = require("./db/Database");
 // const logger = require("./utils/logger"); // Tạm comment để test QR system
-// const helmet = require("helmet"); // Tạm comment
-// const rateLimit = require("express-rate-limit"); // Tạm comment
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 
 const app = express();
 
@@ -21,21 +21,38 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
 // connect db
 connectDatabase();
 
-// Security middleware - Tạm comment để test QR system
-// app.use(helmet({
-//   contentSecurityPolicy: false, // Disable CSP for development
-//   crossOriginEmbedderPolicy: false
-// }));
+// Security headers
+app.use(
+  helmet({
+    contentSecurityPolicy: process.env.NODE_ENV === "PRODUCTION",
+    crossOriginEmbedderPolicy: false,
+  })
+);
 
-// Rate limiting - Tạm comment
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000, // 15 minutes
-//   max: 100, // limit each IP to 100 requests per windowMs
-//   message: {
-//     error: "Too many requests from this IP, please try again later."
-//   }
-// });
-// app.use('/api/', limiter);
+// Rate limiting - chống DDoS và brute force
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 phút
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: "Quá nhiều request, vui lòng thử lại sau." },
+});
+
+// Strict limit cho auth routes - chống brute force đăng nhập
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 phút
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: "Quá nhiều lần đăng nhập, vui lòng thử lại sau 15 phút." },
+});
+
+app.use("/api/", apiLimiter);
+app.use("/api/v2/user/login-user", authLimiter);
+app.use("/api/v2/user/create-user", authLimiter);
+app.use("/api/v2/user/forgot-password", authLimiter);
+app.use("/api/v2/shop/login-shop", authLimiter);
+app.use("/api/v2/shop/create-shop", authLimiter);
 
 // create server
 const server = app.listen(process.env.PORT, () => {
