@@ -21,9 +21,13 @@ const ShopCreate = () => {
     const [avatar, setAvatar] = useState();
     const [password, setPassword] = useState("");
     const [visible, setVisible] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (isSubmitting) return;
+        setIsSubmitting(true);
 
         const config = { headers: { "Content-Type": "multipart/form-data" } };
 
@@ -49,6 +53,8 @@ const ShopCreate = () => {
             navigate("/shop-login");
         } catch (error) {
             toast.error(error.response?.data?.message || "Đăng ký shop thất bại");
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -282,9 +288,10 @@ const ShopCreate = () => {
                         <div>
                             <button
                                 type='submit'
-                                className=' className="group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"'
+                                disabled={isSubmitting}
+                                className={`group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${isSubmitting ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
                             >
-                                Submit
+                                {isSubmitting ? "Submitting..." : "Submit"}
                             </button>
                         </div>
 

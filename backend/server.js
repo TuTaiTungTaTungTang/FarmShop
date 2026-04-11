@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
 const app = express();
+app.set("trust proxy", 1);
 
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
@@ -73,17 +74,27 @@ const apiLimiter = rateLimit({
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 phút
   max: 10,
+  skipSuccessfulRequests: true,
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, error: "Quá nhiều lần đăng nhập, vui lòng thử lại sau 15 phút." },
 });
 
+// Registration/reset routes are less sensitive than login, avoid blocking normal users too aggressively
+const signupLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 phút
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: "Bạn đang gửi quá nhiều yêu cầu đăng ký. Vui lòng thử lại sau." },
+});
+
 app.use("/api/", apiLimiter);
 app.use("/api/v2/user/login-user", authLimiter);
-app.use("/api/v2/user/create-user", authLimiter);
-app.use("/api/v2/user/forgot-password", authLimiter);
+app.use("/api/v2/user/create-user", signupLimiter);
+app.use("/api/v2/user/forgot-password", signupLimiter);
 app.use("/api/v2/shop/login-shop", authLimiter);
-app.use("/api/v2/shop/create-shop", authLimiter);
+app.use("/api/v2/shop/create-shop", signupLimiter);
 
 let server;
 
