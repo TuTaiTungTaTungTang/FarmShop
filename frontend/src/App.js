@@ -76,11 +76,17 @@ const App = () => {
   }
 
   useEffect(() => {
-    Store.dispatch(loadUser());
-    Store.dispatch(loadSeller());
+    const path = window.location.pathname;
+    const needsAuthBootstrap = /^(\/profile|\/checkout|\/payment|\/inbox|\/user\/|\/dashboard|\/settings|\/order\/|\/admin)/.test(path);
+
+    if (needsAuthBootstrap) {
+      Store.dispatch(loadUser());
+      Store.dispatch(loadSeller());
+      getStripeApikey();
+    }
+
     Store.dispatch(getAllProducts());
     Store.dispatch(getAllEvents());
-    getStripeApikey();
   }, []);
 
   return (

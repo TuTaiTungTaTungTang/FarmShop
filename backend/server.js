@@ -12,6 +12,31 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
 
+const allowedOrigins = [
+  "https://agritechsolution.vercel.app",
+  "http://localhost:3000",
+  "http://localhost:5173",
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow server-to-server requests and tools that do not send Origin
+    if (!origin) return callback(null, true);
+
+    const isExplicitAllowed = allowedOrigins.includes(origin);
+    const isVercelPreview = /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
+
+    if (isExplicitAllowed || isVercelPreview) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
 // config
 if (process.env.NODE_ENV !== "PRODUCTION") {
   require("dotenv").config({
@@ -22,6 +47,10 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
 if (process.env.NODE_ENV !== "test") {
   connectDatabase();
 }
+
+// Enable CORS early so preflight and limited endpoints always include CORS headers
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 // Security headers
 app.use(
@@ -125,20 +154,6 @@ app.use(cookieParser());
 //   const morgan = require('morgan');
 //   app.use(morgan('combined', { stream: logger.stream }));
 // }
-
-// Enable CORS for all routes
-app.use(
-  cors({
-   origin: [
-      // "https://farm-shop-eight.vercel.app", // domain frontend Vercel
-      "https://agritechsolution.vercel.app",
-      // "http://localhost:3000"               // cho dev local
-    ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-  })
-);
 
 app.use("/", express.static("uploads"));
 
